@@ -4,6 +4,7 @@ import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/person_model.dart';
 import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,22 +98,7 @@ class AddBillScreen extends StatelessWidget {
                         Get.snackbar('لقد تم اخيتار', suggestion.name);
                       },
                       noItemsFoundBuilder: (context) {
-                        return InkWell(
-                          onTap: ()=> Get.snackbar('سيتم اضافة عميل جديد', ' '),
-                          child: SizedBox(
-                            height: 100,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Text('إضافة عميل جديد'),
-                                  Icon(Icons.add),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
+                        return buildInkWell(context,'إضافة عميل جديد');
                       },
                     ),
                   ),
@@ -123,13 +109,58 @@ class AddBillScreen extends StatelessWidget {
                       fontSize: 18,
                     ),
                   ),
-                  CustomTextFormField(
-                      data: 'data',
-                      hintText: 'اسم الصنف',
-                      textInputType: TextInputType.name,
-                      validatorHint: 'يجب إدخال اسم الصنف',
-                      iconData: Icons.person,
-                      textMaxLength: 25),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: TypeAheadField<Product>(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        decoration: InputDecoration(
+                          label: const Text('اسم الصنف'),
+                          labelStyle: const TextStyle(
+                            color: Colors.blue,
+                          ),
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                              width: 3,
+                            ),
+                          ),
+                          prefixIcon: IconTheme(
+                            data: IconThemeData(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            child: const Icon(Icons.shopping_cart),
+                          ),
+                        ),
+                      ),
+                      suggestionsCallback: (pattern) async {
+                        return await dataBaseServices.queryAllProducts(pattern);
+                      },
+                      itemBuilder: (context, suggestion) {
+                        return ListTile(
+                          leading: Text(suggestion.id.toString()),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                               Text(' الكمية :  ${suggestion.quantity.toString()}'),
+                            ],
+                          ),
+                          title: Center(child: Text(suggestion.name)),
+                        );
+                      },
+                      onSuggestionSelected: (suggestion) {
+                        Get.snackbar('لقد تم اخيتار', suggestion.name);
+                      },
+                      noItemsFoundBuilder: (context) {
+                        return buildInkWell(context,'إضافة صنف جديد');
+                      },
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: const [
@@ -208,5 +239,25 @@ class AddBillScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  InkWell buildInkWell(BuildContext context,String text) {
+    return InkWell(
+                        onTap: () => Tasks().showAction(context, 2),
+                        child: SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children:  [
+                                Text(text),
+                                const Icon(Icons.add),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
   }
 }

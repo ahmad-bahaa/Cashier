@@ -14,7 +14,7 @@ class AddPersonScreen extends StatelessWidget {
   Person? person;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   PersonController personController = Get.put(PersonController());
-  DataBaseServices _dataBaseServices = DataBaseServices();
+  final DataBaseServices _dataBaseServices = DataBaseServices();
 
   String personName = 'name';
   String personPhone = 'phone';
@@ -49,7 +49,7 @@ class AddPersonScreen extends StatelessWidget {
             children: [
               CustomTextFormField(
                 data: personName,
-                value:  person?.name ?? '',
+                value: person?.name ?? '',
                 hintText: 'إسم العميل ',
                 textInputType: TextInputType.name,
                 validatorHint: 'يجب إدخال إسم العميل',
@@ -61,7 +61,7 @@ class AddPersonScreen extends StatelessWidget {
               ),
               CustomTextField(
                 data: personPhone,
-                value:  person?.phoneNumber ?? '',
+                value: person?.phoneNumber ?? '',
                 hintText: 'رقم الهاتف',
                 textInputType: TextInputType.phone,
                 iconData: Icons.phone,
@@ -72,7 +72,7 @@ class AddPersonScreen extends StatelessWidget {
               ),
               CustomTextField(
                 data: personAddress,
-                value:  person?.address ?? '',
+                value: person?.address ?? '',
                 hintText: 'العنوان',
                 textInputType: TextInputType.streetAddress,
                 iconData: Icons.location_city,

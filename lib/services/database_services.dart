@@ -35,6 +35,20 @@ class DataBaseServices {
               return user.contains(finalQuery);
             }).toList());
   }
+  Future<List<Product>> queryAllProducts(String query) async {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('products').orderBy('id',descending: false)
+        .get()
+        .then((value) =>
+        value.docs.map((e) => Product.fromSnapShot(e)).where((element) {
+          final item = element.name.toLowerCase();
+          final finalQuery = query.toLowerCase();
+
+          return item.contains(finalQuery);
+        }).toList());
+  }
 
   Stream<List<Product>> getAllProducts() {
     return _firebaseFirestore
