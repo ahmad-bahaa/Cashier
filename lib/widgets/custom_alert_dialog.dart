@@ -49,7 +49,7 @@ class CustomAlertDialog extends StatelessWidget {
                 {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    _dataBaseServices.addPerson(Person(
+                    Person person = Person(
                       id: _personController.people.length + 1,
                       name: _personController.newPerson[personName],
                       phoneNumber:
@@ -57,13 +57,17 @@ class CustomAlertDialog extends StatelessWidget {
                       address: _personController.newPerson[personAddress] ?? '',
                       type: 'عميل',
                       bills: const [],
-                    ));
+                    );
+                    _dataBaseServices.addPerson(person);
+                    Get.back();
                   }
                 }
                 break;
               case 3:
                 {
-                  Get.back();
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                  }
                 }
                 break;
               case 4:
@@ -92,7 +96,16 @@ class CustomAlertDialog extends StatelessWidget {
         }
       case 2:
         {
-          return _buildAlertDialogForm();
+          return _buildAlertDialogForm(
+            'تسجيل عميل جديد',
+            '',
+            '',
+            '',
+          );
+        }
+      case 3:
+        {
+          return const SizedBox();
         }
       default:
         {
@@ -112,16 +125,17 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
-  _buildAlertDialogForm() {
+  _buildAlertDialogForm(
+      String title, String first, String second, String third) {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const Text(
-              'تسجيل عميل جديد',
-              style: TextStyle(
+            Text(
+              title,
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),

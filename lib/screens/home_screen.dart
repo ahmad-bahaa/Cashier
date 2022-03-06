@@ -9,6 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text('الصفحة الرئيسية'),
@@ -53,9 +54,10 @@ class HomeScreen extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Get.to(() => const CashScreen());
+                    Get.to(() => const BillsScreen());
                   },
-                  child: const LabelCard(icon: Icons.add_shopping_cart, label: 'المشتريات'),
+                  child: const LabelCard(
+                      icon: Icons.add_shopping_cart, label: 'المشتريات'),
                 ),
                 InkWell(
                   onTap: () {
@@ -88,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Get.to(
-                          () => const StockScreen(),
+                      () => const StockScreen(),
                     );
                   },
                   child: const LabelCard(

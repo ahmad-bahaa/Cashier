@@ -7,6 +7,7 @@ class ProductController extends GetxController {
   var newProduct = {}.obs;
   var products = <Product>[].obs;
   var endedProducts = <Product>[].obs;
+  var item = {}.obs;
 
   @override
   void onInit() {

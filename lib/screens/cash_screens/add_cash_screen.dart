@@ -19,7 +19,7 @@ class AddCashScreen extends StatelessWidget {
 
   CashController cashController = Get.put(CashController());
 
-  DataBaseServices _dataBaseServices = DataBaseServices();
+  final DataBaseServices _dataBaseServices = DataBaseServices();
   String name = 'name',
       description = 'description',
       money = 'money',
@@ -27,9 +27,12 @@ class AddCashScreen extends StatelessWidget {
   DateTime dateTime = DateTime.now();
   bool _cash = false;
   late bool _isSending;
+  late bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
+    cash != null ? isEnabled = false : isEnabled = true;
+
     if (isSending != null) {
       _isSending = isSending!;
     }
@@ -45,9 +48,23 @@ class AddCashScreen extends StatelessWidget {
       bottomNavigationBar: CustomBottomAppBar(
         buttonText: 'حفظ',
         onPressed: () async {
-          //TODO: save the money to the database
           if (_formKey.currentState!.validate()) {
-            if (cashController.newCash[cashType] != null) {
+            if (_isSending != null && _isSending) {
+              int id = cashController.allSending.length + 1;
+              _dataBaseServices.addCashBill(
+                Cash(
+                  id: id,
+                  money: int.parse(cashController.newCash[money]),
+                  name: cashController.newCash[name] ?? '',
+                  date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+                  description: cashController.newCash[description] ?? '',
+                ),
+                'sending',
+              );
+              _dataBaseServices.updateCash(
+                  int.parse(cashController.newCash[money]), _isSending);
+              Get.back();
+            } else if (_isSending != null && !_isSending) {
               int id = cashController.allReceiving.length + 1;
               _dataBaseServices.addCashBill(
                 Cash(
@@ -57,8 +74,10 @@ class AddCashScreen extends StatelessWidget {
                   date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
                   description: cashController.newCash[description] ?? '',
                 ),
-                cashController.newCash[cashType],
+                'receiving',
               );
+              _dataBaseServices.updateCash(
+                  int.parse(cashController.newCash[money]), _isSending);
               Get.back();
             } else {
               _showAction(
@@ -82,6 +101,7 @@ class AddCashScreen extends StatelessWidget {
                 CustomTextFormField(
                   data: name,
                   value: cash?.name ?? '',
+                  isEnabled: isEnabled,
                   hintText: 'إسم النقدية ',
                   textInputType: TextInputType.name,
                   iconData: Icons.person,
@@ -94,6 +114,7 @@ class AddCashScreen extends StatelessWidget {
                 CustomTextFormField(
                   data: money,
                   value: cash?.money.toString() ?? '',
+                  isEnabled: isEnabled,
                   hintText: 'قيمة النقدية',
                   textInputType: TextInputType.number,
                   iconData: Icons.money,
@@ -106,6 +127,7 @@ class AddCashScreen extends StatelessWidget {
                 CustomTextField(
                   data: description,
                   value: cash?.description ?? '',
+                  isEnabled: isEnabled,
                   hintText: 'ملاحظات',
                   textInputType: TextInputType.multiline,
                   iconData: Icons.money,
@@ -130,14 +152,6 @@ class AddCashScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // : Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       addRadioButton(
-                //           context, 0, 'استلام نقدية', Colors.green),
-                //       addRadioButton(context, 1, 'دفع نقدية', Colors.red),
-                //     ],
-                //   ),
               ],
             ),
           ),

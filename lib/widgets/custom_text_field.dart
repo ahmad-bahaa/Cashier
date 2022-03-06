@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
     required this.textMaxLength,
     required this.onChanged,
     this.value,
+    this.isEnabled,
   }) : super(key: key);
   final String data;
   final String hintText;
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final int textMaxLength;
   String? value;
+  bool? isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class CustomTextField extends StatelessWidget {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextField(
+          enabled: isEnabled,
           controller: TextEditingController(text: value),
           maxLines: 1,
           style: const TextStyle(

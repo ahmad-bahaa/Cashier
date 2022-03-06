@@ -6,6 +6,7 @@ class PersonController extends GetxController {
   DataBaseServices dataBaseServices = DataBaseServices();
   var newPerson = {}.obs;
   var people = <Person>[].obs;
+  var person = {}.obs;
   @override
   void onInit() {
     people.bindStream(dataBaseServices.getAllPeople());

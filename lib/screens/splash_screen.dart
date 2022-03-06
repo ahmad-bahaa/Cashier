@@ -9,6 +9,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 4), () => Get.off(() => const HomeScreen()));
     return Scaffold(
+      backgroundColor: Colors.blue,
         body: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -27,10 +28,10 @@ class SplashScreen extends StatelessWidget {
         ),
         Center(
           child: Container(
-            color: Colors.black,
+            // color: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
-              'App Name',
+              'Cashier App',
               style: Theme.of(context)
                   .textTheme
                   .headline3!

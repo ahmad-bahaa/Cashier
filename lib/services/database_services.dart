@@ -25,7 +25,8 @@ class DataBaseServices {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .collection('people').orderBy('id',descending: false)
+        .collection('people')
+        .orderBy('id', descending: false)
         .get()
         .then((value) =>
             value.docs.map((e) => Person.fromSnapShot(e)).where((element) {
@@ -35,19 +36,21 @@ class DataBaseServices {
               return user.contains(finalQuery);
             }).toList());
   }
+
   Future<List<Product>> queryAllProducts(String query) async {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .collection('products').orderBy('id',descending: false)
+        .collection('products')
+        .orderBy('id', descending: false)
         .get()
         .then((value) =>
-        value.docs.map((e) => Product.fromSnapShot(e)).where((element) {
-          final item = element.name.toLowerCase();
-          final finalQuery = query.toLowerCase();
+            value.docs.map((e) => Product.fromSnapShot(e)).where((element) {
+              final item = element.name.toLowerCase();
+              final finalQuery = query.toLowerCase();
 
-          return item.contains(finalQuery);
-        }).toList());
+              return item.contains(finalQuery);
+            }).toList());
   }
 
   Stream<List<Product>> getAllProducts() {
@@ -102,13 +105,16 @@ class DataBaseServices {
     });
   }
 
-  //TODO: get cash
-  Future getCash() {
+//TODO: we didn't use this FYI
+  Stream<String> getCash() {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .get()
-        .then((value) => null);
+        .snapshots()
+        .map((event) {
+      String value = event.data()!['money'].toString();
+      return value;
+    });
   }
 
   Future<void> addPerson(Person person) {
@@ -135,12 +141,25 @@ class DataBaseServices {
         .add(product.toMap());
   }
 
-  Future<void> updateCash(int cash) {
+  Future<void> updateCash(int cash, bool isSending) {
+    int totalCash;
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .update({'money': cash})
-        .then((value) => print("Cash Updated"))
-        .catchError((error) => print("Failed to update Cash: $error"));
+        .get()
+        .then((value) {
+      if (value.exists) {
+        totalCash = value.data()!['money'];
+        return _firebaseFirestore
+            .collection('users')
+            .doc(userUid)
+            .update({'money': isSending ? totalCash - cash : totalCash + cash})
+            .then((value) => print("Cash Updated"))
+            .catchError((error) => print("Failed to update Cash: $error"));
+      } else {
+        print('no Value');
+        return null;
+      }
+    });
   }
 }

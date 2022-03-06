@@ -1,8 +1,4 @@
-import 'package:cashier/controllers/person_controller.dart';
-import 'package:cashier/controllers/product_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField({
@@ -13,6 +9,8 @@ class CustomTextFormField extends StatelessWidget {
     required this.validatorHint,
     required this.iconData,
     required this.textMaxLength,
+    this.controller,
+    this.isEnabled,
     this.value,
     this.onChanged,
   }) : super(key: key);
@@ -23,6 +21,8 @@ class CustomTextFormField extends StatelessWidget {
   final String validatorHint;
   final IconData iconData;
   final int textMaxLength;
+  final TextEditingController?  controller;
+  bool? isEnabled;
   final Function(String)? onChanged;
   String? value;
 
@@ -33,14 +33,16 @@ class CustomTextFormField extends StatelessWidget {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
-          initialValue: value,
+          enabled: isEnabled,
+          // initialValue: controller!.text ?? '',
+          controller: controller,
           maxLines: 1,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
           decoration: InputDecoration(
-            label:  Text(hintText),
+            label: Text(hintText),
             labelStyle: const TextStyle(
               color: Colors.blue,
             ),

@@ -19,9 +19,11 @@ class AddProductScreen extends StatelessWidget {
   String productBuyPrice = 'buyPrice';
   String productQuantity = 'quantity';
   Product? product;
-
+  late bool isEnabled;
   @override
   Widget build(BuildContext context) {
+    product != null ? isEnabled = false : isEnabled = true;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('إضافة صنف'),
@@ -54,6 +56,7 @@ class AddProductScreen extends StatelessWidget {
               CustomTextFormField(
                 data: productName,
                 value: product?.name ?? '',
+                isEnabled: isEnabled,
                 hintText: 'إسم الصنف ',
                 textInputType: TextInputType.name,
                 validatorHint: 'يجب إدخال إسم الصنف',
@@ -66,6 +69,7 @@ class AddProductScreen extends StatelessWidget {
               CustomTextField(
                 data: productBuyPrice,
                 value: product?.buyPrice.toString() ?? '',
+                isEnabled: isEnabled,
                 hintText: 'سعر الشراء',
                 textInputType: TextInputType.number,
                 iconData: Icons.money,
@@ -77,6 +81,7 @@ class AddProductScreen extends StatelessWidget {
               CustomTextField(
                 data: productCellPrice,
                 value: product?.cellPrice.toString() ?? '',
+                isEnabled: isEnabled,
                 hintText: 'سعر البيع',
                 textInputType: TextInputType.number,
                 iconData: Icons.money,
@@ -88,6 +93,7 @@ class AddProductScreen extends StatelessWidget {
               CustomTextField(
                 data: productQuantity,
                 value: product?.quantity.toString() ?? '',
+                isEnabled: isEnabled,
                 hintText: 'الكمية',
                 textInputType: TextInputType.number,
                 iconData: Icons.add_shopping_cart_outlined,

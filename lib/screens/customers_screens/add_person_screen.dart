@@ -19,9 +19,10 @@ class AddPersonScreen extends StatelessWidget {
   String personName = 'name';
   String personPhone = 'phone';
   String personAddress = 'address';
-
+  late bool isEnabled;
   @override
   Widget build(BuildContext context) {
+    person != null ? isEnabled = false : isEnabled = true;
     return Scaffold(
       appBar: AppBar(
         title: const Text('إضافة شخص'),
@@ -43,46 +44,52 @@ class AddPersonScreen extends StatelessWidget {
         },
       ),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              CustomTextFormField(
-                data: personName,
-                value: person?.name ?? '',
-                hintText: 'إسم العميل ',
-                textInputType: TextInputType.name,
-                validatorHint: 'يجب إدخال إسم العميل',
-                iconData: Icons.person,
-                textMaxLength: 25,
-                onChanged: (value) {
-                  storingValue(value, personName);
-                },
-              ),
-              CustomTextField(
-                data: personPhone,
-                value: person?.phoneNumber ?? '',
-                hintText: 'رقم الهاتف',
-                textInputType: TextInputType.phone,
-                iconData: Icons.phone,
-                textMaxLength: 11,
-                onChanged: (value) {
-                  storingValue(value, personPhone);
-                },
-              ),
-              CustomTextField(
-                data: personAddress,
-                value: person?.address ?? '',
-                hintText: 'العنوان',
-                textInputType: TextInputType.streetAddress,
-                iconData: Icons.location_city,
-                textMaxLength: 50,
-                onChanged: (value) {
-                  storingValue(value, personAddress);
-                },
-              ),
-              const SizedBox(),
-            ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                CustomTextFormField(
+                  data: personName,
+                  value: person?.name ?? '',
+                  isEnabled: isEnabled,
+                  hintText: 'إسم العميل ',
+                  textInputType: TextInputType.name,
+                  validatorHint: 'يجب إدخال إسم العميل',
+                  iconData: Icons.person,
+                  textMaxLength: 25,
+                  onChanged: (value) {
+                    storingValue(value, personName);
+                  },
+                ),
+                CustomTextField(
+                  data: personPhone,
+                  value: person?.phoneNumber ?? '',
+                  isEnabled: isEnabled,
+                  hintText: 'رقم الهاتف',
+                  textInputType: TextInputType.phone,
+                  iconData: Icons.phone,
+                  textMaxLength: 11,
+                  onChanged: (value) {
+                    storingValue(value, personPhone);
+                  },
+                ),
+                CustomTextField(
+                  data: personAddress,
+                  value: person?.address ?? '',
+                  isEnabled: isEnabled,
+                  hintText: 'العنوان',
+                  textInputType: TextInputType.streetAddress,
+                  iconData: Icons.location_city,
+                  textMaxLength: 50,
+                  onChanged: (value) {
+                    storingValue(value, personAddress);
+                  },
+                ),
+                const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),

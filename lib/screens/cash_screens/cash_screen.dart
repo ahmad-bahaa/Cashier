@@ -2,7 +2,7 @@ import 'package:cashier/controllers/cash_controller.dart';
 import 'package:cashier/screens/cash_screens/add_cash_screen.dart';
 import 'package:cashier/screens/cash_screens/cash_reports_screen.dart';
 import 'package:cashier/services/database_services.dart';
-import 'package:cashier/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +18,7 @@ class _CashScreenState extends State<CashScreen>
   late TabController _controller;
   CashController cashController = Get.put(CashController());
   DataBaseServices dataBaseServices = DataBaseServices();
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -27,8 +28,6 @@ class _CashScreenState extends State<CashScreen>
 
   @override
   Widget build(BuildContext context) {
-    const String money = '9000';
-
     return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
@@ -54,13 +53,26 @@ class _CashScreenState extends State<CashScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    money.toString(),
-                    style: const TextStyle(
-                        fontSize: 28,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: _fireStore
+                          .collection('users')
+                          .doc('ji7k9SxbxfHUqDctJx1W')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                          var output = snapshot.data!.data();
+                          var value = output!['money'].toString();
+                          return Text(
+                            value,
+                            style: const TextStyle(
+                                fontSize: 28,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          );
+                        }else{
+                        return const SizedBox();
+                      }
+                      }),
                   const Text(
                     ' : اجمالي المبلغ',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -69,19 +81,18 @@ class _CashScreenState extends State<CashScreen>
               ),
             ),
             Expanded(
-              child:TabBarView(
-                  controller: _controller,
-                  children: [
-                    CashReportScreen(
-                      cashType: true,
-                    ),
-                    CashReportScreen(
-                      cashType: false,
-                    ),
-                  ],
-                ),
+              child: TabBarView(
+                controller: _controller,
+                children: [
+                  CashReportScreen(
+                    cashType: true,
+                  ),
+                  CashReportScreen(
+                    cashType: false,
+                  ),
+                ],
               ),
-
+            ),
           ],
         ));
   }

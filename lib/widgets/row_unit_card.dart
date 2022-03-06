@@ -1,3 +1,4 @@
+import 'package:cashier/widgets/single_unit.dart';
 import 'package:flutter/material.dart';
 
 class RowUnitCard extends StatelessWidget {
@@ -24,10 +25,10 @@ class RowUnitCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            singleUnit(text: quantity, width: 50),
-            singleUnit(text: price, width: 115),
-            singleUnit(text: name, width: 120),
-            singleUnit(text: id, width: 50),
+            SingleUnit(text: quantity, width: 50),
+            SingleUnit(text: price, width: 115),
+            SingleUnit(text: name, width: 120),
+            SingleUnit(text: id, width: 50),
           ],
         ),
       ),
@@ -35,25 +36,3 @@ class RowUnitCard extends StatelessWidget {
   }
 }
 
-class singleUnit extends StatelessWidget {
-  const singleUnit({Key? key, required this.text, required this.width})
-      : super(key: key);
-
-  final String text;
-  final double width;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-        ),
-        textDirection: TextDirection.rtl,
-        maxLines: 1,
-      ),
-    );
-  }
-}

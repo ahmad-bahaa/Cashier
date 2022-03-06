@@ -35,10 +35,10 @@ class CashReportScreen extends StatelessWidget {
             itemCount: cash.length,
             itemBuilder: (context, index) {
               return InkWell(
-                  onTap: () => Get.to(() => AddCashScreen(
-                        cash: cash[index],
-                        isSending: cashType,
-                      )),
+                  // onTap: () => Get.to(() => AddCashScreen(
+                  //       cash: cash[index],
+                  //       isSending: cashType,
+                  //     )),
                   child: buildCashReportRow(cash[index], color));
             }),
       ),
