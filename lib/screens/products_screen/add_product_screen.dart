@@ -45,6 +45,8 @@ class AddProductScreen extends StatelessWidget {
               cellPrice: cellPrice,
               quantity: quantity,
             ));
+            productController.newProduct.clear();
+            Get.back();
           }
         },
       ),

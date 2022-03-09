@@ -1,5 +1,7 @@
 import 'package:cashier/controllers/person_controller.dart';
+import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/person_model.dart';
+import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class CustomAlertDialog extends StatelessWidget {
   final Color color;
   final _formKey = GlobalKey<FormState>();
   final PersonController _personController = Get.put(PersonController());
+  final ProductController productController = Get.put(ProductController());
   final DataBaseServices _dataBaseServices = DataBaseServices();
 
   String personName = 'name';
@@ -59,6 +62,7 @@ class CustomAlertDialog extends StatelessWidget {
                       bills: const [],
                     );
                     _dataBaseServices.addPerson(person);
+                    _personController.newPerson.clear();
                     Get.back();
                   }
                 }
@@ -66,7 +70,22 @@ class CustomAlertDialog extends StatelessWidget {
               case 3:
                 {
                   if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
+                    int id = productController.products.length + 1;
+                    int cellPrice =
+                        int.parse(productController.newProduct['cellPrice']);
+                    int buyPrice =
+                        int.parse(productController.newProduct['buyPrice']);
+                    int quantity =
+                        int.parse(productController.newProduct['quantity']);
+                    _dataBaseServices.addProduct(Product(
+                      id: id,
+                      name: productController.newProduct['name'],
+                      buyPrice: buyPrice,
+                      cellPrice: cellPrice,
+                      quantity: quantity,
+                    ));
+                    productController.newProduct.clear();
+                    Get.back();
                   }
                 }
                 break;

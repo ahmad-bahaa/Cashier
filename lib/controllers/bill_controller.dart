@@ -7,15 +7,32 @@ import 'package:get/get.dart';
 class BillController extends GetxController{
   DataBaseServices dataBaseServices = DataBaseServices();
   var newBill = {}.obs;
-  var bills = <Bill>[].obs;
+  var incomingBills = <Bill>[].obs;
+  var ongoingBills = <Bill>[].obs;
   var addProduct = <Product>[].obs;
   var product = {}.obs;
   var rows = <TableRow>[].obs;
+  RxInt totalBillPrice = 0.obs;
+
+  updatingBillTotal(){
+    totalBillPrice.value = 0;
+    if(addProduct.isNotEmpty){
+      addProduct.forEach((element) {
+        totalBillPrice += element.buyPrice;
+      });
+    }
+  }
+  updatingProductQuantity(bool isOngoing){
+    addProduct.forEach((element) {
+      dataBaseServices.updateProductQuantity(element.id, element.quantity, isOngoing);
+    });
+  }
 
 
   @override
   void onInit() {
-    bills.bindStream(dataBaseServices.getAllBills());
+    incomingBills.bindStream(dataBaseServices.getAllBills('incomingBills'));
+    ongoingBills.bindStream(dataBaseServices.getAllBills('ongoingBills'));
     super.onInit();
   }
 }

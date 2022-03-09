@@ -40,6 +40,8 @@ class AddPersonScreen extends StatelessWidget {
               type: 'عميل',
               bills: const [],
             ));
+            personController.newPerson.clear();
+            Get.back();
           }
         },
       ),

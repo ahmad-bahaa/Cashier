@@ -22,8 +22,8 @@ class AddCashScreen extends StatelessWidget {
   final DataBaseServices _dataBaseServices = DataBaseServices();
   String name = 'name',
       description = 'description',
-      money = 'money',
-      cashType = 'cash_type';
+      money = 'money';
+      // cashType = 'cash_type';
   DateTime dateTime = DateTime.now();
   bool _cash = false;
   late bool _isSending;
@@ -63,6 +63,7 @@ class AddCashScreen extends StatelessWidget {
               );
               _dataBaseServices.updateCash(
                   int.parse(cashController.newCash[money]), _isSending);
+              cashController.newCash.clear();
               Get.back();
             } else if (_isSending != null && !_isSending) {
               int id = cashController.allReceiving.length + 1;
@@ -78,6 +79,7 @@ class AddCashScreen extends StatelessWidget {
               );
               _dataBaseServices.updateCash(
                   int.parse(cashController.newCash[money]), _isSending);
+              cashController.newCash.clear();
               Get.back();
             } else {
               _showAction(

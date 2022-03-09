@@ -1,22 +1,80 @@
+import 'package:cashier/controllers/bill_controller.dart';
+import 'package:cashier/models/bill_model.dart';
 import 'package:cashier/screens/screens.dart';
-import 'package:cashier/widgets/custom_app_bar.dart';
-import 'package:cashier/widgets/custom_bottom_app_bar.dart';
+import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BillsScreen extends StatelessWidget {
-  const BillsScreen({Key? key}) : super(key: key);
+  BillsScreen({Key? key, required this.isCelling}) : super(key: key);
+  final BillController billController = Get.put(BillController());
+  final bool isCelling;
 
   @override
   Widget build(BuildContext context) {
+    String buttonText =
+        isCelling ? 'إضافة فاتورة مبيعات' : 'إضافة فاتورة مشتريات';
+    String title = isCelling ? 'مبيعات' : 'مشتريات';
+    List<Bill> bills =
+        isCelling ? billController.ongoingBills : billController.incomingBills;
     return Scaffold(
-      appBar: const CustomAppBar(title: 'المبيعات',),
+      appBar: CustomAppBar(
+        title: title,
+      ),
       bottomNavigationBar: CustomBottomAppBar(
-        buttonText: 'إضافة فاتورة مبيعات',
+        buttonText: buttonText,
         onPressed: () {
-          Get.to(() => AddBillScreen());
+          Get.to(() => AddBillScreen(
+                isCelling: isCelling,
+              ));
         },
       ),
+      body: Obx(
+        () => ListView.builder(
+            shrinkWrap: true,
+            itemCount: bills.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  //TODO: View Bill details
+                },
+                child: buildBillReportRow(
+                  bills[index],
+                ),
+              );
+            }),
+      ),
     );
+  }
+
+  CustomContainer buildBillReportRow(Bill bill) {
+    return CustomContainer(
+        widget: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                //TODO: this should be total Bill Cost
+                bill.id.toString(),
+                style: const TextStyle(fontSize: 24, color: Colors.green),
+              ),
+              Column(
+                children: [
+                  Text(
+                    bill.name,
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    bill.date.toString(),
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+        color: Colors.white);
   }
 }

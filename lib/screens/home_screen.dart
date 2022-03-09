@@ -54,14 +54,14 @@ class HomeScreen extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Get.to(() => const BillsScreen());
+                    Get.to(() =>  BillsScreen(isCelling: false,));
                   },
                   child: const LabelCard(
                       icon: Icons.add_shopping_cart, label: 'المشتريات'),
                 ),
                 InkWell(
                   onTap: () {
-                    Get.to(() => const BillsScreen());
+                    Get.to(() =>  BillsScreen(isCelling: true,));
                   },
                   child: const LabelCard(
                       icon: Icons.post_add_outlined, label: ' المبيعات'),

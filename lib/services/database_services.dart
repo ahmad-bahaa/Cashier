@@ -81,12 +81,12 @@ class DataBaseServices {
     });
   }
 
-  Stream<List<Bill>> getAllBills() {
+  Stream<List<Bill>> getAllBills(String billType) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .collection('bills')
-        .orderBy('date', descending: true)
+        .collection(billType)
+        .orderBy('id', descending: true)
         .snapshots()
         .map((event) {
       return event.docs.map((e) => Bill.fromSnapShot(e)).toList();
@@ -125,6 +125,14 @@ class DataBaseServices {
         .add(person.toMap());
   }
 
+  Future<void> addBill(Bill bill, String billType) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(billType)
+        .add(bill.toMap());
+  }
+
   Future<void> addCashBill(Cash cash, String cashType) {
     return _firebaseFirestore
         .collection('users')
@@ -161,5 +169,15 @@ class DataBaseServices {
         return null;
       }
     });
+  }
+
+  //TODO: remove this "isOngoing" and complete the update
+  Future<void> updateProductQuantity(int id, int quantity, bool isOngoing) {
+    int totalQuantity;
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('products')
+        .snapshots().firstWhere((element) => isOngoing);
   }
 }
