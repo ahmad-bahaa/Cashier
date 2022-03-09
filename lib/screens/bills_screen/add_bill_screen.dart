@@ -16,8 +16,6 @@ class AddBillScreen extends StatelessWidget {
     required this.isCelling,
   }) : super(key: key);
 
-  // final GlobalKey<FormState> _billKey = GlobalKey<FormState>();
-
   final TextEditingController typeAheadPersonController =
       TextEditingController();
   final TextEditingController typeAheadProductController =
@@ -56,26 +54,24 @@ class AddBillScreen extends StatelessWidget {
           buttonText: billController.totalBillPrice.value.toStringAsFixed(2),
           onPressed: () {
             //TODO: need Modification
-            if (!billController.newBill['name'].isBlank) {
-              if (billController.addProduct.isNotEmpty) {
-                int id = bills.length + 1;
-                dataBaseServices.addBill(
-                    Bill(
-                      id: id,
-                      name: billController.newBill['name'] ?? '',
-                      price: billController.totalBillPrice.value.toInt(),
-                      date: DateFormat('yyyy-MM-dd - kk:mm')
-                          .format(DateTime.now()),
-                      products: billController.addProduct,
-                    ),
-                    billType);
-                billController.addProduct.clear();
-                Get.back();
-              } else {
-                Get.snackbar('خطأ', 'من فضلك اضف اصناف');
-              }
+            if (billController.addProduct.isNotEmpty) {
+              int id = bills.length + 1;
+              dataBaseServices.addBill(
+                  Bill(
+                    id: id,
+                    name: billController.newBill['name'] ?? 'بدون اسم',
+                    price: billController.totalBillPrice.value.toInt(),
+                    date:
+                        DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+                    products: billController.addProduct,
+                  ),
+                  billType);
+              billController.newBill.clear();
+              billController.addProduct.clear();
+              billController.totalBillPrice.value = 0;
+              Get.back();
             } else {
-              Get.snackbar('خطأ', 'من فضلك اختار عميل');
+              Get.snackbar('خطأ', 'من فضلك اضف اصناف');
             }
           },
         ),
@@ -163,10 +159,6 @@ class AddBillScreen extends StatelessWidget {
                             ),
                           );
                           billController.updatingBillTotal();
-                          // quantity = 0;
-                          // cellQuantity = 0;
-                          // cellPrice = 0;
-                          // total = 0;
                           billController.product.clear();
                           quantityTextController.clear();
                           priceTextController.clear();
@@ -202,24 +194,11 @@ class AddBillScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
-                    child: CustomTextFormField(
-                      data: 'data',
-                      hintText: 'سعر البيع',
-                      controller: priceTextController,
-                      textInputType: TextInputType.number,
-                      validatorHint: 'يجب إدخال سعر البيع',
-                      iconData: Icons.person,
-                      textMaxLength: 5,
-                      onChanged: (value) {
-                        updatingProductInfo('billCellPrice', value);
-                        int i = int.parse(
-                                billController.product['billQuantity']) *
-                            int.parse(billController.product['billCellPrice']);
-                        updatingProductInfo('total', i.toString());
-                      },
-                    ),
-                  ),
+                      width: 120,
+                      child: ElevatedButton(
+                        onPressed: () => _showAction(context, 4),
+                        child: Obx(() => Text(billController.product['billCellPrice'] ?? 'سعر البيع')),
+                      )),
                 ],
               ),
               const Divider(
@@ -297,6 +276,18 @@ class AddBillScreen extends StatelessWidget {
       data,
       (_) => value,
       ifAbsent: () => value,
+    );
+  }
+
+  void _showAction(BuildContext context, int index) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return CustomAlertDialog(
+          index: index,
+          color: Colors.red,
+        );
+      },
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/person_model.dart';
@@ -24,6 +25,7 @@ class CustomAlertDialog extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final PersonController _personController = Get.put(PersonController());
   final ProductController productController = Get.put(ProductController());
+  final BillController billController = Get.put(BillController());
   final DataBaseServices _dataBaseServices = DataBaseServices();
 
   String personName = 'name';
@@ -126,6 +128,10 @@ class CustomAlertDialog extends StatelessWidget {
         {
           return const SizedBox();
         }
+      case 4:
+        {
+          return _buildTextFormField();
+        }
       default:
         {
           return const SizedBox();
@@ -196,8 +202,42 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
+  _buildTextFormField() {
+    String v = billController.product['billCellPrice'].toString();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Obx(
+          () => Text('سعر البيع : ${billController.product['cellPrice'].toString()}'),
+        ),
+        CustomTextFormField(
+          data: 'data',
+          hintText: 'سعر البيع',
+          textInputType: TextInputType.number,
+          validatorHint: 'يجب إدخال سعر البيع',
+          iconData: Icons.person,
+          textMaxLength: 5,
+          onChanged: (value) {
+            updatingProductInfo('billCellPrice', value);
+            int i = int.parse(billController.product['billQuantity']) *
+                int.parse(billController.product['billCellPrice']);
+            updatingProductInfo('total', i.toString());
+          },
+        ),
+      ],
+    );
+  }
+
   storingValue(String value, String data) {
     _personController.newPerson.update(
+      data,
+      (_) => value,
+      ifAbsent: () => value,
+    );
+  }
+
+  updatingProductInfo(String data, String value) {
+    billController.product.update(
       data,
       (_) => value,
       ifAbsent: () => value,

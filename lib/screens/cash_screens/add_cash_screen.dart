@@ -84,7 +84,7 @@ class AddCashScreen extends StatelessWidget {
             } else {
               _showAction(
                 context,
-                3,
+                5,
               );
             }
           }
