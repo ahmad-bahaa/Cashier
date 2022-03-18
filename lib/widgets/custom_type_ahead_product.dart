@@ -2,6 +2,7 @@ import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/build_new_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -80,6 +81,7 @@ class CustomTypeAheadProduct extends StatelessWidget {
             updatingProduct('cellPrice',suggestion.cellPrice.toString());
             updatingProduct('billQuantity','0');
             updatingProduct('billCellPrice',suggestion.cellPrice.toString());
+            Tasks().showAction(context, 4, );
           },
           noItemsFoundBuilder: (context) {
             return const BuildNewItem(i: 3, text: 'إضافة صنف جديد');

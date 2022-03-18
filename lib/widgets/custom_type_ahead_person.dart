@@ -18,7 +18,7 @@ class CustomTypeAheadPerson extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(2.0),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TypeAheadField<Person>(
@@ -60,7 +60,6 @@ class CustomTypeAheadPerson extends StatelessWidget {
             );
           },
           onSuggestionSelected: (suggestion) {
-            // Get.snackbar('لقد تم اخيتار', suggestion.name);
             typeAheadController.text = suggestion.name;
             billController.newBill.update(
               'name',

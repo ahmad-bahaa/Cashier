@@ -1,3 +1,4 @@
+import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/cash_controller.dart';
 import 'package:cashier/models/cash_model.dart';
 import 'package:cashier/services/database_services.dart';
@@ -17,13 +18,13 @@ class AddCashScreen extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  CashController cashController = Get.put(CashController());
+  final CashController cashController = Get.put(CashController());
+  final BillController billController = Get.put(BillController());
+  final TextEditingController typeAheadPersonController =
+      TextEditingController();
 
   final DataBaseServices _dataBaseServices = DataBaseServices();
-  String name = 'name',
-      description = 'description',
-      money = 'money';
-      // cashType = 'cash_type';
+  String name = 'name', description = 'description', money = 'money';
   DateTime dateTime = DateTime.now();
   bool _cash = false;
   late bool _isSending;
@@ -46,45 +47,59 @@ class AddCashScreen extends StatelessWidget {
         centerTitle: true,
       ),
       bottomNavigationBar: CustomBottomAppBar(
-        buttonText: 'حفظ',
+        buttonText: isEnabled ? 'حفظ' : 'null',
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
-            if (_isSending != null && _isSending) {
-              int id = cashController.allSending.length + 1;
-              _dataBaseServices.addCashBill(
-                Cash(
-                  id: id,
-                  money: int.parse(cashController.newCash[money]),
-                  name: cashController.newCash[name] ?? '',
-                  date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
-                  description: cashController.newCash[description] ?? '',
-                ),
-                'sending',
-              );
-              _dataBaseServices.updateCash(
-                  int.parse(cashController.newCash[money]), _isSending);
-              cashController.newCash.clear();
-              Get.back();
-            } else if (_isSending != null && !_isSending) {
-              int id = cashController.allReceiving.length + 1;
-              _dataBaseServices.addCashBill(
-                Cash(
-                  id: id,
-                  money: int.parse(cashController.newCash[money]),
-                  name: cashController.newCash[name] ?? '',
-                  date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
-                  description: cashController.newCash[description] ?? '',
-                ),
-                'receiving',
-              );
-              _dataBaseServices.updateCash(
-                  int.parse(cashController.newCash[money]), _isSending);
-              cashController.newCash.clear();
-              Get.back();
+            if (billController.newBill.isNotEmpty) {
+              if (_isSending != null && _isSending) {
+                int id = cashController.allSending.length + 1;
+                _dataBaseServices.addCashBill(
+                  Cash(
+                    id: id,
+                    money: int.parse(cashController.newCash[money]),
+                    name: billController.newBill[name] ?? '',
+                    date:
+                        DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+                    description: cashController.newCash[description] ?? '',
+                  ),
+                  'sending',
+                );
+                _dataBaseServices.updateCash(
+                    int.parse(cashController.newCash[money]), _isSending);
+                cashController.newCash.clear();
+                billController.newBill.clear();
+                Get.back();
+              } else if (_isSending != null && !_isSending) {
+                int id = cashController.allReceiving.length + 1;
+                _dataBaseServices.addCashBill(
+                  Cash(
+                    id: id,
+                    money: int.parse(cashController.newCash[money]),
+                    name: billController.newBill[name] ?? '',
+                    date:
+                        DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+                    description: cashController.newCash[description] ?? '',
+                  ),
+                  'receiving',
+                );
+                _dataBaseServices.updateCash(
+                    int.parse(cashController.newCash[money]), _isSending);
+                cashController.newCash.clear();
+                billController.newBill.clear();
+                Get.back();
+              } else {
+                _showAction(
+                  context,
+                  5,
+                );
+              }
             } else {
-              _showAction(
-                context,
-                5,
+              Get.snackbar(
+                'Error',
+                'من فضلك اختار عميل',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.black,
+                colorText: Colors.red,
               );
             }
           }
@@ -100,19 +115,28 @@ class AddCashScreen extends StatelessWidget {
                 Text(
                   formattedDate,
                 ),
-                CustomTextFormField(
-                  data: name,
-                  value: cash?.name ?? '',
-                  isEnabled: isEnabled,
-                  hintText: 'إسم النقدية ',
-                  textInputType: TextInputType.name,
-                  iconData: Icons.person,
-                  validatorHint: 'يجب إدخال اسم للنقدية',
-                  textMaxLength: 25,
-                  onChanged: (value) {
-                    storingValue(value, name);
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                  ),
+                  child: CustomTypeAheadPerson(
+                    typeAheadController: typeAheadPersonController,
+                    billController: billController,
+                  ),
                 ),
+                // CustomTextFormField(
+                //   data: name,
+                //   value: cash?.name ?? '',
+                //   isEnabled: isEnabled,
+                //   hintText: 'إسم النقدية ',
+                //   textInputType: TextInputType.name,
+                //   iconData: Icons.person,
+                //   validatorHint: 'يجب إدخال اسم للنقدية',
+                //   textMaxLength: 25,
+                //   onChanged: (value) {
+                //     storingValue(value, name);
+                //   },
+                // ),
                 CustomTextFormField(
                   data: money,
                   value: cash?.money.toString() ?? '',

@@ -13,30 +13,28 @@ class LabelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-      child: CustomContainer(widget: 
-         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(
-                icon,
-                color: Colors.white,
-                size: 50,
-              ),
-              Text(
-                label,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                    color: Colors.white),
-              ),
-            ],
-          ),
-        ), color: Colors.blue,
+    return CustomContainer(
+      widget: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 60,
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                  color: Colors.white),
+            ),
+          ],
+        ),
       ),
+      color: Colors.blue,
     );
   }
 }

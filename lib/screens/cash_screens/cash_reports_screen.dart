@@ -21,24 +21,17 @@ class CashReportScreen extends StatelessWidget {
         cashType ? cashController.allSending : cashController.allReceiving;
 
     return Scaffold(
-      bottomNavigationBar: CustomBottomAppBar(
-        buttonText: text,
-        onPressed: () {
-          Get.to(() => AddCashScreen(
-                isSending: cashType,
-              ));
-        },
-      ),
+
       body: Obx(
         () => ListView.builder(
             shrinkWrap: true,
             itemCount: cash.length,
             itemBuilder: (context, index) {
               return InkWell(
-                  // onTap: () => Get.to(() => AddCashScreen(
-                  //       cash: cash[index],
-                  //       isSending: cashType,
-                  //     )),
+                  onTap: () => Get.to(() => AddCashScreen(
+                        cash: cash[index],
+                        isSending: cashType,
+                      )),
                   child: buildCashReportRow(cash[index], color));
             }),
       ),

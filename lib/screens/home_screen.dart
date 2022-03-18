@@ -14,39 +14,34 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('الصفحة الرئيسية'),
         centerTitle: true,
+        actions: [
+          PopupMenuButton(
+            onSelected: (value) {
+              if (value == 1) {
+                Get.to(() => AddCashScreen(
+                      isSending: true,
+                    ));
+              } else {
+                Get.to(() => AddCashScreen(
+                      isSending: false,
+                    ));
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                child: Text('دفع نقدية'),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text('استلام نقدية'),
+                value: 2,
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Container(
-          //     height: size / 3,
-          //     width: size /3,
-          //     decoration: BoxDecoration(
-          //       color: Colors.blue,
-          //       border: Border.all(color: Colors.black, width: 1),
-          //       borderRadius: BorderRadius.circular(10),
-          //       boxShadow: const [
-          //         BoxShadow(
-          //           offset: Offset(0.0, 1.0),
-          //           blurRadius: 4.0,
-          //           blurStyle: BlurStyle.normal,
-          //         ),
-          //       ],
-          //     ),
-          //     child: Hero(
-          //       tag: 'logo',
-          //       child: Center(
-          //         child: Image.asset(
-          //           'assets/images/logo-placeholder.png',
-          //           height: 250,
-          //           width: 250,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
@@ -54,17 +49,35 @@ class HomeScreen extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Get.to(() =>  BillsScreen(isCelling: false,));
-                  },
-                  child: const LabelCard(
-                      icon: Icons.add_shopping_cart, label: 'المشتريات'),
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.to(() =>  BillsScreen(isCelling: true,));
+                    Get.to(() => BillsScreen(
+                          isCelling: true,
+                        ));
                   },
                   child: const LabelCard(
                       icon: Icons.post_add_outlined, label: ' المبيعات'),
+                ),
+                InkWell(
+                  onTap: () {
+                    Get.to(() => AddBillScreen(isCelling: true));
+                  },
+                  child: const LabelCard(
+                      icon: Icons.post_add_outlined, label: 'فاتورة مبيعات'),
+                ),
+                InkWell(
+                  onTap: () {
+                    Get.to(() => BillsScreen(
+                          isCelling: false,
+                        ));
+                  },
+                  child: const LabelCard(
+                      icon: Icons.post_add_outlined, label: ' المشتريات'),
+                ),
+                InkWell(
+                  onTap: () {
+                    Get.to(() => AddBillScreen(isCelling: false));
+                  },
+                  child: const LabelCard(
+                      icon: Icons.post_add_outlined, label: 'فاتورة مشتريات'),
                 ),
                 InkWell(
                   onTap: () {
@@ -94,7 +107,7 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   child: const LabelCard(
-                      icon: Icons.shopping_cart, label: 'المخزن'),
+                      icon: Icons.add_shopping_cart, label: 'إضافة صنف'),
                 ),
               ],
             ),

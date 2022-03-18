@@ -2,6 +2,7 @@ import 'package:cashier/controllers/cash_controller.dart';
 import 'package:cashier/screens/cash_screens/add_cash_screen.dart';
 import 'package:cashier/screens/cash_screens/cash_reports_screen.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,38 +47,47 @@ class _CashScreenState extends State<CashScreen>
             ],
           ),
         ),
+        bottomNavigationBar: CustomBottomAppBar(
+          buttonText: 'cash',
+          onPressed: () => null,
+        ),
         body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                      stream: _fireStore
-                          .collection('users')
-                          .doc('ji7k9SxbxfHUqDctJx1W')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                          var output = snapshot.data!.data();
-                          var value = output!['money'].toString();
-                          return Text(
-                            value,
-                            style: const TextStyle(
-                                fontSize: 28,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold),
-                          );
-                        }else{
-                        return const SizedBox();
-                      }
-                      }),
-                  const Text(
-                    ' : اجمالي المبلغ',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 6,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                        stream: _fireStore
+                            .collection('users')
+                            .doc('ji7k9SxbxfHUqDctJx1W')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var output = snapshot.data!.data();
+                            var value = output!['money'].toString();
+                            return Text(
+                              value,
+                              style: const TextStyle(
+                                  fontSize: 38,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        }),
+                    const Text(
+                      ' : اجمالي المبلغ',
+                      style:
+                          TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(
