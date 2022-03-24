@@ -13,6 +13,7 @@ class CustomAlertDialog extends StatelessWidget {
     Key? key,
     required this.color,
     required this.index,
+    this.textEditingController,
   }) : super(key: key);
 
   static const _actionTitles = [
@@ -27,6 +28,7 @@ class CustomAlertDialog extends StatelessWidget {
   final ProductController productController = Get.put(ProductController());
   final BillController billController = Get.put(BillController());
   final DataBaseServices _dataBaseServices = DataBaseServices();
+  final TextEditingController? textEditingController;
 
   String personName = 'name';
   String personPhone = 'phone';

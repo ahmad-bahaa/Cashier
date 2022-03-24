@@ -56,7 +56,7 @@ class BillsScreen extends StatelessWidget {
             children: [
               Text(
                 //TODO: this should be total Bill Cost
-                bill.id.toString(),
+                bill.price.toString(),
                 style: const TextStyle(fontSize: 24, color: Colors.green),
               ),
               Column(

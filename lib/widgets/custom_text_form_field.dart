@@ -34,8 +34,8 @@ class CustomTextFormField extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child: TextFormField(
           enabled: isEnabled,
-          // initialValue: controller!.text ?? '',
           controller: controller,
+          initialValue: value,
           maxLines: 1,
           style: const TextStyle(
             fontWeight: FontWeight.bold,

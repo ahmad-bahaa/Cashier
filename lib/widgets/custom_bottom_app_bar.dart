@@ -16,6 +16,7 @@ class CustomBottomAppBar extends StatelessWidget {
     return Transform.translate(
       offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
       child: BottomAppBar(
+        color: Colors.white,
         child: Container(
           height: 70,
           decoration: const BoxDecoration(

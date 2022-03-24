@@ -14,31 +14,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('الصفحة الرئيسية'),
         centerTitle: true,
-        actions: [
-          PopupMenuButton(
-            onSelected: (value) {
-              if (value == 1) {
-                Get.to(() => AddCashScreen(
-                      isSending: true,
-                    ));
-              } else {
-                Get.to(() => AddCashScreen(
-                      isSending: false,
-                    ));
-              }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                child: Text('دفع نقدية'),
-                value: 1,
-              ),
-              PopupMenuItem(
-                child: Text('استلام نقدية'),
-                value: 2,
-              ),
-            ],
-          ),
-        ],
+
       ),
       body: Column(
         children: [
@@ -98,12 +74,12 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   child: const LabelCard(
-                      icon: Icons.shopping_cart, label: 'المخزن'),
+                      icon: Icons.shopping_cart, label: 'جرد و نواقص'),
                 ),
                 InkWell(
                   onTap: () {
                     Get.to(
-                      () => const StockScreen(),
+                      () =>  AddProductScreen(),
                     );
                   },
                   child: const LabelCard(

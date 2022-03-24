@@ -3,6 +3,7 @@ import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/bill_model.dart';
 import 'package:cashier/models/product_model.dart';
+import 'package:cashier/screens/cash_screens/add_cash_screen.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
@@ -48,6 +49,31 @@ class AddBillScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('إضافة فاتورة'),
         centerTitle: true,
+        actions: [
+          PopupMenuButton(
+            onSelected: (value) {
+              if (value == 1) {
+                Get.to(() => AddCashScreen(
+                      isSending: true,
+                    ));
+              } else {
+                Get.to(() => AddCashScreen(
+                      isSending: false,
+                    ));
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                child: Text('دفع نقدية'),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text('استلام نقدية'),
+                value: 2,
+              ),
+            ],
+          ),
+        ],
       ),
       bottomNavigationBar: Obx(
         () => CustomBottomAppBar(
@@ -55,10 +81,9 @@ class AddBillScreen extends StatelessWidget {
           onPressed: () {
             //TODO: need Modification
             if (billController.addProduct.isNotEmpty) {
-              int id = bills.length + 1;
               dataBaseServices.addBill(
                   Bill(
-                    id: id,
+                    id: bills.length + 1,
                     name: billController.newBill['name'] ?? 'بدون اسم',
                     price: billController.totalBillPrice.value.toInt(),
                     date:
@@ -66,6 +91,8 @@ class AddBillScreen extends StatelessWidget {
                     products: billController.addProduct,
                   ),
                   billType);
+              //TODO: needs modification
+              billController.updatingProductsQuantity(true);
               billController.newBill.clear();
               billController.addProduct.clear();
               billController.totalBillPrice.value = 0;
@@ -158,6 +185,12 @@ class AddBillScreen extends StatelessWidget {
                                       '0'),
                             ),
                           );
+                          //Todo: put this somewhere else
+                          dataBaseServices.updateProduct(
+                              billController.product['id'],
+                              int.parse(billController.product['quantity']),
+                              int.parse(billController.product['billQuantity']),
+                              true);
                           billController.updatingBillTotal();
                           billController.product.clear();
                           quantityTextController.clear();
@@ -196,8 +229,10 @@ class AddBillScreen extends StatelessWidget {
                   SizedBox(
                       width: 120,
                       child: ElevatedButton(
-                        onPressed: () => _showAction(context, 4),
-                        child: Obx(() => Text(billController.product['billCellPrice'] ?? 'سعر البيع')),
+                        onPressed: () => Tasks().showAction(context, 4),
+                        child: Obx(() => Text(
+                            billController.product['billCellPrice'] ??
+                                'سعر البيع')),
                       )),
                 ],
               ),
@@ -211,11 +246,11 @@ class AddBillScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
-                        SingleUnit(text: 'كود', width: 50),
-                        SingleUnit(text: 'اسم الصنف', width: 110),
-                        SingleUnit(text: 'الكمية', width: 50),
-                        SingleUnit(text: 'السعر', width: 50),
                         SingleUnit(text: 'الاجمالي', width: 50),
+                        SingleUnit(text: 'السعر', width: 50),
+                        SingleUnit(text: 'الكمية', width: 50),
+                        SingleUnit(text: 'اسم الصنف', width: 110),
+                        SingleUnit(text: 'م', width: 50),
                       ],
                     ),
                     const Divider(
@@ -228,7 +263,11 @@ class AddBillScreen extends StatelessWidget {
                       itemCount: billController.addProduct.length,
                       itemBuilder: (context, index) {
                         Product item = billController.addProduct[index];
-                        return RowBillCard(product: item);
+                        return RowBillCard(
+                          product: item,
+                          i: index +1 ,
+                          billController: billController,
+                        );
                       },
                     ),
                     Row(
@@ -276,18 +315,6 @@ class AddBillScreen extends StatelessWidget {
       data,
       (_) => value,
       ifAbsent: () => value,
-    );
-  }
-
-  void _showAction(BuildContext context, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return CustomAlertDialog(
-          index: index,
-          color: Colors.red,
-        );
-      },
     );
   }
 }

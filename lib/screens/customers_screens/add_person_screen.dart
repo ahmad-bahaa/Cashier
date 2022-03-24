@@ -29,7 +29,7 @@ class AddPersonScreen extends StatelessWidget {
         centerTitle: true,
       ),
       bottomNavigationBar: CustomBottomAppBar(
-        buttonText: 'حفظ',
+        buttonText: person != null ? 'null' : 'حفظ',
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             _dataBaseServices.addPerson(Person(

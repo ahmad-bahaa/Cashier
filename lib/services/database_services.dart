@@ -106,13 +106,13 @@ class DataBaseServices {
   }
 
 //TODO: we didn't use this FYI
-  Stream<String> getCash() {
+  Stream<String> getCash(String data) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
         .snapshots()
         .map((event) {
-      String value = event.data()!['money'].toString();
+      String value = event.data()![data].toString();
       return value;
     });
   }
@@ -171,13 +171,35 @@ class DataBaseServices {
     });
   }
 
-  //TODO: remove this "isOngoing" and complete the update
+  //TODO: remove this
   Future<void> updateProductQuantity(int id, int quantity, bool isOngoing) {
-    int totalQuantity;
+    Product product;
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
         .collection('products')
-        .snapshots().firstWhere((element) => isOngoing);
+        .where('id', isEqualTo: id)
+        .get()
+        .then((value) {
+      product = value.docs.first.reference
+          .get()
+          .then((value) => Product.fromSnapShot(value)) as Product;
+      value.docs.first.reference
+          .update({'quantity': product.quantity - quantity});
+    });
+  }
+
+  Future<void> updateProduct(
+      int id, int quantity, int billQuantity, bool isOngoing) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('products')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+              'quantity':
+                  isOngoing ? quantity - billQuantity : quantity + billQuantity
+            }));
   }
 }

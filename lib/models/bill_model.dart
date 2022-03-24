@@ -45,7 +45,6 @@ class Bill extends Equatable {
     };
   }
 
-
   factory Bill.fromSnapShot(DocumentSnapshot snap) {
     return Bill(
       id: snap['id']?.toInt() ?? 0,
@@ -53,8 +52,10 @@ class Bill extends Equatable {
       price: snap['price']?.toInt() ?? 0,
       date: snap['date'] ?? '',
       //TODO: fix the list of products
-      products: List<Product>.from(
-          snap['products']?.map((x) => Product.fromSnapShot(x))),
+      products: const [],
+      //List<Product>.from(
+      //snap['products']?.map((x) => Product.fromSnapShot(x))
+      // ).toList(),
     );
   }
 
