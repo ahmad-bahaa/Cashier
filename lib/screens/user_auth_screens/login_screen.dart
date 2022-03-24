@@ -1,4 +1,5 @@
 import 'package:cashier/controllers/auth_controller.dart';
+import 'package:cashier/screens/home_screen.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,7 @@ class LoginScreen extends StatelessWidget {
               ),
               onPressed: () {
                 if(_key.currentState!.validate()){
-
+                  authController.createUser('email@email.com', 'password');
                 }
               },
               child: Text(
@@ -48,8 +49,8 @@ class LoginScreen extends StatelessWidget {
             children: [
               Image.asset(
                 'assets/images/102.png',
-                height: 250,
-                width: 250,
+                height: 200,
+                width: 200,
               ),
               CustomContainer(
                 color: Colors.white,
@@ -87,7 +88,18 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              CustomRichText(
+                discription: "Don't already Have an account? ",
+                text: "Sign Up",
+                onTap: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()));
+                },
+              ),
                SizedBox(height: MediaQuery.of(context).size.height / 4,),
+
             ],
           ),
         ),

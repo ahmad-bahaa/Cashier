@@ -1,3 +1,4 @@
+import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/models/bill_model.dart';
 import 'package:cashier/models/cash_model.dart';
 import 'package:cashier/models/person_model.dart';
@@ -7,7 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
 class DataBaseServices {
-  String userUid = 'ji7k9SxbxfHUqDctJx1W';
+  String userUi = 'ji7k9SxbxfHUqDctJx1W';
+  String userUid = AuthController().firebaseUser.value!.uid.toString();
 
   Stream<List<Person>> getAllPeople() {
     return _firebaseFirestore
