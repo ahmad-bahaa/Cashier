@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class EarningsScreen extends StatelessWidget {
   EarningsScreen({Key? key}) : super(key: key);
@@ -24,9 +22,9 @@ class EarningsScreen extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var output = snapshot.data!.data();
-                var celling = output!['celling'];
-                var buying = output!['buying'];
-                var spending = output!['spending'];
+                int celling = output?['celling'] ?? 0;
+                int buying = output?['buying'] ?? 0;
+                int spending = output?['spending'] ?? 0;
                 int earning = celling - buying - spending;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
