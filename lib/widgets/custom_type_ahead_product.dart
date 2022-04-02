@@ -13,11 +13,13 @@ class CustomTypeAheadProduct extends StatelessWidget {
     required this.typeAheadController,
     required this.productController,
     required this.billController,
+    required this.isCelling,
   }) : super(key: key);
   final DataBaseServices dataBaseServices = DataBaseServices();
   final TextEditingController typeAheadController;
   final ProductController productController;
   final BillController billController;
+  final bool isCelling;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +56,16 @@ class CustomTypeAheadProduct extends StatelessWidget {
             ),
           ),
           suggestionsCallback: (pattern) async {
+            billController.product.update(
+              'name',
+                  (_) => pattern,
+              ifAbsent: () => pattern,
+            );
             return await dataBaseServices.queryAllProducts(pattern);
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
-              leading: Text(suggestion.id.toString()),
+              // leading: Text(suggestion.id.toString()),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -76,12 +83,23 @@ class CustomTypeAheadProduct extends StatelessWidget {
               (_) => suggestion.id,
               ifAbsent: () => suggestion.id,
             );
-            updatingProduct('name',suggestion.name);
-            updatingProduct('quantity',suggestion.quantity.toString());
-            updatingProduct('cellPrice',suggestion.cellPrice.toString());
-            updatingProduct('billQuantity','0');
-            updatingProduct('billCellPrice',suggestion.cellPrice.toString());
-            Tasks().showAction(context, 4, );
+            updatingProduct('name', suggestion.name);
+            updatingProduct('quantity', suggestion.quantity.toString());
+            updatingProduct(
+                isCelling ? 'cellPrice' : 'buyPrice',
+                isCelling
+                    ? suggestion.cellPrice.toString()
+                    : suggestion.buyPrice.toString());
+            updatingProduct('billQuantity', '0');
+            updatingProduct(
+                isCelling ? 'billCellPrice' : 'billBuyPrice',
+                isCelling
+                    ? suggestion.cellPrice.toString()
+                    : suggestion.buyPrice.toString());
+            Tasks().showAction(
+              context,
+              isCelling ? 4 : 5,
+            );
           },
           noItemsFoundBuilder: (context) {
             return const BuildNewItem(i: 3, text: 'إضافة صنف جديد');
@@ -98,10 +116,11 @@ class CustomTypeAheadProduct extends StatelessWidget {
       ifAbsent: () => value,
     );
   }
-  updatingProduct(String data, String value){
+
+  updatingProduct(String data, String value) {
     billController.product.update(
       data,
-          (_) => value,
+      (_) => value,
       ifAbsent: () => value,
     );
   }

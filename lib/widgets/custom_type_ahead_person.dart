@@ -1,8 +1,10 @@
 import 'package:cashier/controllers/bill_controller.dart';
+import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/models/person_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:get/get.dart';
 import 'build_new_item.dart';
 
 class CustomTypeAheadPerson extends StatelessWidget {
@@ -14,6 +16,7 @@ class CustomTypeAheadPerson extends StatelessWidget {
   final TextEditingController typeAheadController;
   final DataBaseServices dataBaseServices = DataBaseServices();
   final BillController billController;
+  final PersonController personController = Get.put(PersonController());
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +53,17 @@ class CustomTypeAheadPerson extends StatelessWidget {
             ),
           ),
           suggestionsCallback: (pattern) async {
+            personController.newPerson.update(
+              'name',
+                  (_) => pattern,
+              ifAbsent: () => pattern,
+            );
             return await dataBaseServices.queryAllPeople(pattern);
+
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
-              leading: Text(suggestion.id.toString()),
+              // leading: Text(suggestion.id.toString()),
               trailing: const Icon(Icons.person),
               title: Center(child: Text(suggestion.name)),
             );

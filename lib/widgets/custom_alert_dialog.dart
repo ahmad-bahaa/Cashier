@@ -96,6 +96,11 @@ class CustomAlertDialog extends StatelessWidget {
                   Get.back();
                 }
                 break;
+              case 5:
+                {
+                  Get.back();
+                }
+                break;
               default:
                 {
                   Get.back();
@@ -135,7 +140,11 @@ class CustomAlertDialog extends StatelessWidget {
         }
       case 4:
         {
-          return _buildTextFormField();
+          return _buildTextFormField(true);
+        }
+      case 5:
+        {
+          return _buildTextFormField(false);
         }
       default:
         {
@@ -174,6 +183,7 @@ class CustomAlertDialog extends StatelessWidget {
               data: name,
               hintText: 'اسم العميل',
               textInputType: TextInputType.name,
+              value:  _personController.newPerson[name] ?? '',
               validatorHint: 'من فضلك قم يإدخال اسم العميل',
               iconData: Icons.person,
               textMaxLength: 25,
@@ -225,6 +235,7 @@ class CustomAlertDialog extends StatelessWidget {
             CustomTextFormField(
               data: name,
               hintText: 'اسم الصنف',
+              value: billController.product['name'] ?? '',
               textInputType: TextInputType.name,
               validatorHint: 'من فضلك قم يإدخال اسم الصنف',
               iconData: Icons.person,
@@ -259,26 +270,27 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
-  _buildTextFormField() {
-    String v = billController.product['billCellPrice'].toString();
+  _buildTextFormField(bool isCelling) {
+    String v = isCelling ? billController.product['billCellPrice'].toString() : billController.product['billBuyPrice'].toString();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Obx(
-          () => Text(
-              'سعر البيع : ${billController.product['cellPrice'].toString()}'),
+          () => Text( isCelling ?
+              'سعر البيع : ${billController.product['cellPrice'].toString()}'
+          :  'سعر الشراء : ${billController.product['buyPrice'].toString()}'),
         ),
         CustomTextFormField(
-          data: 'data',
-          hintText: 'سعر البيع',
+          data: 'price',
+          hintText: isCelling ? 'سعر البيع' : 'سعر الشراء',
           textInputType: TextInputType.number,
-          validatorHint: 'يجب إدخال سعر البيع',
+          validatorHint:   isCelling ? 'يجب إدخال سعر البيع' : 'يجب إدخال سعر الشراء',
           iconData: Icons.person,
           textMaxLength: 5,
           onChanged: (value) {
-            updatingProductInfo('billCellPrice', value);
+            updatingProductInfo(isCelling ? 'billCellPrice' : 'billBuyPrice', value);
             int i = int.parse(billController.product['billQuantity']) *
-                int.parse(billController.product['billCellPrice']);
+                int.parse(billController.product[isCelling ? 'billCellPrice' : 'billCellPrice']);
             updatingProductInfo('total', i.toString());
           },
         ),

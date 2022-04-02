@@ -1,4 +1,5 @@
 import 'package:cashier/controllers/auth_controller.dart';
+import 'package:cashier/widgets/custom_container.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -31,20 +32,11 @@ class EarningsScreen extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    MoneyFlow(
-                      cash: earning.toString(),
-                      type: ' : الارباح',
-                      // color: Colors.green,
-                    ),
-                    const Divider(
-                      height: 3.0,
-                      thickness: 3.0,
-                      color: Colors.black,
-                    ),
+
                     MoneyFlow(
                       cash: celling.toString(),
                       type: ' : المبيعات',
-                      // color: Colors.green,
+                      color: Colors.green,
                     ),
                     const Divider(
                       height: 3.0,
@@ -54,7 +46,7 @@ class EarningsScreen extends StatelessWidget {
                     MoneyFlow(
                       cash: buying.toString(),
                       type: ' : المشتريات',
-                      // color: Colors.green,
+                      color: Colors.green,
                     ),
                     const Divider(
                       height: 3.0,
@@ -64,8 +56,23 @@ class EarningsScreen extends StatelessWidget {
                     MoneyFlow(
                       cash: spending.toString(),
                       type: ' : المصروفات',
-                      // color: Colors.green,
+                      color: Colors.green,
                     ),
+                    const Divider(
+                      height: 3.0,
+                      thickness: 3.0,
+                      color: Colors.black,
+                    ),
+                    CustomContainer(widget:  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [ MoneyFlow(
+                        cash: earning.toString(),
+                        type: ' : الارباح',
+                        color: Colors.blue,
+                      ),],
+                    ), color: Colors.white)
+
+
                   ],
                 );
               } else {
@@ -82,8 +89,10 @@ class MoneyFlow extends StatelessWidget {
     Key? key,
     required this.cash,
     required this.type,
+    required this.color
   }) : super(key: key);
   final String cash, type;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -101,10 +110,10 @@ class MoneyFlow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Text(
                 cash,
-                style: const TextStyle(
+                style:  TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green),
+                    color: color),
               ),
             ),
           ],

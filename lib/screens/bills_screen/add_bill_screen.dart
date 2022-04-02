@@ -78,7 +78,8 @@ class AddBillScreen extends StatelessWidget {
       ),
       bottomNavigationBar: Obx(
         () => CustomBottomAppBar(
-          buttonText: '${billController.totalBillPrice.value.toStringAsFixed(2)} الاجمالي ',
+          buttonText:
+              '${billController.totalBillPrice.value.toStringAsFixed(2)} الاجمالي ',
           onPressed: () {
             //TODO: need Modification
             if (billController.addProduct.isNotEmpty) {
@@ -123,6 +124,7 @@ class AddBillScreen extends StatelessWidget {
                 typeAheadController: typeAheadProductController,
                 productController: productController,
                 billController: billController,
+                isCelling: isCelling,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -181,9 +183,13 @@ class AddBillScreen extends StatelessWidget {
                               name: billController.product['name'] ?? '',
                               buyPrice: int.parse(
                                   billController.product['total'] ?? '0'),
-                              cellPrice: int.parse(
-                                  billController.product['billCellPrice'] ??
-                                      '0'),
+                              cellPrice: isCelling
+                                  ? int.parse(
+                                      billController.product['billCellPrice'] ??
+                                          '0')
+                                  : int.parse(
+                                      billController.product['billBuyPrice'] ??
+                                          '0'),
                               quantity: int.parse(
                                   billController.product['billQuantity'] ??
                                       '0'),
@@ -201,7 +207,8 @@ class AddBillScreen extends StatelessWidget {
                           priceTextController.clear();
                           typeAheadProductController.clear();
                         } else {
-                          Tasks().showErrorMessage('خطأ', 'من فضلك ادخل كمية صحيحة');
+                          Tasks().showErrorMessage(
+                              'خطأ', 'من فضلك ادخل كمية صحيحة');
                         }
                       } else {
                         Tasks().showErrorMessage('خطأ', 'من فضلك اختار صنف');
@@ -233,10 +240,19 @@ class AddBillScreen extends StatelessWidget {
                   SizedBox(
                       width: 120,
                       child: ElevatedButton(
-                        onPressed: () => Tasks().showAction(context, 4),
-                        child: Obx(() => Text(
-                            billController.product['billCellPrice'] ??
-                                'سعر البيع')),
+                        onPressed: () {
+                          if (billController.product.isNotEmpty) {
+                            Tasks().showAction(context, isCelling ? 4 : 5);
+                          } else {
+                            Tasks().showErrorMessage(
+                                'خطأ', 'من فضلك اختار صنف اولا');
+                          }
+                        },
+                        child: Obx(() => Text(isCelling
+                            ? billController.product['billCellPrice'] ??
+                                'سعر البيع'
+                            : billController.product['billBuyPrice'] ??
+                                'سعر الشراء')),
                       )),
                 ],
               ),
