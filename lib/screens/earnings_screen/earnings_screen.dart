@@ -1,3 +1,4 @@
+import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,7 @@ class EarningsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
     return Scaffold(
       appBar: AppBar(
         title: const Text('حركة الاموال'),
@@ -17,7 +19,7 @@ class EarningsScreen extends StatelessWidget {
         child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
             stream: _fireStore
                 .collection('users')
-                .doc('ji7k9SxbxfHUqDctJx1W')
+                .doc(userUid)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {

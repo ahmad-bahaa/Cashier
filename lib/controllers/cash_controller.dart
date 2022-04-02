@@ -9,6 +9,7 @@ class CashController extends GetxController {
   var newCash = {}.obs;
   var allSending = <Cash>[].obs;
   var allReceiving = <Cash>[].obs;
+  var allSpending = <Cash>[].obs;
 
   String selectedGender = '';
   final List<String> gender = ['receiving', 'sending'];
@@ -25,6 +26,7 @@ class CashController extends GetxController {
   void onInit() {
     allSending.bindStream(dataBaseServices.getAllCashBills('sending'));
     allReceiving.bindStream(dataBaseServices.getAllCashBills('receiving'));
+    allSpending.bindStream(dataBaseServices.getAllCashBills('spending'));
     super.onInit();
   }
 }

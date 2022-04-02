@@ -42,6 +42,7 @@ class AddBillScreen extends StatelessWidget {
         isCelling ? billController.ongoingBills : billController.incomingBills;
 
     String billType = isCelling ? 'ongoingBills' : 'incomingBills';
+    String cashType = isCelling ? 'celling' : 'buying';
 
     String formattedDate = DateFormat('yyyy-MM-dd ').format(dateTime);
 
@@ -77,7 +78,7 @@ class AddBillScreen extends StatelessWidget {
       ),
       bottomNavigationBar: Obx(
         () => CustomBottomAppBar(
-          buttonText: billController.totalBillPrice.value.toStringAsFixed(2),
+          buttonText: '${billController.totalBillPrice.value.toStringAsFixed(2)} الاجمالي ',
           onPressed: () {
             //TODO: need Modification
             if (billController.addProduct.isNotEmpty) {
@@ -92,13 +93,15 @@ class AddBillScreen extends StatelessWidget {
                   ),
                   billType);
               //TODO: needs modification
-              billController.updatingProductsQuantity(true);
+              dataBaseServices.updateCash(
+                  cashType, billController.totalBillPrice.value.toInt(), false);
+              billController.updatingProductsQuantity(isCelling);
               billController.newBill.clear();
               billController.addProduct.clear();
               billController.totalBillPrice.value = 0;
               Get.back();
             } else {
-              Get.snackbar('خطأ', 'من فضلك اضف اصناف');
+              Tasks().showErrorMessage('خطأ', 'من فضلك اضف اصناف');
             }
           },
         ),
@@ -166,8 +169,9 @@ class AddBillScreen extends StatelessWidget {
                     onPressed: () {
                       if (billController.product.isNotEmpty) {
                         if (int.parse(billController.product['billQuantity']) >
-                            int.parse(billController.product['quantity'])) {
-                          Get.snackbar('خطأ', 'غير متاح بالمخزن');
+                                int.parse(billController.product['quantity']) &&
+                            isCelling) {
+                          Tasks().showErrorMessage('خطأ', 'غير متاح بالمخزن');
                         } else if (int.parse(
                                 billController.product['billQuantity']) >=
                             1) {
@@ -190,17 +194,17 @@ class AddBillScreen extends StatelessWidget {
                               billController.product['id'],
                               int.parse(billController.product['quantity']),
                               int.parse(billController.product['billQuantity']),
-                              true);
+                              isCelling);
                           billController.updatingBillTotal();
                           billController.product.clear();
                           quantityTextController.clear();
                           priceTextController.clear();
                           typeAheadProductController.clear();
                         } else {
-                          Get.snackbar('خطأ', 'من فضلك ادخل كمية صحيحة');
+                          Tasks().showErrorMessage('خطأ', 'من فضلك ادخل كمية صحيحة');
                         }
                       } else {
-                        Get.snackbar('خطأ', 'من فضلك اختار صنف');
+                        Tasks().showErrorMessage('خطأ', 'من فضلك اختار صنف');
                       }
                     },
                     child: const Icon(
@@ -265,22 +269,22 @@ class AddBillScreen extends StatelessWidget {
                         Product item = billController.addProduct[index];
                         return RowBillCard(
                           product: item,
-                          i: index +1 ,
+                          i: index + 1,
                           billController: billController,
                         );
                       },
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SingleUnit(
-                          text: billController.totalBillPrice.value
-                              .toStringAsFixed(2),
-                          width: 100,
-                        ),
-                        const SingleUnit(text: 'الاجمالي', width: 50),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     SingleUnit(
+                    //       text: billController.totalBillPrice.value
+                    //           .toStringAsFixed(2),
+                    //       width: 100,
+                    //     ),
+                    //     const SingleUnit(text: 'الاجمالي', width: 50),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

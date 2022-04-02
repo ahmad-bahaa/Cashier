@@ -4,11 +4,20 @@ import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   AuthController authController = Get.put(AuthController());
+
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+  bool signIn = true;
+  late String email, password;
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +37,14 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                if(_key.currentState!.validate()){
-                  authController.createUser('email@email.com', 'password');
+                if (_key.currentState!.validate()) {
+                  signIn
+                      ? authController.loginUser(email, password)
+                      : authController.createUser(email, password);
                 }
               },
               child: Text(
-                'تسجيل دخول',
+                'تسجيل',
                 style: Theme.of(context)
                     .textTheme
                     .headline4!
@@ -61,9 +72,9 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'تسجل دخول',
-                          style: TextStyle(fontSize: 26),
+                        Text(
+                          signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
+                          style: const TextStyle(fontSize: 26),
                         ),
                         CustomTextFormField(
                           data: 'data',
@@ -72,7 +83,9 @@ class LoginScreen extends StatelessWidget {
                           validatorHint: 'من فضلك قم بإدخال بريد الكتروني',
                           iconData: Icons.email,
                           textMaxLength: 20,
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            email = value;
+                          },
                         ),
                         CustomTextFormField(
                           data: 'data',
@@ -81,7 +94,9 @@ class LoginScreen extends StatelessWidget {
                           validatorHint: 'من فضلك قم بإدخال رقم سري',
                           iconData: Icons.lock,
                           textMaxLength: 20,
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            password = value;
+                          },
                         ),
                       ],
                     ),
@@ -89,17 +104,18 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               CustomRichText(
-                discription: "Don't already Have an account? ",
-                text: "Sign Up",
+                discription: signIn ? ' لا تمتلك حساب.؟' : ' هل انت مستخدم حالي.؟',
+                text: signIn ? " سجل الان " : ' سجل دخول',
                 onTap: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
+                  //TODO: this should be sign up screen
+                  setState(() {
+                    signIn = !signIn;
+                  });
                 },
               ),
-               SizedBox(height: MediaQuery.of(context).size.height / 4,),
-
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
+              ),
             ],
           ),
         ),

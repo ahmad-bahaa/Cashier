@@ -2,6 +2,7 @@ import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/cash_controller.dart';
 import 'package:cashier/models/cash_model.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -64,7 +65,7 @@ class AddCashScreen extends StatelessWidget {
                   ),
                   'sending',
                 );
-                _dataBaseServices.updateCash(
+                _dataBaseServices.updateCash('money',
                     int.parse(cashController.newCash[money]), _isSending);
                 cashController.newCash.clear();
                 billController.newBill.clear();
@@ -82,7 +83,7 @@ class AddCashScreen extends StatelessWidget {
                   ),
                   'receiving',
                 );
-                _dataBaseServices.updateCash(
+                _dataBaseServices.updateCash('money',
                     int.parse(cashController.newCash[money]), _isSending);
                 cashController.newCash.clear();
                 billController.newBill.clear();
@@ -94,12 +95,10 @@ class AddCashScreen extends StatelessWidget {
                 );
               }
             } else {
-              Get.snackbar(
+              Tasks().showErrorMessage(
                 'Error',
                 'من فضلك اختار عميل',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.black,
-                colorText: Colors.red,
+
               );
             }
           }
@@ -124,19 +123,6 @@ class AddCashScreen extends StatelessWidget {
                     billController: billController,
                   ),
                 ),
-                // CustomTextFormField(
-                //   data: name,
-                //   value: cash?.name ?? '',
-                //   isEnabled: isEnabled,
-                //   hintText: 'إسم النقدية ',
-                //   textInputType: TextInputType.name,
-                //   iconData: Icons.person,
-                //   validatorHint: 'يجب إدخال اسم للنقدية',
-                //   textMaxLength: 25,
-                //   onChanged: (value) {
-                //     storingValue(value, name);
-                //   },
-                // ),
                 CustomTextFormField(
                   data: money,
                   value: cash?.money.toString() ?? '',

@@ -30,7 +30,7 @@ class CustomAlertDialog extends StatelessWidget {
   final DataBaseServices _dataBaseServices = DataBaseServices();
   final TextEditingController? textEditingController;
 
-  String personName = 'name';
+  String name = 'name';
   String personPhone = 'phone';
   String personAddress = 'address';
 
@@ -58,7 +58,7 @@ class CustomAlertDialog extends StatelessWidget {
                     _formKey.currentState!.save();
                     Person person = Person(
                       id: _personController.people.length + 1,
-                      name: _personController.newPerson[personName],
+                      name: _personController.newPerson[name],
                       phoneNumber:
                           _personController.newPerson[personPhone] ?? '',
                       address: _personController.newPerson[personAddress] ?? '',
@@ -74,21 +74,19 @@ class CustomAlertDialog extends StatelessWidget {
               case 3:
                 {
                   if (_formKey.currentState!.validate()) {
-                    int id = productController.products.length + 1;
-                    int cellPrice =
-                        int.parse(productController.newProduct['cellPrice']);
-                    int buyPrice =
-                        int.parse(productController.newProduct['buyPrice']);
-                    int quantity =
-                        int.parse(productController.newProduct['quantity']);
+                    _formKey.currentState!.save();
                     _dataBaseServices.addProduct(Product(
-                      id: id,
-                      name: productController.newProduct['name'],
-                      buyPrice: buyPrice,
-                      cellPrice: cellPrice,
-                      quantity: quantity,
+                      id: productController.products.length + 1,
+                      name: _personController.newPerson['name'],
+                      buyPrice: int.parse(
+                          _personController.newPerson['buyPrice'] ?? '0'),
+                      cellPrice: int.parse(
+                          _personController.newPerson['cellPrice'] ?? '0'),
+                      quantity: int.parse(
+                          _personController.newPerson['quantity'] ?? '0'),
                     ));
                     productController.newProduct.clear();
+                    _personController.newPerson.clear();
                     Get.back();
                   }
                 }
@@ -119,7 +117,7 @@ class CustomAlertDialog extends StatelessWidget {
         }
       case 2:
         {
-          return _buildAlertDialogForm(
+          return _buildPersonAlertDialogForm(
             'تسجيل عميل جديد',
             '',
             '',
@@ -128,7 +126,12 @@ class CustomAlertDialog extends StatelessWidget {
         }
       case 3:
         {
-          return const SizedBox();
+          return _buildProductAlertDialogForm(
+            'تسجيل صنف جديد',
+            '',
+            '',
+            '',
+          );
         }
       case 4:
         {
@@ -152,7 +155,7 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
-  _buildAlertDialogForm(
+  _buildPersonAlertDialogForm(
       String title, String first, String second, String third) {
     return Form(
       key: _formKey,
@@ -168,14 +171,14 @@ class CustomAlertDialog extends StatelessWidget {
               ),
             ),
             CustomTextFormField(
-              data: personName,
+              data: name,
               hintText: 'اسم العميل',
               textInputType: TextInputType.name,
               validatorHint: 'من فضلك قم يإدخال اسم العميل',
               iconData: Icons.person,
               textMaxLength: 25,
               onChanged: (value) {
-                storingValue(value, personName);
+                storingValue(value, name);
               },
             ),
             CustomTextField(
@@ -204,13 +207,66 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
+  _buildProductAlertDialogForm(
+      String title, String first, String second, String third) {
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            CustomTextFormField(
+              data: name,
+              hintText: 'اسم الصنف',
+              textInputType: TextInputType.name,
+              validatorHint: 'من فضلك قم يإدخال اسم الصنف',
+              iconData: Icons.person,
+              textMaxLength: 25,
+              onChanged: (value) {
+                storingValue(value, name);
+              },
+            ),
+            CustomTextField(
+              data: 'cellPrice',
+              hintText: 'سعر الشراء',
+              textInputType: TextInputType.number,
+              iconData: Icons.money,
+              textMaxLength: 4,
+              onChanged: (value) {
+                storingValue(value, 'cellPrice');
+              },
+            ),
+            CustomTextField(
+              data: 'buyPrice',
+              hintText: 'سعر البيع',
+              textInputType: TextInputType.number,
+              iconData: Icons.money,
+              textMaxLength: 4,
+              onChanged: (value) {
+                storingValue(value, 'buyPrice');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   _buildTextFormField() {
     String v = billController.product['billCellPrice'].toString();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Obx(
-          () => Text('سعر البيع : ${billController.product['cellPrice'].toString()}'),
+          () => Text(
+              'سعر البيع : ${billController.product['cellPrice'].toString()}'),
         ),
         CustomTextFormField(
           data: 'data',

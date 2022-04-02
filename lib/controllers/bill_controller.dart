@@ -24,19 +24,11 @@ class BillController extends GetxController {
     }
   }
 
-  updatingProductsQuantity(bool isOngoing) {
+  updatingProductsQuantity(bool isCelling) {
     if (addProduct.isNotEmpty) {
       addProduct.forEach((element) {
-        dataBaseServices.updateProductQuantity(element.id, element.quantity, isOngoing);
+        dataBaseServices.updateProductQuantity(element.id, element.quantity, isCelling);
       });
-      //   var sorce = productController.products.firstWhere((e) {});
-      //   firstwhere((e) {
-      //     final i = e.id;
-      //     return i.isEqual(element.id);
-      //   }) as Product;
-      //   dataBaseServices.updateProduct(
-      //       element.id, sorce.quantity, element.quantity, isOngoing);
-      // });
     }
   }
 

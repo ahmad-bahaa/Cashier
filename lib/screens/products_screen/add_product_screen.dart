@@ -35,14 +35,14 @@ class AddProductScreen extends StatelessWidget {
           if (_formKey.currentState!.validate()) {
             int id = productController.products.length + 1;
             int cellPrice =
-                int.parse(productController.newProduct['cellPrice']);
-            int buyPrice = int.parse(productController.newProduct['buyPrice']);
-            int quantity = int.parse(productController.newProduct['quantity']);
+                int.parse(productController.newProduct['cellPrice'] ?? '0');
+            int buyPrice = int.parse(productController.newProduct['buyPrice'] ?? '0');
+            int quantity = int.parse(productController.newProduct['quantity'] ?? '0');
             _dataBaseServices.addProduct(Product(
               id: id,
               name: productController.newProduct['name'],
               buyPrice: buyPrice,
-              cellPrice: cellPrice,
+              cellPrice:  cellPrice,
               quantity: quantity,
             ));
             productController.newProduct.clear();
@@ -53,62 +53,65 @@ class AddProductScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              CustomTextFormField(
-                data: productName,
-                value: product?.name ?? '',
-                isEnabled: isEnabled,
-                hintText: 'إسم الصنف ',
-                textInputType: TextInputType.name,
-                validatorHint: 'يجب إدخال إسم الصنف',
-                iconData: Icons.person,
-                textMaxLength: 20,
-                onChanged: (value) {
-                  storingData(value, productName);
-                },
-              ),
-              CustomTextField(
-                data: productBuyPrice,
-                value: product?.buyPrice.toString() ?? '',
-                isEnabled: isEnabled,
-                hintText: 'سعر الشراء',
-                textInputType: TextInputType.number,
-                iconData: Icons.money,
-                textMaxLength: 4,
-                onChanged: (value) {
-                  storingData(value, productBuyPrice);
-                },
-              ),
-              CustomTextField(
-                data: productCellPrice,
-                value: product?.cellPrice.toString() ?? '',
-                isEnabled: isEnabled,
-                hintText: 'سعر البيع',
-                textInputType: TextInputType.number,
-                iconData: Icons.money,
-                textMaxLength: 4,
-                onChanged: (value) {
-                  storingData(value, productCellPrice);
-                },
-              ),
-              CustomTextField(
-                data: productQuantity,
-                value: product?.quantity.toString() ?? '',
-                isEnabled: isEnabled,
-                hintText: 'الكمية',
-                textInputType: TextInputType.number,
-                iconData: Icons.add_shopping_cart_outlined,
-                textMaxLength: 4,
-                onChanged: (value) {
-                  storingData(value, productQuantity);
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                CustomTextFormField(
+                  data: productName,
+                  value: product?.name ?? '',
+                  isEnabled: isEnabled,
+                  hintText: 'إسم الصنف ',
+                  textInputType: TextInputType.name,
+                  validatorHint: 'يجب إدخال إسم الصنف',
+                  iconData: Icons.person,
+                  textMaxLength: 20,
+                  onChanged: (value) {
+                    storingData(value, productName);
+                  },
+                ),
+                CustomTextField(
+                  data: productBuyPrice,
+                  value: product?.buyPrice.toString() ?? '',
+                  isEnabled: isEnabled,
+                  hintText: 'سعر الشراء',
+                  textInputType: TextInputType.number,
+                  iconData: Icons.money,
+                  textMaxLength: 4,
+                  onChanged: (value) {
+                    storingData(value, productBuyPrice);
+                  },
+                ),
+                CustomTextField(
+                  data: productCellPrice,
+                  value: product?.cellPrice.toString() ?? '',
+                  isEnabled: isEnabled,
+                  hintText: 'سعر البيع',
+                  textInputType: TextInputType.number,
+                  iconData: Icons.money,
+                  textMaxLength: 4,
+                  onChanged: (value) {
+                    storingData(value, productCellPrice);
+                  },
+                ),
+                // CustomTextField(
+                //   data: productQuantity,
+                //   value: product?.quantity.toString() ?? '',
+                //   isEnabled: isEnabled,
+                //   hintText: 'الكمية',
+                //   textInputType: TextInputType.number,
+                //   iconData: Icons.add_shopping_cart_outlined,
+                //   textMaxLength: 4,
+                //   onChanged: (value) {
+                //     storingData(value, productQuantity);
+                //   },
+                // ),
+                const SizedBox(
+                  height: 20,
+                ),
 
-            ],
+              ],
+            ),
           ),
         ),
       ),

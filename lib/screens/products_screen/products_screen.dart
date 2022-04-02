@@ -16,7 +16,7 @@ class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Product> cash =
-    isFull ? productController.products : productController.endedProducts;
+    isFull ? productController.activeProducts: productController.endedProducts;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10.0),

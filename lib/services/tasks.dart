@@ -1,5 +1,6 @@
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Tasks{
   void showAction(BuildContext context, int index) {
@@ -12,5 +13,9 @@ class Tasks{
         );
       },
     );
+  }
+  void showErrorMessage(String title,String message){
+    Get.snackbar(title, message,
+        colorText: Colors.red, backgroundColor: Colors.black);
   }
 }

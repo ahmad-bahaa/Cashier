@@ -8,8 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
 class DataBaseServices {
-  String userUi = 'ji7k9SxbxfHUqDctJx1W';
-  String userUid = AuthController().firebaseUser.value!.uid.toString();
+  // String userUi = 'ji7k9SxbxfHUqDctJx1W';
+  String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
 
   Stream<List<Person>> getAllPeople() {
     return _firebaseFirestore
@@ -60,10 +60,20 @@ class DataBaseServices {
         .collection('users')
         .doc(userUid)
         .collection('products')
+        .snapshots()
+        .map((event) {
+      return event.docs.map((e) => Product.fromSnapShot(e)).toList();
+    });
+  }
+  Stream<List<Product>> getAllActiveProducts() {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('products')
         .where(
-          'quantity',
-          isGreaterThan: 0,
-        )
+      'quantity',
+      isGreaterThan: 0,
+    )
         .orderBy('quantity', descending: false)
         .snapshots()
         .map((event) {
@@ -119,6 +129,15 @@ class DataBaseServices {
     });
   }
 
+  Future<void> creatingNewUser(String u) {
+    return _firebaseFirestore.collection('users').doc(u).set({
+    'money': 0,
+    'spending': 0,
+    'celling': 0,
+    'buying': 0,
+    });
+  }
+
   Future<void> addPerson(Person person) {
     return _firebaseFirestore
         .collection('users')
@@ -151,7 +170,7 @@ class DataBaseServices {
         .add(product.toMap());
   }
 
-  Future<void> updateCash(int cash, bool isSending) {
+  Future<void> updateCash(String cashType,int cash, bool isSending) {
     int totalCash;
     return _firebaseFirestore
         .collection('users')
@@ -159,11 +178,11 @@ class DataBaseServices {
         .get()
         .then((value) {
       if (value.exists) {
-        totalCash = value.data()!['money'];
+        totalCash = value.data()![cashType];
         return _firebaseFirestore
             .collection('users')
             .doc(userUid)
-            .update({'money': isSending ? totalCash - cash : totalCash + cash})
+            .update({cashType: isSending ? totalCash - cash : totalCash + cash})
             .then((value) => print("Cash Updated"))
             .catchError((error) => print("Failed to update Cash: $error"));
       } else {
@@ -174,7 +193,7 @@ class DataBaseServices {
   }
 
   //TODO: remove this
-  Future<void> updateProductQuantity(int id, int quantity, bool isOngoing) {
+  Future<void> updateProductQuantity(int id, int quantity, bool isCelling) {
     Product product;
     return _firebaseFirestore
         .collection('users')
@@ -187,7 +206,7 @@ class DataBaseServices {
           .get()
           .then((value) => Product.fromSnapShot(value)) as Product;
       value.docs.first.reference
-          .update({'quantity': product.quantity - quantity});
+          .update({'quantity': isCelling ? product.quantity - quantity : product.quantity + quantity});
     });
   }
 

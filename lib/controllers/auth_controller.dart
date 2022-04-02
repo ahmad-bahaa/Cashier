@@ -1,5 +1,6 @@
+import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../screens/screens.dart';
@@ -23,25 +24,25 @@ class AuthController extends GetxController {
     if (user == null) {
       Get.offAll(() => LoginScreen());
     } else {
-      Get.offAll(() => const HomeScreen());
+      Get.offAll(() => HomeScreen());
     }
   }
 
   Future<void> createUser(String email, String password) async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      await firebaseAuth
+          .createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
+          .then((value) =>
+              DataBaseServices().creatingNewUser(value.user!.uid.toString()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        Get.snackbar('Error', 'The password provided is too weak.',
-            colorText: Colors.red, backgroundColor: Colors.black);
-        print('The password provided is too weak.');
+        Tasks().showErrorMessage('خطأ', 'كلمة مرور ضعيفة جدا.');
       } else if (e.code == 'email-already-in-use') {
-        Get.snackbar('Error', 'The account already exists for that email.',
-            colorText: Colors.red, backgroundColor: Colors.black);
-        print('The account already exists for that email.');
+        Tasks().showErrorMessage(
+            'خطأ', 'يوجد مستخدم بهذا البريد الالكتروني.');
       }
     } catch (e) {
       print(e);
@@ -56,13 +57,10 @@ class AuthController extends GetxController {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        Get.snackbar('Error', 'No user found for that email.',
-            colorText: Colors.red, backgroundColor: Colors.black);
-        print('No user found for that email.');
+        Tasks().showErrorMessage('خطأ', 'لا يوجد مستخدم بهذا البريد الالكتروني.');
       } else if (e.code == 'wrong-password') {
-        Get.snackbar('Error', 'Wrong password provided for that user.',
-            colorText: Colors.red, backgroundColor: Colors.black);
-        print('Wrong password provided for that user.');
+        Tasks().showErrorMessage(
+            'خطأ', ' كلمة مرور خاطئة لهذا المستخدم.');
       }
     }
   }
