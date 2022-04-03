@@ -1,3 +1,4 @@
+import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/controllers/cash_controller.dart';
 import 'package:cashier/screens/cash_screens/add_cash_screen.dart';
 import 'package:cashier/screens/cash_screens/cash_reports_screen.dart';
@@ -29,6 +30,8 @@ class _CashScreenState extends State<CashScreen>
 
   @override
   Widget build(BuildContext context) {
+    String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
+
     return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
@@ -64,7 +67,7 @@ class _CashScreenState extends State<CashScreen>
                     StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                         stream: _fireStore
                             .collection('users')
-                            .doc('ji7k9SxbxfHUqDctJx1W')
+                            .doc(userUid)
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {

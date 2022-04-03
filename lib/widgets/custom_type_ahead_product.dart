@@ -56,9 +56,9 @@ class CustomTypeAheadProduct extends StatelessWidget {
             ),
           ),
           suggestionsCallback: (pattern) async {
-            billController.product.update(
+            productController.newProduct.update(
               'name',
-                  (_) => pattern,
+              (_) => pattern,
               ifAbsent: () => pattern,
             );
             return await dataBaseServices.queryAllProducts(pattern);
@@ -76,30 +76,7 @@ class CustomTypeAheadProduct extends StatelessWidget {
             );
           },
           onSuggestionSelected: (suggestion) {
-            typeAheadController.text = suggestion.name;
-            storingValue(suggestion.quantity.toString(), 'data');
-            billController.product.update(
-              'id',
-              (_) => suggestion.id,
-              ifAbsent: () => suggestion.id,
-            );
-            updatingProduct('name', suggestion.name);
-            updatingProduct('quantity', suggestion.quantity.toString());
-            updatingProduct(
-                isCelling ? 'cellPrice' : 'buyPrice',
-                isCelling
-                    ? suggestion.cellPrice.toString()
-                    : suggestion.buyPrice.toString());
-            updatingProduct('billQuantity', '0');
-            updatingProduct(
-                isCelling ? 'billCellPrice' : 'billBuyPrice',
-                isCelling
-                    ? suggestion.cellPrice.toString()
-                    : suggestion.buyPrice.toString());
-            Tasks().showAction(
-              context,
-              isCelling ? 4 : 5,
-            );
+            funiction(suggestion, context);
           },
           noItemsFoundBuilder: (context) {
             return const BuildNewItem(i: 3, text: 'إضافة صنف جديد');
@@ -122,6 +99,33 @@ class CustomTypeAheadProduct extends StatelessWidget {
       data,
       (_) => value,
       ifAbsent: () => value,
+    );
+  }
+
+  funiction(suggestion, BuildContext context) {
+    typeAheadController.text = suggestion.name;
+    storingValue(suggestion.quantity.toString(), 'data');
+    billController.product.update(
+      'id',
+      (_) => suggestion.id,
+      ifAbsent: () => suggestion.id,
+    );
+    updatingProduct('name', suggestion.name);
+    updatingProduct('quantity', suggestion.quantity.toString());
+    updatingProduct(
+        isCelling ? 'cellPrice' : 'buyPrice',
+        isCelling
+            ? suggestion.cellPrice.toString()
+            : suggestion.buyPrice.toString());
+    updatingProduct('billQuantity', '0');
+    updatingProduct(
+        isCelling ? 'billCellPrice' : 'billBuyPrice',
+        isCelling
+            ? suggestion.cellPrice.toString()
+            : suggestion.buyPrice.toString());
+    Tasks().showAction(
+      context,
+      isCelling ? 4 : 5,
     );
   }
 }

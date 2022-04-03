@@ -77,16 +77,15 @@ class CustomAlertDialog extends StatelessWidget {
                     _formKey.currentState!.save();
                     _dataBaseServices.addProduct(Product(
                       id: productController.products.length + 1,
-                      name: _personController.newPerson['name'],
+                      name: productController.newProduct['name'],
                       buyPrice: int.parse(
-                          _personController.newPerson['buyPrice'] ?? '0'),
+                          productController.newProduct['buyPrice'] ?? '0'),
                       cellPrice: int.parse(
-                          _personController.newPerson['cellPrice'] ?? '0'),
+                          productController.newProduct['cellPrice'] ?? '0'),
                       quantity: int.parse(
-                          _personController.newPerson['quantity'] ?? '0'),
+                          productController.newProduct['quantity'] ?? '0'),
                     ));
                     productController.newProduct.clear();
-                    _personController.newPerson.clear();
                     Get.back();
                   }
                 }
@@ -188,7 +187,7 @@ class CustomAlertDialog extends StatelessWidget {
               iconData: Icons.person,
               textMaxLength: 25,
               onChanged: (value) {
-                storingValue(value, name);
+                storingPersonValue(value, name);
               },
             ),
             CustomTextField(
@@ -198,7 +197,7 @@ class CustomAlertDialog extends StatelessWidget {
               iconData: Icons.location_city,
               textMaxLength: 25,
               onChanged: (value) {
-                storingValue(value, personAddress);
+                storingPersonValue(value, personAddress);
               },
             ),
             CustomTextField(
@@ -208,7 +207,7 @@ class CustomAlertDialog extends StatelessWidget {
               iconData: Icons.phone,
               textMaxLength: 11,
               onChanged: (value) {
-                storingValue(value, personPhone);
+                storingPersonValue(value, personPhone);
               },
             ),
           ],
@@ -235,13 +234,13 @@ class CustomAlertDialog extends StatelessWidget {
             CustomTextFormField(
               data: name,
               hintText: 'اسم الصنف',
-              value: billController.product['name'] ?? '',
+              value: productController.newProduct['name'] ?? '',
               textInputType: TextInputType.name,
               validatorHint: 'من فضلك قم يإدخال اسم الصنف',
               iconData: Icons.person,
               textMaxLength: 25,
               onChanged: (value) {
-                storingValue(value, name);
+                storingProductValue(value, name);
               },
             ),
             CustomTextField(
@@ -251,7 +250,7 @@ class CustomAlertDialog extends StatelessWidget {
               iconData: Icons.money,
               textMaxLength: 4,
               onChanged: (value) {
-                storingValue(value, 'cellPrice');
+                storingProductValue(value, 'cellPrice');
               },
             ),
             CustomTextField(
@@ -261,7 +260,7 @@ class CustomAlertDialog extends StatelessWidget {
               iconData: Icons.money,
               textMaxLength: 4,
               onChanged: (value) {
-                storingValue(value, 'buyPrice');
+                storingProductValue(value, 'buyPrice');
               },
             ),
           ],
@@ -298,10 +297,17 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
-  storingValue(String value, String data) {
+  storingPersonValue(String value, String data) {
     _personController.newPerson.update(
       data,
       (_) => value,
+      ifAbsent: () => value,
+    );
+  }
+  storingProductValue(String value, String data) {
+    productController.newProduct.update(
+      data,
+          (_) => value,
       ifAbsent: () => value,
     );
   }

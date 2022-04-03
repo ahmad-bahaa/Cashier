@@ -63,7 +63,7 @@ class CustomersScreen extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       if (person.phoneNumber.length < 11) {
-                                        Tasks().showAction(context, 1);
+                                        Tasks().showErrorMessage('خطأ', 'رقم هاتف غير صحيح');
                                       } else {
                                         UrlLauncher.launch(
                                             "tel://${person.phoneNumber.toString()}");
