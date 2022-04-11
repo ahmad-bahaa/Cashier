@@ -1,3 +1,4 @@
+import 'package:cashier/screens/cash_screens/add_spending_screen.dart';
 import 'package:cashier/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,18 +41,24 @@ class CustomBottomAppBar extends StatelessWidget {
         {
           return [
             button(
+              context,
+              'مصروفات',
+                  () => Get.to(() => ADDSpendingScreen()),
+            ),
+            button(
                 context,
-                'استلام نقدية',
+                'استلام ',
                 () => Get.to(() => AddCashScreen(
                       isSending: false,
                     ))),
             button(
               context,
-              'دفع نقدية',
+              'دفع ',
               () => Get.to(() => AddCashScreen(
                     isSending: true,
                   )),
             ),
+
           ];
         }
       case 'null':
@@ -78,12 +85,15 @@ class CustomBottomAppBar extends StatelessWidget {
           ),
         ),
         onPressed: function,
-        child: Text(
-          text,
-          style: Theme.of(context)
-              .textTheme
-              .headline4!
-              .copyWith(color: Colors.white),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Text(
+            text,
+            style: Theme.of(context)
+                .textTheme
+                .headline4!
+                .copyWith(color: Colors.white),
+          ),
         ),
       ),
     );

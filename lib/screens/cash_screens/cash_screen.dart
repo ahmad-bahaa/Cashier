@@ -25,7 +25,7 @@ class _CashScreenState extends State<CashScreen>
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 2, vsync: this, initialIndex: 1);
+    _controller = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
   @override
@@ -41,6 +41,9 @@ class _CashScreenState extends State<CashScreen>
             indicatorColor: Colors.white,
             controller: _controller,
             tabs: const [
+              Tab(
+                text: "مصروفات",
+              ),
               Tab(
                 text: "تم دفع",
               ),
@@ -99,9 +102,15 @@ class _CashScreenState extends State<CashScreen>
                 children: [
                   CashReportScreen(
                     cashType: true,
+                    isSpending: true,
+                  ),
+                  CashReportScreen(
+                    cashType: true,
+                    isSpending: false,
                   ),
                   CashReportScreen(
                     cashType: false,
+                    isSpending: false,
                   ),
                 ],
               ),

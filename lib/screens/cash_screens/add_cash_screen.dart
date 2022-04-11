@@ -23,6 +23,10 @@ class AddCashScreen extends StatelessWidget {
   final BillController billController = Get.put(BillController());
   final TextEditingController typeAheadPersonController =
       TextEditingController();
+  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController notesTextEditingController = TextEditingController();
+
+
 
   final DataBaseServices _dataBaseServices = DataBaseServices();
   String name = 'name', description = 'description', money = 'money';
@@ -69,7 +73,9 @@ class AddCashScreen extends StatelessWidget {
                     int.parse(cashController.newCash[money]), _isSending);
                 cashController.newCash.clear();
                 billController.newBill.clear();
-                Get.back();
+                typeAheadPersonController.clear();
+                textEditingController.clear();
+                Tasks().showSuccessMessage('عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
               } else if (_isSending != null && !_isSending) {
                 int id = cashController.allReceiving.length + 1;
                 _dataBaseServices.addCashBill(
@@ -87,7 +93,9 @@ class AddCashScreen extends StatelessWidget {
                     int.parse(cashController.newCash[money]), _isSending);
                 cashController.newCash.clear();
                 billController.newBill.clear();
-                Get.back();
+                typeAheadPersonController.clear();
+                textEditingController.clear();
+                Tasks().showSuccessMessage('عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
               } else {
                 _showAction(
                   context,
@@ -121,11 +129,13 @@ class AddCashScreen extends StatelessWidget {
                   child: CustomTypeAheadPerson(
                     typeAheadController: typeAheadPersonController,
                     billController: billController,
+                    isBill: true,
                   ),
                 ),
                 CustomTextFormField(
                   data: money,
                   value: cash?.money.toString() ?? '',
+                  controller: textEditingController,
                   isEnabled: isEnabled,
                   hintText: 'قيمة النقدية',
                   textInputType: TextInputType.number,
@@ -137,6 +147,7 @@ class AddCashScreen extends StatelessWidget {
                   },
                 ),
                 CustomTextField(
+                  controller: notesTextEditingController,
                   data: description,
                   value: cash?.description ?? '',
                   isEnabled: isEnabled,

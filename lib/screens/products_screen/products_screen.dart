@@ -23,9 +23,7 @@ class ProductsScreen extends StatelessWidget {
         child: Column(
           children: [
             const RowUnitCard(
-              id: 'كود',
               name: 'اسم الصنف',
-              price: 'سعر البيع',
               quantity: 'الكمية',
               color: Colors.white54,
             ),
@@ -36,9 +34,7 @@ class ProductsScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     Product product = cash[index];
                     return RowUnitCard(
-                      id: product.id.toString(),
                       name: product.name,
-                      price: product.cellPrice.toString(),
                       quantity: product.quantity.toString(),
                       color: product.quantity == 0
                           ? Colors.redAccent

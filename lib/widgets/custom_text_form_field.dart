@@ -9,7 +9,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.validatorHint,
     required this.iconData,
     required this.textMaxLength,
-    this.controller,
+    required this.controller,
     this.isEnabled,
     this.value,
     this.onChanged,
@@ -35,7 +35,7 @@ class CustomTextFormField extends StatelessWidget {
         child: TextFormField(
           enabled: isEnabled,
           controller: controller,
-          initialValue: value,
+          // initialValue: value  ?? '',
           maxLines: 1,
           style: const TextStyle(
             fontWeight: FontWeight.bold,

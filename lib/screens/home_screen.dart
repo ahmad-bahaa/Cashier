@@ -1,6 +1,7 @@
 import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/screens/bills_screen/bills_screen.dart';
-import 'package:cashier/screens/cash_screens/spending_screen.dart';
+import 'package:cashier/screens/cash_screens/add_spending_screen.dart';
+import 'package:cashier/screens/customers_screens/customer_bills_screen.dart';
 import 'package:cashier/screens/screens.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                         ));
                   },
                   child: const LabelCard(
-                      icon: Icons.post_add_outlined, label: ' المبيعات'),
+                      icon: Icons.bookmark_add, label: ' المبيعات'),
                 ),
                 InkWell(
                   onTap: () {
@@ -64,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                         ));
                   },
                   child: const LabelCard(
-                      icon: Icons.post_add_outlined, label: ' المشتريات'),
+                      icon: Icons.auto_awesome_motion, label: ' المشتريات'),
                 ),
                 InkWell(
                   onTap: () {
@@ -77,13 +78,14 @@ class HomeScreen extends StatelessWidget {
                   onTap: () {
                     Get.to(() => const CashScreen());
                   },
-                  child: const LabelCard(icon: Icons.money, label: 'الخزنة'),
+                  child:
+                      const LabelCard(icon: Icons.local_atm, label: 'الخزنة'),
                 ),
                 InkWell(
                   onTap: () {
                     Get.to(() => CustomersScreen());
                   },
-                  child: const LabelCard(icon: Icons.group, label: 'العملاء'),
+                  child: const LabelCard(icon: Icons.groups, label: 'العملاء'),
                 ),
                 InkWell(
                   onTap: () {
@@ -92,7 +94,8 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   child: const LabelCard(
-                      icon: Icons.shopping_cart, label: 'جرد و نواقص'),
+                      icon: Icons.production_quantity_limits,
+                      label: 'جرد و نواقص'),
                 ),
                 InkWell(
                   onTap: () {
@@ -106,20 +109,20 @@ class HomeScreen extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Get.to(
-                          () => SpendingScreen(),
+                      () => const CustomerBillsScreen(),
                     );
                   },
                   child: const LabelCard(
-                      icon: Icons.money, label: 'مصروفات نثرية'),
+                      icon: Icons.reduce_capacity, label: 'حجم تعامل'),
                 ),
                 InkWell(
                   onTap: () {
                     Get.to(
-                          () => EarningsScreen(),
+                      () => EarningsScreen(),
                     );
                   },
                   child: const LabelCard(
-                      icon: Icons.cached_sharp, label: 'الارباح'),
+                      icon: Icons.currency_exchange_outlined, label: 'الارباح'),
                 ),
               ],
             ),

@@ -10,6 +10,7 @@ class BillController extends GetxController {
   var newBill = {}.obs;
   var incomingBills = <Bill>[].obs;
   var ongoingBills = <Bill>[].obs;
+  var queryBills = <Bill>[].obs;
   var addProduct = <Product>[].obs;
   var product = {}.obs;
   var rows = <TableRow>[].obs;
@@ -36,6 +37,8 @@ class BillController extends GetxController {
   void onInit() {
     incomingBills.bindStream(dataBaseServices.getAllBills('incomingBills'));
     ongoingBills.bindStream(dataBaseServices.getAllBills('ongoingBills'));
+    queryBills.bindStream(dataBaseServices.queryBills('ongoingBills',
+        newBill['name'].toString()));
     super.onInit();
   }
 }

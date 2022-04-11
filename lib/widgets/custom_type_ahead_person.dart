@@ -12,11 +12,13 @@ class CustomTypeAheadPerson extends StatelessWidget {
     Key? key,
     required this.typeAheadController,
     required this.billController,
+    required this.isBill,
   }) : super(key: key);
   final TextEditingController typeAheadController;
   final DataBaseServices dataBaseServices = DataBaseServices();
   final BillController billController;
   final PersonController personController = Get.put(PersonController());
+  final bool isBill;
 
   @override
   Widget build(BuildContext context) {
@@ -50,16 +52,21 @@ class CustomTypeAheadPerson extends StatelessWidget {
                 ),
                 child: const Icon(Icons.person),
               ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  typeAheadController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
             ),
           ),
           suggestionsCallback: (pattern) async {
             personController.newPerson.update(
               'name',
-                  (_) => pattern,
+              (_) => pattern,
               ifAbsent: () => pattern,
             );
             return await dataBaseServices.queryAllPeople(pattern);
-
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
@@ -68,13 +75,17 @@ class CustomTypeAheadPerson extends StatelessWidget {
               title: Center(child: Text(suggestion.name)),
             );
           },
-          onSuggestionSelected: (suggestion) {
-            typeAheadController.text = suggestion.name;
-            billController.newBill.update(
-              'name',
-                  (_) => suggestion.name,
-              ifAbsent: () => suggestion.name,
-            );
+          onSuggestionSelected: (suggestion) async {
+            if (isBill) {
+              typeAheadController.text = suggestion.name;
+              billController.newBill.update(
+                'name',
+                (_) => suggestion.name,
+                ifAbsent: () => suggestion.name,
+              );
+            } else {
+
+            }
           },
           noItemsFoundBuilder: (context) {
             return const BuildNewItem(i: 2, text: 'إضافة عميل جديد');

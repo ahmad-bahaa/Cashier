@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
     required this.iconData,
     required this.textMaxLength,
     required this.onChanged,
+    required this.controller,
     this.value,
     this.isEnabled,
   }) : super(key: key);
@@ -21,18 +22,20 @@ class CustomTextField extends StatelessWidget {
   final IconData iconData;
   final Function(String)? onChanged;
   final int textMaxLength;
+  final TextEditingController controller;
   String? value;
   bool? isEnabled;
 
   @override
   Widget build(BuildContext context) {
+    controller.text = value!;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextField(
           enabled: isEnabled,
-          controller: TextEditingController(text: value),
+          controller: controller,
           maxLines: 1,
           style: const TextStyle(
             fontWeight: FontWeight.bold,

@@ -4,12 +4,12 @@ import 'package:cashier/widgets/single_unit.dart';
 import 'package:flutter/material.dart';
 
 class RowBillCard extends StatelessWidget {
-  const RowBillCard({
-    Key? key,
-    required this.product,
-    required this.i,
-    required this.billController
-  }) : super(key: key);
+  const RowBillCard(
+      {Key? key,
+      required this.product,
+      required this.i,
+      required this.billController})
+      : super(key: key);
 
   final Product product;
   final int i;
@@ -25,6 +25,9 @@ class RowBillCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SingleUnit(text: i.toString(), width: 50),
+              const VerticalDivider(
+                thickness: 1,
+              ),
               SingleUnit(text: product.name.toString(), width: 110),
               SingleUnit(text: product.quantity.toString(), width: 50),
               SingleUnit(text: product.cellPrice.toString(), width: 50),

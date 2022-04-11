@@ -1,6 +1,7 @@
 import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,12 +15,17 @@ class AddProductScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ProductController productController = Get.put(ProductController());
   final DataBaseServices _dataBaseServices = DataBaseServices();
+  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController buyPriceTextEditingController = TextEditingController();
+  final TextEditingController cellPriceTextEditingController = TextEditingController();
+
   String productName = 'name';
   String productCellPrice = 'cellPrice';
   String productBuyPrice = 'buyPrice';
   String productQuantity = 'quantity';
   Product? product;
   late bool isEnabled;
+
   @override
   Widget build(BuildContext context) {
     product != null ? isEnabled = false : isEnabled = true;
@@ -36,17 +42,21 @@ class AddProductScreen extends StatelessWidget {
             int id = productController.products.length + 1;
             int cellPrice =
                 int.parse(productController.newProduct['cellPrice'] ?? '0');
-            int buyPrice = int.parse(productController.newProduct['buyPrice'] ?? '0');
-            int quantity = int.parse(productController.newProduct['quantity'] ?? '0');
+            int buyPrice =
+                int.parse(productController.newProduct['buyPrice'] ?? '0');
+            int quantity =
+                int.parse(productController.newProduct['quantity'] ?? '0');
             _dataBaseServices.addProduct(Product(
               id: id,
               name: productController.newProduct['name'],
               buyPrice: buyPrice,
-              cellPrice:  cellPrice,
+              cellPrice: cellPrice,
               quantity: quantity,
             ));
             productController.newProduct.clear();
-            Get.back();
+            textEditingController.clear();
+            Tasks().showSuccessMessage(
+                'عملية ناجحة', 'تم إاضافة صنف إلى قاعدة البيانات');
           }
         },
       ),
@@ -58,8 +68,9 @@ class AddProductScreen extends StatelessWidget {
             child: Column(
               children: [
                 CustomTextFormField(
+                  controller: textEditingController,
                   data: productName,
-                  value: product?.name ?? '',
+                  // value: product?.name ?? '',
                   isEnabled: isEnabled,
                   hintText: 'إسم الصنف ',
                   textInputType: TextInputType.name,
@@ -71,6 +82,7 @@ class AddProductScreen extends StatelessWidget {
                   },
                 ),
                 CustomTextField(
+                  controller: buyPriceTextEditingController,
                   data: productBuyPrice,
                   value: product?.buyPrice.toString() ?? '',
                   isEnabled: isEnabled,
@@ -83,6 +95,7 @@ class AddProductScreen extends StatelessWidget {
                   },
                 ),
                 CustomTextField(
+                  controller: cellPriceTextEditingController,
                   data: productCellPrice,
                   value: product?.cellPrice.toString() ?? '',
                   isEnabled: isEnabled,
@@ -109,7 +122,6 @@ class AddProductScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-
               ],
             ),
           ),

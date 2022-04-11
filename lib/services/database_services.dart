@@ -39,6 +39,21 @@ class DataBaseServices {
             }).toList());
   }
 
+  Stream<List<Bill>> queryBills(String collection, String q) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .orderBy('id', descending: false)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Bill.fromSnapShot(e)).where((element) {
+              final item = element.name.toLowerCase();
+              final query = q.toLowerCase();
+              return item.contains(query);
+            }).toList());
+  }
+
   Future<List<Product>> queryAllProducts(String query) async {
     return _firebaseFirestore
         .collection('users')
@@ -55,6 +70,22 @@ class DataBaseServices {
             }).toList());
   }
 
+  Future<List<Bill>> queryAllBills(String collection, String query) async {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .orderBy('id', descending: false)
+        .get()
+        .then((value) =>
+            value.docs.map((e) => Bill.fromSnapShot(e)).where((element) {
+              final bill = element.name.toLowerCase();
+              final finalQuery = query.toLowerCase();
+
+              return bill.contains(finalQuery);
+            }).toList());
+  }
+
   Stream<List<Product>> getAllProducts() {
     return _firebaseFirestore
         .collection('users')
@@ -65,15 +96,16 @@ class DataBaseServices {
       return event.docs.map((e) => Product.fromSnapShot(e)).toList();
     });
   }
+
   Stream<List<Product>> getAllActiveProducts() {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
         .collection('products')
         .where(
-      'quantity',
-      isGreaterThan: 0,
-    )
+          'quantity',
+          isGreaterThan: 0,
+        )
         .orderBy('quantity', descending: false)
         .snapshots()
         .map((event) {
@@ -112,9 +144,10 @@ class DataBaseServices {
         .collection(cashType)
         .orderBy('id', descending: true)
         .snapshots()
-        .map((event) {
-      return event.docs.map((e) => Cash.fromSnapShot(e)).toList();
-    });
+        .map((event) => event.docs
+            .map((e) => Cash.fromSnapShot(e))
+            .where((element) => element.name.contains('ahmed'))
+            .toList());
   }
 
 //TODO: we didn't use this FYI
@@ -131,10 +164,10 @@ class DataBaseServices {
 
   Future<void> creatingNewUser(String u) {
     return _firebaseFirestore.collection('users').doc(u).set({
-    'money': 0,
-    'spending': 0,
-    'celling': 0,
-    'buying': 0,
+      'money': 0,
+      'spending': 0,
+      'celling': 0,
+      'buying': 0,
     });
   }
 
@@ -170,7 +203,7 @@ class DataBaseServices {
         .add(product.toMap());
   }
 
-  Future<void> updateCash(String cashType,int cash, bool isSending) {
+  Future<void> updateCash(String cashType, int cash, bool isSending) {
     int totalCash;
     return _firebaseFirestore
         .collection('users')
@@ -205,8 +238,11 @@ class DataBaseServices {
       product = value.docs.first.reference
           .get()
           .then((value) => Product.fromSnapShot(value)) as Product;
-      value.docs.first.reference
-          .update({'quantity': isCelling ? product.quantity - quantity : product.quantity + quantity});
+      value.docs.first.reference.update({
+        'quantity': isCelling
+            ? product.quantity - quantity
+            : product.quantity + quantity
+      });
     });
   }
 
@@ -221,6 +257,23 @@ class DataBaseServices {
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
               'quantity':
                   isOngoing ? quantity - billQuantity : quantity + billQuantity
+            }));
+  }
+
+  Future<void> updatePersonInfo(
+    String collection,
+    int id,
+    String dataType,
+    String data,
+  ) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+              dataType: data,
             }));
   }
 }

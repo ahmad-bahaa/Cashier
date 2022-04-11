@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 4), () => Get.offAll(() => HomeScreen()));
+    Timer(const Duration(seconds: 4), () => Get.off(()=> HomeScreen()));
     return Scaffold(
         backgroundColor: Colors.blue,
         body: Column(

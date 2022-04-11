@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   AuthController authController = Get.put(AuthController());
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final TextEditingController textEditingController = TextEditingController();
 
   bool signIn = true;
   late String email, password;
@@ -77,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(fontSize: 26),
                         ),
                         CustomTextFormField(
+                          controller: textEditingController,
                           data: 'data',
                           hintText: 'بريد الكتروني',
                           textInputType: TextInputType.emailAddress,
@@ -88,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                         CustomTextFormField(
+                          controller: textEditingController,
                           data: 'data',
                           hintText: 'باسورد',
                           textInputType: TextInputType.visiblePassword,

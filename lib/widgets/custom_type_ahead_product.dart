@@ -53,6 +53,13 @@ class CustomTypeAheadProduct extends StatelessWidget {
                 ),
                 child: const Icon(Icons.shopping_cart),
               ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  typeAheadController.clear();
+                  billController.product.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
             ),
           ),
           suggestionsCallback: (pattern) async {

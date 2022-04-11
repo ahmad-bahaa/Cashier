@@ -1,27 +1,31 @@
 import 'package:cashier/controllers/cash_controller.dart';
 import 'package:cashier/models/cash_model.dart';
 import 'package:cashier/screens/cash_screens/add_cash_screen.dart';
-import 'package:cashier/widgets/custom_bottom_app_bar.dart';
 import 'package:cashier/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CashReportScreen extends StatelessWidget {
-  CashReportScreen({Key? key, required this.cashType}) : super(key: key);
+  CashReportScreen({
+    Key? key,
+    required this.cashType,
+    required this.isSpending,
+  }) : super(key: key);
   final bool cashType;
+  final bool isSpending;
 
   CashController cashController = Get.put(CashController());
 
   @override
   Widget build(BuildContext context) {
-    String text = cashType ? 'دفع نقدية جديدة' : 'استلام نقدية جديدة';
-
     Color color = cashType ? Colors.red : Colors.green;
-    List<Cash> cash =
-        cashType ? cashController.allSending : cashController.allReceiving;
+    List<Cash> cash = isSpending
+        ? cashController.allSpending
+        : cashType
+            ? cashController.allSending
+            : cashController.allReceiving;
 
     return Scaffold(
-
       body: Obx(
         () => ListView.builder(
             shrinkWrap: true,

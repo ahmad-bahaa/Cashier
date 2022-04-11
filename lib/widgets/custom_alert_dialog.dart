@@ -4,6 +4,7 @@ import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/person_model.dart';
 import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,8 @@ class CustomAlertDialog extends StatelessWidget {
     Key? key,
     required this.color,
     required this.index,
-    this.textEditingController,
+    this.typeAheadProductController,
+    this.nameTextEditingController,
   }) : super(key: key);
 
   static const _actionTitles = [
@@ -28,7 +30,12 @@ class CustomAlertDialog extends StatelessWidget {
   final ProductController productController = Get.put(ProductController());
   final BillController billController = Get.put(BillController());
   final DataBaseServices _dataBaseServices = DataBaseServices();
-  final TextEditingController? textEditingController;
+  final TextEditingController? nameTextEditingController;
+  final TextEditingController phoneTextEditingController =
+      TextEditingController();
+  final TextEditingController addressTextEditingController =
+      TextEditingController();
+  final TextEditingController? typeAheadProductController;
 
   String name = 'name';
   String personPhone = 'phone';
@@ -39,6 +46,15 @@ class CustomAlertDialog extends StatelessWidget {
     return AlertDialog(
       content: _buildAlertDialogBody(index),
       actions: [
+        TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text(
+            'إلغاء',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
         TextButton(
           onPressed: () {
             switch (index) {
@@ -92,12 +108,17 @@ class CustomAlertDialog extends StatelessWidget {
                 break;
               case 4:
                 {
-                  Get.back();
+                  addingProductToBill(true, context);
                 }
                 break;
               case 5:
                 {
-                  Get.back();
+                  addingProductToBill(false, context);
+                }
+                break;
+              case 6:
+                {
+                  addingProductAfterValidation(true);
                 }
                 break;
               default:
@@ -145,6 +166,16 @@ class CustomAlertDialog extends StatelessWidget {
         {
           return _buildTextFormField(false);
         }
+      case 6:
+        {
+          return const Text(
+            'سعر البيع اقل من سعر الشراء',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          );
+        }
       default:
         {
           return const SizedBox();
@@ -179,10 +210,11 @@ class CustomAlertDialog extends StatelessWidget {
               ),
             ),
             CustomTextFormField(
+              controller: nameTextEditingController,
               data: name,
               hintText: 'اسم العميل',
               textInputType: TextInputType.name,
-              value:  _personController.newPerson[name] ?? '',
+              value: _personController.newPerson[name] ?? '',
               validatorHint: 'من فضلك قم يإدخال اسم العميل',
               iconData: Icons.person,
               textMaxLength: 25,
@@ -191,6 +223,7 @@ class CustomAlertDialog extends StatelessWidget {
               },
             ),
             CustomTextField(
+              controller: addressTextEditingController,
               data: personAddress,
               hintText: 'العنوان',
               textInputType: TextInputType.name,
@@ -201,6 +234,7 @@ class CustomAlertDialog extends StatelessWidget {
               },
             ),
             CustomTextField(
+              controller: phoneTextEditingController,
               data: personPhone,
               hintText: 'رقم الهاتف',
               textInputType: TextInputType.phone,
@@ -232,6 +266,7 @@ class CustomAlertDialog extends StatelessWidget {
               ),
             ),
             CustomTextFormField(
+              controller: nameTextEditingController,
               data: name,
               hintText: 'اسم الصنف',
               value: productController.newProduct['name'] ?? '',
@@ -244,6 +279,7 @@ class CustomAlertDialog extends StatelessWidget {
               },
             ),
             CustomTextField(
+              controller: phoneTextEditingController,
               data: 'cellPrice',
               hintText: 'سعر الشراء',
               textInputType: TextInputType.number,
@@ -254,6 +290,7 @@ class CustomAlertDialog extends StatelessWidget {
               },
             ),
             CustomTextField(
+              controller: phoneTextEditingController,
               data: 'buyPrice',
               hintText: 'سعر البيع',
               textInputType: TextInputType.number,
@@ -270,26 +307,48 @@ class CustomAlertDialog extends StatelessWidget {
   }
 
   _buildTextFormField(bool isCelling) {
-    String v = isCelling ? billController.product['billCellPrice'].toString() : billController.product['billBuyPrice'].toString();
+    String v = isCelling
+        ? billController.product['billCellPrice'].toString()
+        : billController.product['billBuyPrice'].toString();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Obx(
-          () => Text( isCelling ?
-              'سعر البيع : ${billController.product['cellPrice'].toString()}'
-          :  'سعر الشراء : ${billController.product['buyPrice'].toString()}'),
+          () => Text(isCelling
+              ? 'سعر البيع : ${billController.product['cellPrice'].toString()}'
+              : 'سعر الشراء : ${billController.product['buyPrice'].toString()}'),
         ),
         CustomTextFormField(
+          controller: nameTextEditingController,
           data: 'price',
           hintText: isCelling ? 'سعر البيع' : 'سعر الشراء',
           textInputType: TextInputType.number,
-          validatorHint:   isCelling ? 'يجب إدخال سعر البيع' : 'يجب إدخال سعر الشراء',
-          iconData: Icons.person,
+          validatorHint:
+              isCelling ? 'يجب إدخال سعر البيع' : 'يجب إدخال سعر الشراء',
+          iconData: Icons.money,
           textMaxLength: 5,
           onChanged: (value) {
-            updatingProductInfo(isCelling ? 'billCellPrice' : 'billBuyPrice', value);
+            updatingProductInfo(
+                isCelling ? 'billCellPrice' : 'billBuyPrice', value);
             int i = int.parse(billController.product['billQuantity']) *
-                int.parse(billController.product[isCelling ? 'billCellPrice' : 'billCellPrice']);
+                int.parse(billController
+                    .product[isCelling ? 'billCellPrice' : 'billBuyPrice']);
+            updatingProductInfo('total', i.toString());
+          },
+        ),
+        CustomTextFormField(
+          controller: phoneTextEditingController,
+          data: 'quantity',
+          hintText: 'الكمية',
+          textInputType: TextInputType.number,
+          validatorHint: 'يجب ادخال الكمية',
+          iconData: Icons.add_shopping_cart,
+          textMaxLength: 5,
+          onChanged: (value) {
+            updatingProductInfo('billQuantity', value);
+            int i = int.parse(billController.product['billQuantity']) *
+                int.parse(billController
+                    .product[isCelling ? 'billCellPrice' : 'billBuyPrice']);
             updatingProductInfo('total', i.toString());
           },
         ),
@@ -304,10 +363,11 @@ class CustomAlertDialog extends StatelessWidget {
       ifAbsent: () => value,
     );
   }
+
   storingProductValue(String value, String data) {
     productController.newProduct.update(
       data,
-          (_) => value,
+      (_) => value,
       ifAbsent: () => value,
     );
   }
@@ -318,5 +378,58 @@ class CustomAlertDialog extends StatelessWidget {
       (_) => value,
       ifAbsent: () => value,
     );
+  }
+
+  addingProductToBill(
+    bool isCelling,
+    BuildContext context,
+  ) {
+    if (billController.product.isNotEmpty) {
+      if (int.parse(billController.product['billQuantity']) >
+              int.parse(billController.product['quantity']) &&
+          isCelling) {
+        Tasks().showErrorMessage('خطأ', 'غير متاح بالمخزن');
+      } else if (int.parse(billController.product['billQuantity']) >= 1) {
+        if (isCelling &&
+            int.parse(billController
+                    .product[isCelling ? 'billCellPrice' : 'billBuyPrice']) <
+                int.parse(billController
+                    .product[isCelling ? 'cellPrice' : 'buyPrice'])) {
+          Get.back();
+          Tasks().showAction(context, 6);
+        } else {
+          addingProductAfterValidation(isCelling);
+        }
+      } else {
+        Tasks().showErrorMessage('خطأ', 'من فضلك ادخل كمية صحيحة');
+      }
+    } else {
+      Tasks().showErrorMessage('خطأ', 'من فضلك اختار صنف');
+    }
+  }
+
+  addingProductAfterValidation(bool isCelling) {
+    billController.addProduct.add(
+      Product(
+        id: billController.product['id'] ?? 0,
+        name: billController.product['name'] ?? '',
+        buyPrice: int.parse(billController.product['total'] ?? '0'),
+        cellPrice: isCelling
+            ? int.parse(billController.product['billCellPrice'] ?? '0')
+            : int.parse(billController.product['billBuyPrice'] ?? '0'),
+        quantity: int.parse(billController.product['billQuantity'] ?? '0'),
+      ),
+    );
+    //Todo: put this somewhere else
+    _dataBaseServices.updateProduct(
+        billController.product['id'],
+        int.parse(billController.product['quantity']),
+        int.parse(billController.product['billQuantity']),
+        isCelling);
+    Get.back();
+    billController.updatingBillTotal();
+    billController.product.clear();
+    phoneTextEditingController.clear();
+    nameTextEditingController!.clear();
   }
 }

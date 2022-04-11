@@ -8,11 +8,17 @@ import 'package:intl/intl.dart';
 import '../../controllers/cash_controller.dart';
 import '../../widgets/widgets.dart';
 
-class SpendingScreen extends StatelessWidget {
-  SpendingScreen({Key? key}) : super(key: key);
+class ADDSpendingScreen extends StatelessWidget {
+  ADDSpendingScreen({Key? key}) : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final DataBaseServices _dataBaseServices = DataBaseServices();
   final CashController cashController = Get.put(CashController());
+  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController nameTextEditingController =
+      TextEditingController();
+  final TextEditingController notesTextEditingController =
+      TextEditingController();
+
   final String name = 'name', description = 'description', money = 'money';
 
   @override
@@ -30,19 +36,21 @@ class SpendingScreen extends StatelessWidget {
               int cash = int.parse(cashController.newCash[money] ?? '0');
               _dataBaseServices.addCashBill(
                 Cash(
-                  id: cashController.allSpending.length +1 ,
+                  id: cashController.allSpending.length + 1,
                   money: cash,
-                  name: cashController.newCash[name] ?? '',
-                  date:
-                  DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+                  name: cashController.newCash[name] ?? 'مصروفات',
+                  date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
                   description: cashController.newCash[description] ?? '',
                 ),
                 'spending',
               );
-              _dataBaseServices.updateCash('spending',cash , false);
+              _dataBaseServices.updateCash('spending', cash, false);
               _dataBaseServices.updateCash('money', cash, true);
               cashController.newCash.clear();
-              Get.back();
+              textEditingController.clear();
+              Tasks().showSuccessMessage(
+                  'عملية ناجحة', 'تم إضافة المصروف إلى قواعد البيانات');
+              // Get.offAll(()=> ADDSpendingScreen());
             } else {
               Tasks().showErrorMessage('خطأ', 'من فضلك قم بإدخال المبلغ');
             }
@@ -62,6 +70,7 @@ class SpendingScreen extends StatelessWidget {
                     vertical: 5.0,
                   ),
                   child: CustomTextField(
+                    controller: nameTextEditingController,
                     data: 'اسم المصروف',
                     hintText: 'اسم المصروف',
                     textInputType: TextInputType.multiline,
@@ -75,6 +84,7 @@ class SpendingScreen extends StatelessWidget {
                 CustomTextFormField(
                   data: 'القيمة',
                   hintText: 'قيمة المصروفات',
+                  controller: textEditingController,
                   textInputType: TextInputType.number,
                   iconData: Icons.money,
                   validatorHint: 'يجب إدخال قيمة للنقدية',
@@ -84,6 +94,7 @@ class SpendingScreen extends StatelessWidget {
                   },
                 ),
                 CustomTextField(
+                  controller: notesTextEditingController,
                   data: 'الملاحظات',
                   hintText: 'ملاحظات',
                   textInputType: TextInputType.multiline,

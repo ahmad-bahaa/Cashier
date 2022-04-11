@@ -96,11 +96,13 @@ class AddBillScreen extends StatelessWidget {
               //TODO: needs modification
               dataBaseServices.updateCash(
                   cashType, billController.totalBillPrice.value.toInt(), false);
+              billController.product.clear();
               billController.updatingProductsQuantity(isCelling);
               billController.newBill.clear();
               billController.addProduct.clear();
               billController.totalBillPrice.value = 0;
-              Get.back();
+              Tasks().showSuccessMessage(
+                  'عملية ناجحة', 'تم إاضافة فاتورة إلى قاعدة البيانات');
             } else {
               Tasks().showErrorMessage('خطأ', 'من فضلك اضف اصناف');
             }
@@ -119,6 +121,7 @@ class AddBillScreen extends StatelessWidget {
               CustomTypeAheadPerson(
                 typeAheadController: typeAheadPersonController,
                 billController: billController,
+                isBill: true,
               ),
               CustomTypeAheadProduct(
                 typeAheadController: typeAheadProductController,
@@ -126,43 +129,7 @@ class AddBillScreen extends StatelessWidget {
                 billController: billController,
                 isCelling: isCelling,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Obx(
-                    () => Text(
-                      billController.product['total'] ?? '0',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.blue),
-                    ),
-                  ),
-                  const Text(
-                    'الاجمالي ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Obx(
-                    () => Text(
-                      billController.product['quantity'] ?? '0',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.blue),
-                    ),
-                  ),
-                  const Text(
-                    'الكمية المتاحة',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
+              // totalAndQuantityRow(billController: billController),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -218,42 +185,43 @@ class AddBillScreen extends StatelessWidget {
                       Icons.download,
                     ),
                   ),
-                  SizedBox(
-                    width: 120,
-                    child: CustomTextFormField(
-                      data: 'data',
-                      hintText: 'الكمية',
-                      controller: quantityTextController,
-                      textInputType: TextInputType.number,
-                      validatorHint: 'يجب إدخال الكمية',
-                      iconData: Icons.person,
-                      textMaxLength: 5,
-                      onChanged: (value) {
-                        updatingProductInfo('billQuantity', value);
-                        int i = int.parse(
-                                billController.product['billQuantity']) *
-                            int.parse(billController.product['billCellPrice']);
-                        updatingProductInfo('total', i.toString());
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                      width: 120,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (billController.product.isNotEmpty) {
-                            Tasks().showAction(context, isCelling ? 4 : 5);
-                          } else {
-                            Tasks().showErrorMessage(
-                                'خطأ', 'من فضلك اختار صنف اولا');
-                          }
-                        },
-                        child: Obx(() => Text(isCelling
-                            ? billController.product['billCellPrice'] ??
-                                'سعر البيع'
-                            : billController.product['billBuyPrice'] ??
-                                'سعر الشراء')),
-                      )),
+                  // SizedBox(
+                  //   width: 120,
+                  //   child: CustomTextFormField(
+                  //     data: 'data',
+                  //     hintText: 'الكمية',
+                  //     controller: quantityTextController,
+                  //     textInputType: TextInputType.number,
+                  //     validatorHint: 'يجب إدخال الكمية',
+                  //     iconData: Icons.person,
+                  //     textMaxLength: 5,
+                  //     onChanged: (value) {
+                  //       updatingProductInfo('billQuantity', value);
+                  //       int i = int.parse(
+                  //               billController.product['billQuantity']) *
+                  //           int.parse(
+                  //               billController.product['billCellPrice'] ?? '0');
+                  //       updatingProductInfo('total', i.toString());
+                  //     },
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //     width: 120,
+                  //     child: ElevatedButton(
+                  //       onPressed: () {
+                  //         if (billController.product.isNotEmpty) {
+                  //           Tasks().showAction(context, isCelling ? 4 : 5);
+                  //         } else {
+                  //           Tasks().showErrorMessage(
+                  //               'خطأ', 'من فضلك اختار صنف اولا');
+                  //         }
+                  //       },
+                  //       child: Obx(() => Text(isCelling
+                  //           ? billController.product['billCellPrice'] ??
+                  //               'سعر البيع'
+                  //           : billController.product['billBuyPrice'] ??
+                  //               'سعر الشراء')),
+                  //     )),
                 ],
               ),
               const Divider(
@@ -263,15 +231,18 @@ class AddBillScreen extends StatelessWidget {
               Obx(
                 () => Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        SingleUnit(text: 'الاجمالي', width: 50),
-                        SingleUnit(text: 'السعر', width: 50),
-                        SingleUnit(text: 'الكمية', width: 50),
-                        SingleUnit(text: 'اسم الصنف', width: 110),
-                        SingleUnit(text: 'م', width: 50),
-                      ],
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 10,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          SingleUnit(text: 'الاجمالي', width: 50),
+                          SingleUnit(text: 'السعر', width: 50),
+                          SingleUnit(text: 'الكمية', width: 50),
+                          SingleUnit(text: 'اسم الصنف', width: 110),
+                          SingleUnit(text: 'م', width: 50),
+                        ],
+                      ),
                     ),
                     const Divider(
                       thickness: 1.0,
@@ -283,24 +254,26 @@ class AddBillScreen extends StatelessWidget {
                       itemCount: billController.addProduct.length,
                       itemBuilder: (context, index) {
                         Product item = billController.addProduct[index];
-                        return RowBillCard(
-                          product: item,
-                          i: index + 1,
-                          billController: billController,
+                        return InkWell(
+                          onLongPress: () async {
+                            billController.addProduct
+                                .remove(billController.addProduct[index]);
+                            Tasks().showHintMessage('', 'تم ازالة الصنف بنجاح');
+                            await dataBaseServices.updateProduct(
+                                billController.product['id'],
+                                int.parse(billController.product['quantity']),
+                                int.parse(
+                                    billController.product['billQuantity']),
+                                !isCelling);
+                          },
+                          child: RowBillCard(
+                            product: item,
+                            i: index + 1,
+                            billController: billController,
+                          ),
                         );
                       },
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     SingleUnit(
-                    //       text: billController.totalBillPrice.value
-                    //           .toStringAsFixed(2),
-                    //       width: 100,
-                    //     ),
-                    //     const SingleUnit(text: 'الاجمالي', width: 50),
-                    //   ],
-                    // ),
                   ],
                 ),
               ),
@@ -335,6 +308,52 @@ class AddBillScreen extends StatelessWidget {
       data,
       (_) => value,
       ifAbsent: () => value,
+    );
+  }
+}
+
+class totalAndQuantityRow extends StatelessWidget {
+  const totalAndQuantityRow({
+    Key? key,
+    required this.billController,
+  }) : super(key: key);
+
+  final BillController billController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Obx(
+          () => Text(
+            billController.product['total'] ?? '0',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue),
+          ),
+        ),
+        const Text(
+          'الاجمالي ',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        Obx(
+          () => Text(
+            billController.product['quantity'] ?? '0',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue),
+          ),
+        ),
+        const Text(
+          'الكمية المتاحة',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ],
     );
   }
 }
