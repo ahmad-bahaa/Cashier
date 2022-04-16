@@ -22,16 +22,13 @@ class RowBillCard extends StatelessWidget {
         Directionality(
           textDirection: TextDirection.rtl,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SingleUnit(text: i.toString(), width: 50),
-              const VerticalDivider(
-                thickness: 1,
-              ),
-              SingleUnit(text: product.name.toString(), width: 110),
-              SingleUnit(text: product.quantity.toString(), width: 50),
+              SingleUnit(text: i.toString(), width: 20),
+              SingleUnit(text: product.name.toString(), width: 120),
+              SingleUnit(text: product.quantity.toString(), width: 40),
               SingleUnit(text: product.cellPrice.toString(), width: 50),
-              SingleUnit(text: product.buyPrice.toString(), width: 50),
+              SingleUnit(text: product.buyPrice.toString(), width: 55),
             ],
           ),
         ),

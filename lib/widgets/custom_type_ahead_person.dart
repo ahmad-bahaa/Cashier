@@ -1,6 +1,7 @@
 import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/models/person_model.dart';
+import 'package:cashier/screens/customers_screens/customer_bills_screen.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -83,8 +84,18 @@ class CustomTypeAheadPerson extends StatelessWidget {
                 (_) => suggestion.name,
                 ifAbsent: () => suggestion.name,
               );
+              billController.newBill.update(
+                'personId',
+                    (_) => suggestion.id,
+                ifAbsent: () => suggestion.id,
+              );
             } else {
-
+              billController.newBill.update(
+                'name',
+                    (_) => suggestion.name,
+                ifAbsent: () => suggestion.name,
+              );
+              Get.to(() => const CustomerBillsScreen());
             }
           },
           noItemsFoundBuilder: (context) {

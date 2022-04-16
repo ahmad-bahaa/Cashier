@@ -1,7 +1,9 @@
+import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/models/bill_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,18 +12,16 @@ class BillReportScreen extends StatelessWidget {
 
   final DataBaseServices dataBaseServices = DataBaseServices();
   final BillController billController = Get.put(BillController());
+  List<Bill> bills = <Bill>[];
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => ListView.builder(
-          shrinkWrap: true,
-          itemCount: billController.queryBills.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-                child: buildBillReportRow(billController.queryBills[index]));
-          }),
-    );
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: 1,
+        itemBuilder: (context, index) {
+          return InkWell(child: buildBillReportRow(bills[index]));
+        });
   }
 
   CustomContainer buildBillReportRow(Bill bill) {

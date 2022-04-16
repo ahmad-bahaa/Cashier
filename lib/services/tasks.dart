@@ -29,6 +29,6 @@ class Tasks {
     Get.snackbar(title, message,
         colorText: Colors.white,
         backgroundColor: Colors.black,
-        snackPosition: SnackPosition.BOTTOM,);
+        snackPosition: SnackPosition.TOP,);
   }
 }

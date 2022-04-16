@@ -71,7 +71,8 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
               phoneNumber: personController.newPerson[personPhone] ?? '',
               address: personController.newPerson[personAddress] ?? '',
               type: 'عميل',
-              bills: const [],
+              paid: 0,
+              owned: 0,
             ));
             personController.newPerson.clear();
             nameTextEditingController.clear();

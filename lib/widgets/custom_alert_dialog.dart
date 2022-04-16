@@ -36,6 +36,8 @@ class CustomAlertDialog extends StatelessWidget {
   final TextEditingController addressTextEditingController =
       TextEditingController();
   final TextEditingController? typeAheadProductController;
+  final TextEditingController typeAheadPersonController =
+      TextEditingController();
 
   String name = 'name';
   String personPhone = 'phone';
@@ -79,7 +81,8 @@ class CustomAlertDialog extends StatelessWidget {
                           _personController.newPerson[personPhone] ?? '',
                       address: _personController.newPerson[personAddress] ?? '',
                       type: 'عميل',
-                      bills: const [],
+                      paid: 0,
+                      owned: 0,
                     );
                     _dataBaseServices.addPerson(person);
                     _personController.newPerson.clear();
@@ -175,6 +178,13 @@ class CustomAlertDialog extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           );
+        }
+      case 7:
+        {
+          return CustomTypeAheadPerson(
+              typeAheadController: typeAheadPersonController,
+              billController: billController,
+              isBill: false);
         }
       default:
         {
@@ -430,6 +440,6 @@ class CustomAlertDialog extends StatelessWidget {
     billController.updatingBillTotal();
     billController.product.clear();
     phoneTextEditingController.clear();
-    nameTextEditingController!.clear();
+    nameTextEditingController?.clear();
   }
 }

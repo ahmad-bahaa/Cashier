@@ -1,5 +1,6 @@
 import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/cash_controller.dart';
+import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/models/cash_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/services/tasks.dart';
@@ -21,12 +22,12 @@ class AddCashScreen extends StatelessWidget {
 
   final CashController cashController = Get.put(CashController());
   final BillController billController = Get.put(BillController());
+  final PersonController personController = Get.put(PersonController());
   final TextEditingController typeAheadPersonController =
       TextEditingController();
   final TextEditingController textEditingController = TextEditingController();
-  final TextEditingController notesTextEditingController = TextEditingController();
-
-
+  final TextEditingController notesTextEditingController =
+      TextEditingController();
 
   final DataBaseServices _dataBaseServices = DataBaseServices();
   String name = 'name', description = 'description', money = 'money';
@@ -56,6 +57,9 @@ class AddCashScreen extends StatelessWidget {
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             if (billController.newBill.isNotEmpty) {
+              final q = personController.people.where((p0) {
+                return p0.id.isEqual(billController.newBill['personId']);
+              }).toList();
               if (_isSending != null && _isSending) {
                 int id = cashController.allSending.length + 1;
                 _dataBaseServices.addCashBill(
@@ -69,13 +73,18 @@ class AddCashScreen extends StatelessWidget {
                   ),
                   'sending',
                 );
+                //TODO : what to do when sending money ?
+                // _dataBaseServices.updatePersonCash(q[0].id, q[0].paid,
+                //     int.parse(cashController.newCash[money]), 'paid');
                 _dataBaseServices.updateCash('money',
                     int.parse(cashController.newCash[money]), _isSending);
+
                 cashController.newCash.clear();
                 billController.newBill.clear();
                 typeAheadPersonController.clear();
                 textEditingController.clear();
-                Tasks().showSuccessMessage('عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
+                Tasks().showSuccessMessage(
+                    'عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
               } else if (_isSending != null && !_isSending) {
                 int id = cashController.allReceiving.length + 1;
                 _dataBaseServices.addCashBill(
@@ -89,13 +98,17 @@ class AddCashScreen extends StatelessWidget {
                   ),
                   'receiving',
                 );
+
+                _dataBaseServices.updatePersonCash(q[0].id, q[0].paid,
+                    int.parse(cashController.newCash[money]), 'paid');
                 _dataBaseServices.updateCash('money',
                     int.parse(cashController.newCash[money]), _isSending);
                 cashController.newCash.clear();
                 billController.newBill.clear();
                 typeAheadPersonController.clear();
                 textEditingController.clear();
-                Tasks().showSuccessMessage('عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
+                Tasks().showSuccessMessage(
+                    'عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
               } else {
                 _showAction(
                   context,
@@ -106,7 +119,6 @@ class AddCashScreen extends StatelessWidget {
               Tasks().showErrorMessage(
                 'Error',
                 'من فضلك اختار عميل',
-
               );
             }
           }

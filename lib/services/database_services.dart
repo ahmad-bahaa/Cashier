@@ -39,14 +39,14 @@ class DataBaseServices {
             }).toList());
   }
 
-  Stream<List<Bill>> queryBills(String collection, String q) {
+  Future<List<Bill>> queryBills(String collection, String q) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
         .collection(collection)
         .orderBy('id', descending: false)
-        .snapshots()
-        .map((event) =>
+        .get()
+        .then((event) =>
             event.docs.map((e) => Bill.fromSnapShot(e)).where((element) {
               final item = element.name.toLowerCase();
               final query = q.toLowerCase();
@@ -226,7 +226,7 @@ class DataBaseServices {
   }
 
   //TODO: remove this
-  Future<void> updateProductQuantity(int id, int quantity, bool isCelling) {
+  Future<void> updatessProductQuantity(int id, int quantity, bool isCelling) {
     Product product;
     return _firebaseFirestore
         .collection('users')
@@ -244,6 +244,20 @@ class DataBaseServices {
             : product.quantity + quantity
       });
     });
+  }
+
+  Future<void> updateProducteQuantity(
+      int id, int quantity, int billQuantity, bool isOngoing) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('products')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+              'quantity':
+                  isOngoing ? quantity - billQuantity : quantity + billQuantity
+            }));
   }
 
   Future<void> updateProduct(
@@ -274,6 +288,23 @@ class DataBaseServices {
         .get()
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
               dataType: data,
+            }));
+  }
+
+  Future<void> updatePersonCash(
+    int id,
+    int cash,
+    int newCash,
+    String type,
+  ) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('people')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+              type: cash + newCash,
             }));
   }
 }

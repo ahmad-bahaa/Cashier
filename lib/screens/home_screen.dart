@@ -4,6 +4,7 @@ import 'package:cashier/screens/cash_screens/add_spending_screen.dart';
 import 'package:cashier/screens/customers_screens/customer_bills_screen.dart';
 import 'package:cashier/screens/screens.dart';
 import 'package:cashier/services/database_services.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:flutter/material.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:get/get.dart';
@@ -108,9 +109,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Get.to(
-                      () => const CustomerBillsScreen(),
-                    );
+                   Tasks().showAction(context, 7);
                   },
                   child: const LabelCard(
                       icon: Icons.reduce_capacity, label: 'حجم تعامل'),

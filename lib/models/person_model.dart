@@ -9,14 +9,17 @@ class Person extends Equatable {
   final String phoneNumber;
   final String address;
   final String type;
-  List<String> bills;
+  final int paid;
+  final int owned;
+
   Person({
     required this.id,
     required this.name,
     required this.phoneNumber,
     required this.address,
     required this.type,
-    required this.bills,
+    required this.paid,
+    required this.owned,
   });
 
   Person copyWith({
@@ -25,7 +28,8 @@ class Person extends Equatable {
     String? phoneNumber,
     String? address,
     String? type,
-    List<String>? bills,
+    int? paid,
+    int? owned,
   }) {
     return Person(
       id: id ?? this.id,
@@ -33,7 +37,8 @@ class Person extends Equatable {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       address: address ?? this.address,
       type: type ?? this.type,
-      bills: bills ?? this.bills,
+      paid: paid ?? this.paid,
+      owned: owned ?? this.owned,
     );
   }
 
@@ -44,7 +49,8 @@ class Person extends Equatable {
       'phoneNumber': phoneNumber,
       'address': address,
       'type': type,
-      'bills': bills,
+      'paid': paid,
+      'owned': owned,
     };
   }
 
@@ -55,7 +61,8 @@ class Person extends Equatable {
       phoneNumber: snap['phoneNumber'] ?? '',
       address: snap['address'] ?? '',
       type: snap['type'] ?? '',
-      bills: List<String>.from(snap['bills']),
+      paid: snap['paid']?.toInt() ?? 0,
+      owned: snap['owned']?.toInt() ?? 0,
     );
   }
 
@@ -66,7 +73,7 @@ class Person extends Equatable {
 
   @override
   String toString() {
-    return 'Person(id: $id, name: $name, phoneNumber: $phoneNumber, address: $address, type: $type, bills: $bills)';
+    return 'Person(id: $id, name: $name, phoneNumber: $phoneNumber, address: $address, type: $type, paid: $paid, owned: $owned)';
   }
 
   @override
@@ -77,7 +84,8 @@ class Person extends Equatable {
       phoneNumber,
       address,
       type,
-      bills,
+      paid,
+      owned,
     ];
   }
 }

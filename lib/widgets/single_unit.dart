@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class SingleUnit extends StatelessWidget {
   const SingleUnit({Key? key, required this.text, required this.width})
       : super(key: key);
