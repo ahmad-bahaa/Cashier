@@ -58,7 +58,7 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إضافة شخص'),
+        title: Text(widget.person != null ? 'عرض شخص' : 'إضافة شخص'),
         centerTitle: true,
       ),
       bottomNavigationBar: CustomBottomAppBar(
@@ -164,6 +164,29 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                   },
                 ),
                 const SizedBox(),
+                widget.person != null
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Divider(
+                            height: 3.0,
+                            thickness: 3.0,
+                            color: Colors.black,
+                          ),
+                          MoneyFlow(
+                            cash:
+                                '${widget.person!.owned - widget.person!.paid}',
+                            type: ' : رصيد سابق',
+                            color: Colors.green,
+                          ),
+                          const Divider(
+                            height: 3.0,
+                            thickness: 3.0,
+                            color: Colors.black,
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
               ],
             ),
           ),

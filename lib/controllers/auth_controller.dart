@@ -24,7 +24,7 @@ class AuthController extends GetxController {
     if (user == null) {
       Get.offAll(() => LoginScreen());
     } else {
-      Get.offAll(() => HomeScreen());
+      Get.offAll(() => SplashScreen());
     }
   }
 
@@ -41,11 +41,12 @@ class AuthController extends GetxController {
       if (e.code == 'weak-password') {
         Tasks().showErrorMessage('خطأ', 'كلمة مرور ضعيفة جدا.');
       } else if (e.code == 'email-already-in-use') {
-        Tasks().showErrorMessage(
-            'خطأ', 'يوجد مستخدم بهذا البريد الالكتروني.');
+        Tasks().showErrorMessage('خطأ', 'يوجد مستخدم بهذا البريد الالكتروني.');
+      } else if (e.code == 'invalid-email') {
+        Tasks().showErrorMessage('خطأ', 'برجاء إدخال بريد الكتروني صحيح.');
       }
     } catch (e) {
-      print(e);
+      print('error: $e');
     }
   }
 
@@ -57,10 +58,14 @@ class AuthController extends GetxController {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        Tasks().showErrorMessage('خطأ', 'لا يوجد مستخدم بهذا البريد الالكتروني.');
+        Tasks()
+            .showErrorMessage('خطأ', 'لا يوجد مستخدم بهذا البريد الالكتروني.');
       } else if (e.code == 'wrong-password') {
-        Tasks().showErrorMessage(
-            'خطأ', ' كلمة مرور خاطئة لهذا المستخدم.');
+        Tasks().showErrorMessage('خطأ', ' كلمة مرور خاطئة لهذا المستخدم.');
+      } else if (e.code == 'invalid-email') {
+        Tasks().showErrorMessage('خطأ', 'برجاء إدخال بريد الكتروني صحيح.');
+      } else {
+        Tasks().showErrorMessage('خطأ', e.code);
       }
     }
   }

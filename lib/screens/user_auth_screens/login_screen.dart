@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController textEditingController = TextEditingController();
 
   bool signIn = true;
+  bool isHidden = true;
   late String email, password;
 
   @override
@@ -56,71 +57,119 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/images/102.png',
-                height: 200,
-                width: 200,
-              ),
-              CustomContainer(
-                color: Colors.white,
-                widget: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                    key: _key,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
-                          style: const TextStyle(fontSize: 26),
-                        ),
-                        CustomTextFormField(
-                          controller: textEditingController,
-                          data: 'data',
-                          hintText: 'بريد الكتروني',
-                          textInputType: TextInputType.emailAddress,
-                          validatorHint: 'من فضلك قم بإدخال بريد الكتروني',
-                          iconData: Icons.email,
-                          textMaxLength: 20,
-                          onChanged: (value) {
-                            email = value;
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const SizedBox(height: 30,),
+            Image.asset(
+              'assets/images/102.png',
+              height: 200,
+              width: 200,
+            ),
+            CustomContainer(
+              color: Colors.white,
+              widget: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                  key: _key,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
+                        style: const TextStyle(fontSize: 26),
+                      ),
+                      CustomTextFormField(
+                        controller: textEditingController,
+                        data: 'data',
+                        hintText: 'بريد الكتروني',
+                        textInputType: TextInputType.emailAddress,
+                        validatorHint: 'من فضلك قم بإدخال بريد الكتروني',
+                        iconData: Icons.email,
+                        textMaxLength: 20,
+                        onChanged: (value) {
+                          email = value;
+                        },
+                      ),
+
+                      const SizedBox(height: 20.0),
+
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          obscureText: isHidden,
+                          keyboardType: TextInputType.visiblePassword,
+
+                          decoration: InputDecoration(
+                            filled: true,
+                            labelText: 'ادخل الرقم السري',
+                            labelStyle: const TextStyle(
+                              color: Colors.blue,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                                width: 3,
+                              ),
+                            ),
+                            prefixIcon: IconTheme(
+                              data: IconThemeData(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              child: const Icon(Icons.lock),
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isHidden = !isHidden;
+                                });
+                              },
+                              icon: Icon(isHidden
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            ),
+                          ),
+                          validator: (val) => val == null || val.length < 6
+                              ? 'من فضلك قم بإدخال رقم سري مناسب'
+                              : null,
+                          onChanged: (val) {
+                            password = val;
                           },
                         ),
-                        CustomTextFormField(
-                          controller: textEditingController,
-                          data: 'data',
-                          hintText: 'باسورد',
-                          textInputType: TextInputType.visiblePassword,
-                          validatorHint: 'من فضلك قم بإدخال رقم سري',
-                          iconData: Icons.lock,
-                          textMaxLength: 20,
-                          onChanged: (value) {
-                            password = value;
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      // CustomTextFormField(
+                      //   controller: textEditingController,
+                      //   data: 'data',
+                      //   hintText: 'باسورد',
+                      //   textInputType: TextInputType.visiblePassword,
+                      //   validatorHint: 'من فضلك قم بإدخال رقم سري',
+                      //   iconData: Icons.lock,
+                      //   textMaxLength: 20,
+                      //   onChanged: (value) {
+                      //     password = value;
+                      //   },
+                      // ),
+                    ],
                   ),
                 ),
               ),
-              CustomRichText(
-                discription: signIn ? ' لا تمتلك حساب.؟' : ' هل انت مستخدم حالي.؟',
-                text: signIn ? " سجل الان " : ' سجل دخول',
-                onTap: () {
-                  //TODO: this should be sign up screen
-                  setState(() {
-                    signIn = !signIn;
-                  });
-                },
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
-              ),
-            ],
-          ),
+            ),
+            CustomRichText(
+              discription:
+                  signIn ? ' لا تمتلك حساب.؟' : ' هل انت مستخدم حالي.؟',
+              text: signIn ? " سجل الان " : ' سجل دخول',
+              onTap: () {
+                //TODO: this should be sign up screen
+                setState(() {
+                  signIn = !signIn;
+                });
+              },
+            ),
+            // SizedBox(
+            //   height: MediaQuery.of(context).size.height / 4,
+            // ),
+          ],
         ),
       ),
     );

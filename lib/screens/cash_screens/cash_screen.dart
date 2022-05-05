@@ -1,7 +1,6 @@
 import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/controllers/cash_controller.dart';
-import 'package:cashier/screens/cash_screens/add_cash_screen.dart';
-import 'package:cashier/screens/cash_screens/cash_reports_screen.dart';
+import 'package:cashier/screens/screens.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

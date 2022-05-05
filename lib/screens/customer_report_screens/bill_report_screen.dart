@@ -8,19 +8,47 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BillReportScreen extends StatelessWidget {
-  BillReportScreen({Key? key}) : super(key: key);
+  BillReportScreen({
+    Key? key,
+    required this.billType,
+  }) : super(key: key);
 
   final DataBaseServices dataBaseServices = DataBaseServices();
   final BillController billController = Get.put(BillController());
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final String billType;
+
   List<Bill> bills = <Bill>[];
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          return InkWell(child: buildBillReportRow(bills[index]));
+    String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
+
+    bills = billController.queryBills;
+    int uid = billController.newBill['uid'];
+    return StreamBuilder<QuerySnapshot>(
+        stream: _firebaseFirestore
+            .collection('users')
+            .doc(userUid)
+            .collection(billType)
+            .where('uid', isEqualTo: uid)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text("Loading");
+          }
+
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              Bill bill = Bill.fromSnapShot(document);
+              // Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+              return InkWell(child: buildBillReportRow(bill));
+            }).toList(),
+          );
         });
   }
 

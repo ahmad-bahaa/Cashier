@@ -182,9 +182,11 @@ class CustomAlertDialog extends StatelessWidget {
       case 7:
         {
           return CustomTypeAheadPerson(
-              typeAheadController: typeAheadPersonController,
-              billController: billController,
-              isBill: false);
+            typeAheadController: typeAheadPersonController,
+            billController: billController,
+            isBill: false,
+            isEnabled: true,
+          );
         }
       default:
         {
@@ -234,6 +236,7 @@ class CustomAlertDialog extends StatelessWidget {
             ),
             CustomTextField(
               controller: addressTextEditingController,
+              value: '',
               data: personAddress,
               hintText: 'العنوان',
               textInputType: TextInputType.name,
@@ -245,6 +248,7 @@ class CustomAlertDialog extends StatelessWidget {
             ),
             CustomTextField(
               controller: phoneTextEditingController,
+              value: '',
               data: personPhone,
               hintText: 'رقم الهاتف',
               textInputType: TextInputType.phone,
@@ -407,6 +411,9 @@ class CustomAlertDialog extends StatelessWidget {
                     .product[isCelling ? 'cellPrice' : 'buyPrice'])) {
           Get.back();
           Tasks().showAction(context, 6);
+        }else if(int.parse(billController
+            .product[isCelling ? 'billCellPrice' : 'billBuyPrice']) < 1){
+          Tasks().showErrorMessage('خطأ', 'من فضلك ادخل سعر صحيح');
         } else {
           addingProductAfterValidation(isCelling);
         }
@@ -423,7 +430,9 @@ class CustomAlertDialog extends StatelessWidget {
       Product(
         id: billController.product['id'] ?? 0,
         name: billController.product['name'] ?? '',
-        buyPrice: int.parse(billController.product['total'] ?? '0'),
+        buyPrice: isCelling
+            ? int.parse(billController.product['cellPrice'])
+            : int.parse(billController.product['buyPrice']),
         cellPrice: isCelling
             ? int.parse(billController.product['billCellPrice'] ?? '0')
             : int.parse(billController.product['billBuyPrice'] ?? '0'),

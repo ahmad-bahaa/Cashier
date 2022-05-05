@@ -1,7 +1,7 @@
 import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/models/person_model.dart';
-import 'package:cashier/screens/customers_screens/customer_bills_screen.dart';
+import 'package:cashier/screens/customer_report_screens/customer_reports_screen.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -14,11 +14,13 @@ class CustomTypeAheadPerson extends StatelessWidget {
     required this.typeAheadController,
     required this.billController,
     required this.isBill,
+    required this.isEnabled,
   }) : super(key: key);
   final TextEditingController typeAheadController;
   final DataBaseServices dataBaseServices = DataBaseServices();
   final BillController billController;
   final PersonController personController = Get.put(PersonController());
+  final bool isEnabled;
   final bool isBill;
 
   @override
@@ -29,6 +31,7 @@ class CustomTypeAheadPerson extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child: TypeAheadField<Person>(
           textFieldConfiguration: TextFieldConfiguration(
+            enabled: isEnabled,
             controller: typeAheadController,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -85,15 +88,20 @@ class CustomTypeAheadPerson extends StatelessWidget {
                 ifAbsent: () => suggestion.name,
               );
               billController.newBill.update(
+                'uid',
+                    (_) => suggestion.id,
+                ifAbsent: () => suggestion.id,
+              );
+              billController.newBill.update(
                 'personId',
                     (_) => suggestion.id,
                 ifAbsent: () => suggestion.id,
               );
             } else {
               billController.newBill.update(
-                'name',
-                    (_) => suggestion.name,
-                ifAbsent: () => suggestion.name,
+                'uid',
+                    (_) => suggestion.id,
+                ifAbsent: () => suggestion.id,
               );
               Get.to(() => const CustomerBillsScreen());
             }

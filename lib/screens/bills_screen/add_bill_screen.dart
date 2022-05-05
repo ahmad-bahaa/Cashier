@@ -81,38 +81,18 @@ class AddBillScreen extends StatelessWidget {
         bottomNavigationBar: Obx(
           () => CustomBottomAppBar(
             buttonText:
-                '${billController.totalBillPrice.value.toStringAsFixed(2)} الاجمالي ',
+                '${billController.totalBillPrice.value.toStringAsFixed(2)}حفظ  - اجمالي ',
             onPressed: () {
               //TODO: need Modification
-              if (billController.addProduct.isNotEmpty) {
+              if (billController.addProduct.isNotEmpty && billController.newBill.isNotEmpty) {
                 final q = personController.people.where((p0) {
                   return p0.id.isEqual(billController.newBill['personId']);
                 }).toList();
-                dataBaseServices.addBill(
-                    Bill(
-                      id: bills.length + 1,
-                      name: billController.newBill['name'] ?? 'بدون اسم',
-                      price: billController.totalBillPrice.value.toInt(),
-                      date: DateFormat('yyyy-MM-dd - kk:mm')
-                          .format(DateTime.now()),
-                      products: billController.addProduct,
-                    ),
-                    billType);
                 dataBaseServices.updatePersonCash(q[0].id, q[0].owned,  billController.totalBillPrice.value.toInt(), 'owned');
                 //TODO: needs modification
-                dataBaseServices.updateCash(cashType,
-                    billController.totalBillPrice.value.toInt(), false);
-                billController.product.clear();
-                // billController.updatingProductsQuantity(isCelling);
-                typeAheadPersonController.clear();
-                typeAheadProductController.clear();
-                quantityTextController.clear();
-                priceTextController.clear();
-                billController.newBill.clear();
-                billController.addProduct.clear();
-                billController.totalBillPrice.value = 0;
-                Tasks().showSuccessMessage(
-                    'عملية ناجحة', 'تم إاضافة فاتورة إلى قاعدة البيانات');
+                addBillToDatabase(cashType,billType);
+              }else if(billController.addProduct.isNotEmpty){
+                addBillToDatabase(cashType,billType);
               } else {
                 Tasks().showErrorMessage('خطأ', 'من فضلك اضف اصناف');
               }
@@ -132,6 +112,7 @@ class AddBillScreen extends StatelessWidget {
                   typeAheadController: typeAheadPersonController,
                   billController: billController,
                   isBill: true,
+                  isEnabled: true,
                 ),
                 CustomTypeAheadProduct(
                   typeAheadController: typeAheadProductController,
@@ -289,7 +270,7 @@ class AddBillScreen extends StatelessWidget {
                             child: RowBillCard(
                               product: item,
                               i: index + 1,
-                              billController: billController,
+                              isCelling: isCelling,
                             ),
                           );
                         },
@@ -356,6 +337,41 @@ class AddBillScreen extends StatelessWidget {
       (_) => value,
       ifAbsent: () => value,
     );
+  }
+  //TODO: to update the products
+  // updatingProductQuantity(int id,int index){
+  //   for(int i = billController.addProduct.length; i <0; i --){
+  //     dataBaseServices.updateProduct(
+  //         id,
+  //         q[0].quantity,
+  //         billController.addProduct[index].quantity,
+  //         !isCelling);
+  //   }
+  // }
+  addBillToDatabase(String cashType,String billType){
+    dataBaseServices.addBill(
+        Bill(
+          id: bills.length + 1,
+          uid: billController.newBill['uid'] ?? 0,
+          name: billController.newBill['name'] ?? 'بدون اسم',
+          price: billController.totalBillPrice.value.toInt(),
+          date: DateFormat('yyyy-MM-dd - kk:mm')
+              .format(DateTime.now()),
+          products: billController.addProduct,
+        ),
+        billType);
+    dataBaseServices.updateCash(cashType,
+        billController.totalBillPrice.value.toInt(), false);
+    billController.product.clear();
+    typeAheadPersonController.clear();
+    typeAheadProductController.clear();
+    quantityTextController.clear();
+    priceTextController.clear();
+    billController.newBill.clear();
+    billController.addProduct.clear();
+    billController.totalBillPrice.value = 0;
+    Tasks().showSuccessMessage(
+        'عملية ناجحة', 'تم إاضافة فاتورة إلى قاعدة البيانات');
   }
 }
 

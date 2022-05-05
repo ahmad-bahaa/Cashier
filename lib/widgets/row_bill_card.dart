@@ -4,16 +4,16 @@ import 'package:cashier/widgets/single_unit.dart';
 import 'package:flutter/material.dart';
 
 class RowBillCard extends StatelessWidget {
-  const RowBillCard(
-      {Key? key,
-      required this.product,
-      required this.i,
-      required this.billController})
-      : super(key: key);
+  const RowBillCard({
+    Key? key,
+    required this.product,
+    required this.i,
+    required this.isCelling,
+  }) : super(key: key);
 
   final Product product;
   final int i;
-  final BillController billController;
+  final bool isCelling;
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +21,23 @@ class RowBillCard extends StatelessWidget {
       children: [
         Directionality(
           textDirection: TextDirection.rtl,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SingleUnit(text: i.toString(), width: 20),
-              SingleUnit(text: product.name.toString(), width: 120),
-              SingleUnit(text: product.quantity.toString(), width: 40),
-              SingleUnit(text: product.cellPrice.toString(), width: 50),
-              SingleUnit(text: product.buyPrice.toString(), width: 55),
-            ],
+          child: Container(
+            color: isCelling
+                ? product.cellPrice < product.buyPrice
+                    ? Colors.red[100]
+                    : Colors.transparent
+                : Colors.transparent,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SingleUnit(text: i.toString(), width: 20),
+                SingleUnit(text: product.name.toString(), width: 120),
+                SingleUnit(text: product.quantity.toString(), width: 40),
+                SingleUnit(text: product.cellPrice.toString(), width: 50),
+                SingleUnit(
+                    text: '${product.cellPrice * product.quantity}', width: 55),
+              ],
+            ),
           ),
         ),
         const Divider(

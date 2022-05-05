@@ -33,12 +33,15 @@ class ProductsScreen extends StatelessWidget {
                   itemCount:cash.length,
                   itemBuilder: (context, index) {
                     Product product = cash[index];
-                    return RowUnitCard(
-                      name: product.name,
-                      quantity: product.quantity.toString(),
-                      color: product.quantity == 0
-                          ? Colors.redAccent
-                          : Colors.white,
+                    return InkWell(
+                      onTap: ()=>Get.to(()=> AddProductScreen(product: product,),),
+                      child: RowUnitCard(
+                        name: product.name,
+                        quantity: product.quantity.toString(),
+                        color: product.quantity == 0
+                            ? Colors.redAccent
+                            : Colors.white,
+                      ),
                     );
                   },
                 ),

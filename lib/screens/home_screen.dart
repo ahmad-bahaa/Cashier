@@ -1,7 +1,7 @@
 import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/screens/bills_screen/bills_screen.dart';
 import 'package:cashier/screens/cash_screens/add_spending_screen.dart';
-import 'package:cashier/screens/customers_screens/customer_bills_screen.dart';
+import 'package:cashier/screens/customer_report_screens/customer_reports_screen.dart';
 import 'package:cashier/screens/screens.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/services/tasks.dart';

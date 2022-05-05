@@ -4,12 +4,14 @@ import 'package:equatable/equatable.dart';
 
 class Cash extends Equatable {
   final int id;
+  final int uid;
   final int money;
   final String name;
   final String date;
   final String description;
   const Cash({
     required this.id,
+    required this.uid,
     required this.money,
     required this.name,
     required this.date,
@@ -18,6 +20,7 @@ class Cash extends Equatable {
 
   Cash copyWith({
     int? id,
+    int? uid,
     int? money,
     String? name,
     String? date,
@@ -25,6 +28,7 @@ class Cash extends Equatable {
   }) {
     return Cash(
       id: id ?? this.id,
+      uid: uid ?? this.uid,
       money: money ?? this.money,
       name: name ?? this.name,
       date: date ?? this.date,
@@ -35,6 +39,7 @@ class Cash extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'uid': uid,
       'money': money,
       'name': name,
       'date': date,
@@ -45,6 +50,7 @@ class Cash extends Equatable {
   factory Cash.fromSnapShot(DocumentSnapshot map) {
     return Cash(
       id: map['id']?.toInt() ?? 0,
+        uid: map['uid']?.toInt() ?? 0,
       money: map['money']?.toInt() ?? 0,
       name: map['name'] ?? '',
       date: map['date']?? '',
@@ -61,9 +67,9 @@ class Cash extends Equatable {
 
   @override
   String toString() {
-    return 'Cash(id: $id, money: $money, name: $name, date: $date,description: $description)';
+    return 'Cash(id: $id,uid: $uid, money: $money, name: $name, date: $date,description: $description)';
   }
 
   @override
-  List<Object> get props => [id, money, name, date,description];
+  List<Object> get props => [id,uid, money, name, date,description];
 }

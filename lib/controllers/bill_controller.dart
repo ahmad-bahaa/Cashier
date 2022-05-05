@@ -28,7 +28,8 @@ class BillController extends GetxController {
   updatingProductsQuantitys(bool isCelling) {
     if (addProduct.isNotEmpty) {
       addProduct.forEach((element) {
-        dataBaseServices.updatessProductQuantity(element.id, element.quantity, isCelling);
+        dataBaseServices.updatessProductQuantity(
+            element.id, element.quantity, isCelling);
       });
     }
   }
@@ -37,8 +38,8 @@ class BillController extends GetxController {
   void onInit() {
     incomingBills.bindStream(dataBaseServices.getAllBills('incomingBills'));
     ongoingBills.bindStream(dataBaseServices.getAllBills('ongoingBills'));
-    // queryBills.bindStream(dataBaseServices.queryBills('ongoingBills',
-    //     newBill['name'].toString()));
+    queryBills.bindStream(
+        dataBaseServices.getAllUserBills('ongoingBills',1 ));
     super.onInit();
   }
 }

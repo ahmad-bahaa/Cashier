@@ -1,44 +1,70 @@
 import 'package:cashier/controllers/product_controller.dart';
 import 'package:cashier/models/product_model.dart';
+import 'package:cashier/screens/products_screen/stock_screen.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddProductScreen extends StatelessWidget {
+class AddProductScreen extends StatefulWidget {
   AddProductScreen({
     Key? key,
     this.product,
   }) : super(key: key);
 
+  Product? product;
+
+  @override
+  State<AddProductScreen> createState() => _AddProductScreenState();
+}
+
+class _AddProductScreenState extends State<AddProductScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   ProductController productController = Get.put(ProductController());
+
   final DataBaseServices _dataBaseServices = DataBaseServices();
+
   final TextEditingController textEditingController = TextEditingController();
-  final TextEditingController buyPriceTextEditingController = TextEditingController();
-  final TextEditingController cellPriceTextEditingController = TextEditingController();
+
+  final TextEditingController buyPriceTextEditingController =
+      TextEditingController();
+
+  final TextEditingController cellPriceTextEditingController =
+      TextEditingController();
 
   String productName = 'name';
+
   String productCellPrice = 'cellPrice';
+
   String productBuyPrice = 'buyPrice';
+
   String productQuantity = 'quantity';
-  Product? product;
-  late bool isEnabled;
+
+  int buyPriceData = 0;
+  int cellPriceData = 0;
+  String buttonText = 'تعديل';
+
+  bool isEnabled = false;
 
   @override
   Widget build(BuildContext context) {
-    product != null ? isEnabled = false : isEnabled = true;
+    widget.product != null ? null : isEnabled = true;
+
+    if (widget.product != null) {
+      textEditingController.text = widget.product!.name.toString();
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إضافة صنف'),
+        title: Text(widget.product != null ? 'عرض صنف' : 'إضافة صنف'),
         centerTitle: true,
       ),
       bottomNavigationBar: CustomBottomAppBar(
-        buttonText: 'حفظ',
+        buttonText: widget.product != null ? buttonText : 'حفظ',
         onPressed: () {
-          if (_formKey.currentState!.validate()) {
+          if (_formKey.currentState!.validate() && widget.product == null) {
             int id = productController.products.length + 1;
             int cellPrice =
                 int.parse(productController.newProduct['cellPrice'] ?? '0');
@@ -57,6 +83,38 @@ class AddProductScreen extends StatelessWidget {
             textEditingController.clear();
             Tasks().showSuccessMessage(
                 'عملية ناجحة', 'تم إاضافة صنف إلى قاعدة البيانات');
+          } else if (widget.product != null && isEnabled) {
+            //TODO edit the product info
+            if (buyPriceData != 0 || cellPriceData != 0) {
+              if (buyPriceData != 0) {
+                _dataBaseServices.updateProductPrice(
+                  'products',
+                  widget.product!.id,
+                  'buyPrice',
+                  buyPriceData,
+                );
+              }
+              if (cellPriceData != 0) {
+                _dataBaseServices.updateProductPrice(
+                  'products',
+                  widget.product!.id,
+                  'cellPrice',
+                  cellPriceData,
+                );
+              }
+              Tasks().showSuccessMessage(
+                  'عملية ناجحة', 'تم تعديل بيانات الصنف في قاعدة البيانات');
+              Get.offAll(() => const StockScreen());
+            }
+            setState(() {
+              isEnabled = false;
+              buttonText = 'تعديل';
+            });
+          } else if (widget.product != null && !isEnabled) {
+            setState(() {
+              isEnabled = true;
+              buttonText = 'حفظ';
+            });
           }
         },
       ),
@@ -71,7 +129,7 @@ class AddProductScreen extends StatelessWidget {
                   controller: textEditingController,
                   data: productName,
                   // value: product?.name ?? '',
-                  isEnabled: isEnabled,
+                  isEnabled: widget.product != null ? false : true,
                   hintText: 'إسم الصنف ',
                   textInputType: TextInputType.name,
                   validatorHint: 'يجب إدخال إسم الصنف',
@@ -84,26 +142,31 @@ class AddProductScreen extends StatelessWidget {
                 CustomTextField(
                   controller: buyPriceTextEditingController,
                   data: productBuyPrice,
-                  value: product?.buyPrice.toString() ?? '',
+                  value: widget.product?.buyPrice.toString() ?? '',
                   isEnabled: isEnabled,
                   hintText: 'سعر الشراء',
                   textInputType: TextInputType.number,
                   iconData: Icons.money,
                   textMaxLength: 4,
                   onChanged: (value) {
-                    storingData(value, productBuyPrice);
+                    widget.product != null
+                        ? buyPriceData = int.parse(value)
+                        : storingData(value, productBuyPrice);
                   },
                 ),
                 CustomTextField(
                   controller: cellPriceTextEditingController,
                   data: productCellPrice,
-                  value: product?.cellPrice.toString() ?? '',
+                  value: widget.product?.cellPrice.toString() ?? '',
                   isEnabled: isEnabled,
                   hintText: 'سعر البيع',
                   textInputType: TextInputType.number,
                   iconData: Icons.money,
                   textMaxLength: 4,
                   onChanged: (value) {
+                    widget.product != null
+                        ? cellPriceData = int.parse(value)
+                        :
                     storingData(value, productCellPrice);
                   },
                 ),

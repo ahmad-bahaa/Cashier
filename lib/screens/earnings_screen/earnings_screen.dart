@@ -1,5 +1,6 @@
 import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/widgets/custom_container.dart';
+import 'package:cashier/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -84,41 +85,3 @@ class EarningsScreen extends StatelessWidget {
   }
 }
 
-class MoneyFlow extends StatelessWidget {
-  const MoneyFlow({
-    Key? key,
-    required this.cash,
-    required this.type,
-    required this.color
-  }) : super(key: key);
-  final String cash, type;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: Container(
-        margin: const EdgeInsets.only(right: 12.0),
-        child: Column(
-          children: [
-            Text(
-              type,
-              style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: Text(
-                cash,
-                style:  TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: color),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

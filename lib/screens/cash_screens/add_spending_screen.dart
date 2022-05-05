@@ -1,3 +1,4 @@
+import 'package:cashier/constants/constansts.dart';
 import 'package:cashier/models/cash_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/services/tasks.dart';
@@ -37,6 +38,7 @@ class ADDSpendingScreen extends StatelessWidget {
               _dataBaseServices.addCashBill(
                 Cash(
                   id: cashController.allSpending.length + 1,
+                  uid: 0,
                   money: cash,
                   name: cashController.newCash[name] ?? 'مصروفات',
                   date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
@@ -47,6 +49,7 @@ class ADDSpendingScreen extends StatelessWidget {
               _dataBaseServices.updateCash('spending', cash, false);
               _dataBaseServices.updateCash('money', cash, true);
               cashController.newCash.clear();
+              billController.newBill.clear();
               textEditingController.clear();
               Tasks().showSuccessMessage(
                   'عملية ناجحة', 'تم إضافة المصروف إلى قواعد البيانات');
@@ -71,6 +74,7 @@ class ADDSpendingScreen extends StatelessWidget {
                   ),
                   child: CustomTextField(
                     controller: nameTextEditingController,
+                    value: '',
                     data: 'اسم المصروف',
                     hintText: 'اسم المصروف',
                     textInputType: TextInputType.multiline,
@@ -95,6 +99,7 @@ class ADDSpendingScreen extends StatelessWidget {
                 ),
                 CustomTextField(
                   controller: notesTextEditingController,
+                  value: '',
                   data: 'الملاحظات',
                   hintText: 'ملاحظات',
                   textInputType: TextInputType.multiline,

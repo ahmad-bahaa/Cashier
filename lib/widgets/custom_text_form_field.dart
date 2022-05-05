@@ -62,7 +62,7 @@ class CustomTextFormField extends StatelessWidget {
             ),
           ),
           keyboardType: textInputType,
-          maxLength: textMaxLength,
+          // maxLength: textMaxLength,
           validator: (val) => val == null || val.isEmpty ? validatorHint : null,
           onChanged: onChanged,
         ),

@@ -39,6 +39,11 @@ class AddCashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     cash != null ? isEnabled = false : isEnabled = true;
+   if(cash != null){
+     typeAheadPersonController.text = cash!.name.toString();
+     textEditingController.text = cash!.money.toString();
+     notesTextEditingController.text = cash!.description.toString();
+   }
 
     if (isSending != null) {
       _isSending = isSending!;
@@ -65,6 +70,7 @@ class AddCashScreen extends StatelessWidget {
                 _dataBaseServices.addCashBill(
                   Cash(
                     id: id,
+                    uid: billController.newBill['uid'] ?? 0,
                     money: int.parse(cashController.newCash[money]),
                     name: billController.newBill[name] ?? '',
                     date:
@@ -90,6 +96,7 @@ class AddCashScreen extends StatelessWidget {
                 _dataBaseServices.addCashBill(
                   Cash(
                     id: id,
+                    uid: billController.newBill['uid'] ?? 0,
                     money: int.parse(cashController.newCash[money]),
                     name: billController.newBill[name] ?? '',
                     date:
@@ -142,6 +149,7 @@ class AddCashScreen extends StatelessWidget {
                     typeAheadController: typeAheadPersonController,
                     billController: billController,
                     isBill: true,
+                    isEnabled: isEnabled,
                   ),
                 ),
                 CustomTextFormField(

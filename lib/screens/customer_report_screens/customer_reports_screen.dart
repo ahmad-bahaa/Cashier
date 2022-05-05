@@ -51,23 +51,23 @@ class _CustomerBillsScreenState extends State<CustomerBillsScreen>
       ),
       body: Column(
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-            child: CustomTypeAheadPerson(
-              typeAheadController: textEditingController,
-              billController: billController,
-              isBill: false,
-            ),
-          ),
+          // Padding(
+          //   padding:
+          //       const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+          //   child: CustomTypeAheadPerson(
+          //     typeAheadController: textEditingController,
+          //     billController: billController,
+          //     isBill: false,
+          //   ),
+          // ),
           Expanded(
             child: TabBarView(
               controller: _controller,
               children:  [
-                BillReportScreen(),
-                BillReportScreen(),
-                CashReportScreen(cashType: false, isSpending: false),
-                CashReportScreen(cashType: true, isSpending: false),
+                BillReportScreen(billType: 'ongoingBills'),
+                BillReportScreen(billType: 'incomingBills'),
+                UserCashReportScreen(billType: 'receiving',),
+                UserCashReportScreen(billType: 'sending'),
               ],
             ),
           ),

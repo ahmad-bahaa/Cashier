@@ -39,18 +39,18 @@ class DataBaseServices {
             }).toList());
   }
 
-  Future<List<Bill>> queryBills(String collection, String q) {
+  Stream<List<Bill>> queryBills(String collection, String q) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .collection(collection)
+        .collection('ongoingBills')
         .orderBy('id', descending: false)
-        .get()
-        .then((event) =>
+        .snapshots()
+        .map((event) =>
             event.docs.map((e) => Bill.fromSnapShot(e)).where((element) {
               final item = element.name.toLowerCase();
               final query = q.toLowerCase();
-              return item.contains(query);
+              return item.contains('ahmad');
             }).toList());
   }
 
@@ -125,6 +125,18 @@ class DataBaseServices {
     });
   }
 
+  Stream<List<Bill>> getAllUserBills(String collection,int uid) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .where('uid', isEqualTo: uid)
+        .snapshots()
+        .map((event) {
+      return event.docs.map((e) => Bill.fromSnapShot(e)).toList();
+    });
+  }
+
   Stream<List<Bill>> getAllBills(String billType) {
     return _firebaseFirestore
         .collection('users')
@@ -146,7 +158,7 @@ class DataBaseServices {
         .snapshots()
         .map((event) => event.docs
             .map((e) => Cash.fromSnapShot(e))
-            .where((element) => element.name.contains('ahmed'))
+            // .where((element) => element.name.contains('ahmed'))
             .toList());
   }
 
@@ -289,6 +301,40 @@ class DataBaseServices {
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
               dataType: data,
             }));
+  }
+
+  Future<void> updateProductName(
+      String collection,
+      int id,
+      String dataType,
+      String data,
+      ) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+      dataType: data,
+    }));
+  }
+
+  Future<void> updateProductPrice(
+      String collection,
+      int id,
+      String dataType,
+      int data,
+      ) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+      dataType: data,
+    }));
   }
 
   Future<void> updatePersonCash(
