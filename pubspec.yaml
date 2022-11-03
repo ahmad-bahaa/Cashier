@@ -43,7 +43,11 @@ dependencies:
   flutter_typeahead: ^3.2.4
   firebase_core: 1.11.0
   connectivity_plus: ^2.2.1
-  pdf: ^3.7.3
+  pdf: ^3.8.1
+  permission_handler: ^10.0.0
+  #for internet
+  internet_connection_checker: 0.0.1+1
+
 
 dev_dependencies:
   flutter_test:

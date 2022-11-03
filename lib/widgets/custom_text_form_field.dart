@@ -21,7 +21,7 @@ class CustomTextFormField extends StatelessWidget {
   final String validatorHint;
   final IconData iconData;
   final int textMaxLength;
-  final TextEditingController?  controller;
+  final TextEditingController? controller;
   bool? isEnabled;
   final Function(String)? onChanged;
   String? value;
@@ -35,7 +35,7 @@ class CustomTextFormField extends StatelessWidget {
         child: TextFormField(
           enabled: isEnabled,
           controller: controller,
-          // initialValue: value  ?? '',
+          // initialValue: data,
           maxLines: 1,
           style: const TextStyle(
             fontWeight: FontWeight.bold,

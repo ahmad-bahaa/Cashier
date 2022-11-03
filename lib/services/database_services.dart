@@ -97,6 +97,19 @@ class DataBaseServices {
     });
   }
 
+  Future<List<Product>> getAllBillProducts(String billType, int billID) async {
+    return await _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('billsProducts')
+        .doc(billType)
+        .collection(billID.toString())
+        .get()
+        .then((value) {
+      return value.docs.map((e) => Product.fromSnapShot(e)).toList();
+    });
+  }
+
   Stream<List<Product>> getAllActiveProducts() {
     return _firebaseFirestore
         .collection('users')
@@ -125,7 +138,7 @@ class DataBaseServices {
     });
   }
 
-  Stream<List<Bill>> getAllUserBills(String collection,int uid) {
+  Stream<List<Bill>> getAllUserBills(String collection, int uid) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
@@ -176,10 +189,11 @@ class DataBaseServices {
 
   Future<void> creatingNewUser(String u) {
     return _firebaseFirestore.collection('users').doc(u).set({
-      'money': 0,
-      'spending': 0,
-      'celling': 0,
-      'buying': 0,
+      'money': 0.0,
+      'spending': 0.0,
+      'celling': 0.0,
+      'buying': 0.0,
+      'earnings': 0.0,
     });
   }
 
@@ -215,19 +229,34 @@ class DataBaseServices {
         .add(product.toMap());
   }
 
-  Future<void> updateCash(String cashType, int cash, bool isSending) {
-    int totalCash;
+  Future<void> addBillProducts(Product product, String billType, int billID) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('billsProducts')
+        .doc(billType)
+        .collection(billID.toString())
+        .add(product.toMap());
+  }
+
+  Future<void> updateCash(String cashType, double cash, bool isSending) {
+    double totalCash;
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
         .get()
         .then((value) {
       if (value.exists) {
-        totalCash = value.data()![cashType];
+        totalCash = double.parse(value.data()![cashType].toString());
         return _firebaseFirestore
             .collection('users')
             .doc(userUid)
-            .update({cashType: isSending ? totalCash - cash : totalCash + cash})
+            .update({
+              if (cashType == 'earnings' && isSending)
+                cashType: totalCash + cash,
+              if (cashType != 'earnings')
+                cashType: isSending ? totalCash - cash : totalCash + cash,
+            })
             .then((value) => print("Cash Updated"))
             .catchError((error) => print("Failed to update Cash: $error"));
       } else {
@@ -258,7 +287,7 @@ class DataBaseServices {
     });
   }
 
-  Future<void> updateProducteQuantity(
+  Future<void> updateProduct(
       int id, int quantity, int billQuantity, bool isOngoing) {
     return _firebaseFirestore
         .collection('users')
@@ -272,8 +301,14 @@ class DataBaseServices {
             }));
   }
 
-  Future<void> updateProduct(
-      int id, int quantity, int billQuantity, bool isOngoing) {
+  Future<void> updateProductAveragePrice(int id, int qty, double buyPrice,
+      int billQuantity, double billPrice, bool isOngoing) {
+    double oldPrice = buyPrice * qty;
+    double allBillPrice = billPrice * billQuantity;
+    double allPrices = oldPrice + allBillPrice;
+    int allQty = qty + billQuantity;
+    double newPrice = allPrices / allQty;
+
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
@@ -281,8 +316,10 @@ class DataBaseServices {
         .where('id', isEqualTo: id)
         .get()
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
-              'quantity':
-                  isOngoing ? quantity - billQuantity : quantity + billQuantity
+              if (!isOngoing) 'lastPrice': billPrice.toDouble(),
+              if (!isOngoing)
+                'buyPrice': double.parse(newPrice.toStringAsFixed(2)),
+              'quantity': isOngoing ? qty - billQuantity : qty + billQuantity,
             }));
   }
 
@@ -304,11 +341,11 @@ class DataBaseServices {
   }
 
   Future<void> updateProductName(
-      String collection,
-      int id,
-      String dataType,
-      String data,
-      ) {
+    String collection,
+    int id,
+    String dataType,
+    String data,
+  ) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
@@ -316,16 +353,16 @@ class DataBaseServices {
         .where('id', isEqualTo: id)
         .get()
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
-      dataType: data,
-    }));
+              dataType: data,
+            }));
   }
 
   Future<void> updateProductPrice(
-      String collection,
-      int id,
-      String dataType,
-      int data,
-      ) {
+    String collection,
+    int id,
+    String dataType,
+    int data,
+  ) {
     return _firebaseFirestore
         .collection('users')
         .doc(userUid)
@@ -333,14 +370,14 @@ class DataBaseServices {
         .where('id', isEqualTo: id)
         .get()
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
-      dataType: data,
-    }));
+              dataType: data,
+            }));
   }
 
   Future<void> updatePersonCash(
     int id,
-    int cash,
-    int newCash,
+    double cash,
+    double newCash,
     String type,
   ) {
     return _firebaseFirestore

@@ -34,7 +34,7 @@ class ADDSpendingScreen extends StatelessWidget {
           buttonText: 'حفظ',
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              int cash = int.parse(cashController.newCash[money] ?? '0');
+              double cash = double.parse(cashController.newCash[money] ?? '0.0');
               _dataBaseServices.addCashBill(
                 Cash(
                   id: cashController.allSpending.length + 1,

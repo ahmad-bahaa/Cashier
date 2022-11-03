@@ -8,6 +8,7 @@ import 'package:cashier/services/tasks.dart';
 import 'package:flutter/material.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('الصفحة الرئيسية'),
@@ -109,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                   Tasks().showAction(context, 7);
+                    Tasks().showAction(context, 7);
                   },
                   child: const LabelCard(
                       icon: Icons.reduce_capacity, label: 'حجم تعامل'),

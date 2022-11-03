@@ -21,7 +21,7 @@ class CustomContainer extends StatelessWidget {
         boxShadow: const [
           BoxShadow(
             offset: Offset(0.0, 1.0),
-            blurRadius: 4.0,
+            blurRadius: 1.0,
             blurStyle: BlurStyle.normal,
           ),
         ],

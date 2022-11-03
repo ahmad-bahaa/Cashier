@@ -37,6 +37,7 @@ class BillsScreen extends StatelessWidget {
               return InkWell(
                 onTap: () {
                   //TODO: View Bill details
+                  Get.to(() => BillScreen(isCelling: isCelling,bill:bills[index]));
                 },
                 child: buildBillReportRow(
                   bills[index],
@@ -54,10 +55,21 @@ class BillsScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                //TODO: this should be total Bill Cost
-                bill.price.toString(),
-                style: const TextStyle(fontSize: 24, color: Colors.green),
+              Column(
+                children: [
+                  Text(
+                    //TODO: this should be total Bill Cost
+                    bill.price.toString(),
+                    style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  // Text(
+                  //   ' صنف ${bill.products.length.toString()}  ',
+                  //   style: const TextStyle(fontSize: 16, color: Colors.black),
+                  // ),
+                ],
               ),
               Column(
                 children: [

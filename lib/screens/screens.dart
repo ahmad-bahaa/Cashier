@@ -1,5 +1,6 @@
 export 'bills_screen/add_bill_screen.dart';
 export 'bills_screen/bills_screen.dart';
+export 'bills_screen/bill_screen.dart';
 export 'cash_screens/cash_screen.dart';
 export 'cash_screens/add_cash_screen.dart';
 export 'cash_screens/cash_reports_screen.dart';

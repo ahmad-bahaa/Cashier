@@ -66,21 +66,25 @@ class _AddProductScreenState extends State<AddProductScreen> {
         onPressed: () {
           if (_formKey.currentState!.validate() && widget.product == null) {
             int id = productController.products.length + 1;
-            int cellPrice =
-                int.parse(productController.newProduct['cellPrice'] ?? '0');
-            int buyPrice =
-                int.parse(productController.newProduct['buyPrice'] ?? '0');
+            double cellPrice =
+            double.parse(productController.newProduct['cellPrice'] ?? '0.0');
+            double buyPrice =
+            double.parse(productController.newProduct['buyPrice'] ?? '0.0');
             int quantity =
                 int.parse(productController.newProduct['quantity'] ?? '0');
+            double lastPrice = productController.newProduct['lastPrice'] ?? 0.0;
             _dataBaseServices.addProduct(Product(
               id: id,
               name: productController.newProduct['name'],
               buyPrice: buyPrice,
               cellPrice: cellPrice,
               quantity: quantity,
+              lastPrice: lastPrice,
             ));
             productController.newProduct.clear();
             textEditingController.clear();
+            buyPriceTextEditingController.clear();
+            cellPriceTextEditingController.clear();
             Tasks().showSuccessMessage(
                 'عملية ناجحة', 'تم إاضافة صنف إلى قاعدة البيانات');
           } else if (widget.product != null && isEnabled) {
@@ -166,8 +170,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   onChanged: (value) {
                     widget.product != null
                         ? cellPriceData = int.parse(value)
-                        :
-                    storingData(value, productCellPrice);
+                        : storingData(value, productCellPrice);
                   },
                 ),
                 // CustomTextField(

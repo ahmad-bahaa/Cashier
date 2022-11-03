@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/controllers/product_controller.dart';
@@ -10,6 +12,7 @@ import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class AddBillScreen extends StatelessWidget {
   AddBillScreen({
@@ -47,22 +50,37 @@ class AddBillScreen extends StatelessWidget {
     String formattedDate = DateFormat('yyyy-MM-dd ').format(dateTime);
 
     return WillPopScope(
-      onWillPop: () => _onWillPop(context),
+      onWillPop: () => _onWillPop(
+        context,
+        cashType,
+        billType,
+        false,
+        false,
+      ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('إضافة فاتورة'),
+          title:
+              Text(isCelling ? 'فاتورة مبيعات جديدة' : 'فاتورة مشتريات جديدة'),
           centerTitle: true,
           actions: [
             PopupMenuButton(
               onSelected: (value) {
                 if (value == 1) {
-                  Get.to(() => AddCashScreen(
-                        isSending: true,
-                      ));
+                  _onWillPop(
+                    context,
+                    cashType,
+                    billType,
+                    true,
+                    true,
+                  );
                 } else {
-                  Get.to(() => AddCashScreen(
-                        isSending: false,
-                      ));
+                  _onWillPop(
+                    context,
+                    cashType,
+                    billType,
+                    true,
+                    false,
+                  );
                 }
               },
               itemBuilder: (context) => const [
@@ -81,21 +99,9 @@ class AddBillScreen extends StatelessWidget {
         bottomNavigationBar: Obx(
           () => CustomBottomAppBar(
             buttonText:
-                '${billController.totalBillPrice.value.toStringAsFixed(2)}حفظ  - اجمالي ',
+                '${double.parse(billController.totalBillPrice.value.toStringAsFixed(2))}حفظ  - اجمالي ',
             onPressed: () {
-              //TODO: need Modification
-              if (billController.addProduct.isNotEmpty && billController.newBill.isNotEmpty) {
-                final q = personController.people.where((p0) {
-                  return p0.id.isEqual(billController.newBill['personId']);
-                }).toList();
-                dataBaseServices.updatePersonCash(q[0].id, q[0].owned,  billController.totalBillPrice.value.toInt(), 'owned');
-                //TODO: needs modification
-                addBillToDatabase(cashType,billType);
-              }else if(billController.addProduct.isNotEmpty){
-                addBillToDatabase(cashType,billType);
-              } else {
-                Tasks().showErrorMessage('خطأ', 'من فضلك اضف اصناف');
-              }
+              validateBill(cashType, billType, false, false);
             },
           ),
         ),
@@ -141,27 +147,23 @@ class AddBillScreen extends StatelessWidget {
                               Product(
                                 id: billController.product['id'] ?? 0,
                                 name: billController.product['name'] ?? '',
-                                buyPrice: int.parse(
-                                    billController.product['total'] ?? '0'),
+                                buyPrice: double.parse(
+                                    billController.product['total'] ?? '0.0'),
                                 cellPrice: isCelling
-                                    ? int.parse(billController
+                                    ? double.parse(billController
                                             .product['billCellPrice'] ??
-                                        '0')
-                                    : int.parse(billController
+                                        '0.0')
+                                    : double.parse(billController
                                             .product['billBuyPrice'] ??
-                                        '0'),
+                                        '0.0'),
                                 quantity: int.parse(
                                     billController.product['billQuantity'] ??
                                         '0'),
+                                lastPrice:
+                                    billController.product['lastPrice'] ?? 0.0,
                               ),
                             );
-                            //Todo: put this somewhere else
-                            dataBaseServices.updateProduct(
-                                billController.product['id'],
-                                int.parse(billController.product['quantity']),
-                                int.parse(
-                                    billController.product['billQuantity']),
-                                isCelling);
+
                             billController.updatingBillTotal();
                             billController.product.clear();
                             quantityTextController.clear();
@@ -179,43 +181,6 @@ class AddBillScreen extends StatelessWidget {
                         Icons.download,
                       ),
                     ),
-                    // SizedBox(
-                    //   width: 120,
-                    //   child: CustomTextFormField(
-                    //     data: 'data',
-                    //     hintText: 'الكمية',
-                    //     controller: quantityTextController,
-                    //     textInputType: TextInputType.number,
-                    //     validatorHint: 'يجب إدخال الكمية',
-                    //     iconData: Icons.person,
-                    //     textMaxLength: 5,
-                    //     onChanged: (value) {
-                    //       updatingProductInfo('billQuantity', value);
-                    //       int i = int.parse(
-                    //               billController.product['billQuantity']) *
-                    //           int.parse(
-                    //               billController.product['billCellPrice'] ?? '0');
-                    //       updatingProductInfo('total', i.toString());
-                    //     },
-                    //   ),
-                    // ),
-                    // SizedBox(
-                    //     width: 120,
-                    //     child: ElevatedButton(
-                    //       onPressed: () {
-                    //         if (billController.product.isNotEmpty) {
-                    //           Tasks().showAction(context, isCelling ? 4 : 5);
-                    //         } else {
-                    //           Tasks().showErrorMessage(
-                    //               'خطأ', 'من فضلك اختار صنف اولا');
-                    //         }
-                    //       },
-                    //       child: Obx(() => Text(isCelling
-                    //           ? billController.product['billCellPrice'] ??
-                    //               'سعر البيع'
-                    //           : billController.product['billBuyPrice'] ??
-                    //               'سعر الشراء')),
-                    //     )),
                   ],
                 ),
                 const Divider(
@@ -264,8 +229,7 @@ class AddBillScreen extends StatelessWidget {
                               billController.addProduct
                                   .remove(billController.addProduct[index]);
                               billController.updatingBillTotal();
-                              Tasks()
-                                  .showHintMessage('', 'تم ازالة الصنف بنجاح');
+                              Tasks().showHintMessage('', 'تم ازالة الصنف ');
                             },
                             child: RowBillCard(
                               product: item,
@@ -286,27 +250,38 @@ class AddBillScreen extends StatelessWidget {
     );
   }
 
-  Future<bool> _onWillPop(BuildContext context) async {
+  Future<bool> _onWillPop(
+    BuildContext context,
+    String cashType,
+    String billType,
+    bool isPaying,
+    bool paidCashType,
+  ) async {
     if (billController.addProduct.isNotEmpty) {
       return await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('هل تريد الإلغاء؟'),
-          content: const Text('يوجد فاتورة لم يتم حفظها'),
+          title: const Text('يوجد فاتورة'),
+          content: const Text('هل تريد الحفظ ؟'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              //<-- SEE HERE
               child: const Text('لا'),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              // <-- SEE HERE
+              onPressed: () {
+                validateBill(cashType, billType, isPaying, paidCashType);
+                Navigator.of(context).pop(true);
+              },
               child: const Text('نعم'),
             ),
           ],
         ),
       );
+    } else if (isPaying) {
+      return await Get.to(() => AddCashScreen(
+            isSending: paidCashType,
+          ));
     } else {
       return true;
     }
@@ -338,30 +313,52 @@ class AddBillScreen extends StatelessWidget {
       ifAbsent: () => value,
     );
   }
-  //TODO: to update the products
-  // updatingProductQuantity(int id,int index){
-  //   for(int i = billController.addProduct.length; i <0; i --){
-  //     dataBaseServices.updateProduct(
-  //         id,
-  //         q[0].quantity,
-  //         billController.addProduct[index].quantity,
-  //         !isCelling);
-  //   }
-  // }
-  addBillToDatabase(String cashType,String billType){
+
+  validateBill(
+      String cashType, String billType, bool isPaying, bool paidCashType) {
+    //TODO: need Modification
+    if (billController.addProduct.isNotEmpty &&
+        billController.newBill.isNotEmpty) {
+      final q = personController.people.where((p0) {
+        return p0.id.isEqual(billController.newBill['personId']);
+      }).toList();
+      dataBaseServices.updatePersonCash(q[0].id, q[0].owned.toDouble(),
+          billController.totalBillPrice.value.toDouble(), 'owned');
+      //TODO: needs modification
+      addBillToDatabase(cashType, billType);
+      isPaying
+          ? Get.to(() => AddCashScreen(
+                isSending: paidCashType,
+              ))
+          : null;
+    } else if (billController.addProduct.isNotEmpty) {
+      addBillToDatabase(cashType, billType);
+      isPaying
+          ? Get.to(() => AddCashScreen(
+                isSending: paidCashType,
+              ))
+          : null;
+    } else {
+      Tasks().showErrorMessage('خطأ', 'من فضلك اضف اصناف');
+    }
+  }
+
+  addBillToDatabase(String cashType, String billType) async {
     dataBaseServices.addBill(
         Bill(
           id: bills.length + 1,
           uid: billController.newBill['uid'] ?? 0,
           name: billController.newBill['name'] ?? 'بدون اسم',
           price: billController.totalBillPrice.value.toInt(),
-          date: DateFormat('yyyy-MM-dd - kk:mm')
-              .format(DateTime.now()),
+          date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
           products: billController.addProduct,
         ),
         billType);
-    dataBaseServices.updateCash(cashType,
-        billController.totalBillPrice.value.toInt(), false);
+    dataBaseServices.updateCash(
+        cashType, billController.totalBillPrice.value.toDouble(), false);
+    dataBaseServices.updateCash('earnings',
+        billController.totalBillEarnings.value.toDouble(), isCelling);
+    addBillProductsToDatabase(billType, bills.length + 1);
     billController.product.clear();
     typeAheadPersonController.clear();
     typeAheadProductController.clear();
@@ -370,13 +367,19 @@ class AddBillScreen extends StatelessWidget {
     billController.newBill.clear();
     billController.addProduct.clear();
     billController.totalBillPrice.value = 0;
-    Tasks().showSuccessMessage(
-        'عملية ناجحة', 'تم إاضافة فاتورة إلى قاعدة البيانات');
+    Tasks().showSuccessMessage('', 'تم إاضافة فاتورة');
+  }
+
+  addBillProductsToDatabase(String billType, int billID) async {
+    for (int i = 0; i < billController.addProduct.length; i++) {
+      dataBaseServices.addBillProducts(
+          billController.addProduct[i], billType, billID);
+    }
   }
 }
 
-class totalAndQuantityRow extends StatelessWidget {
-  const totalAndQuantityRow({
+class TotalAndQuantityRow extends StatelessWidget {
+  const TotalAndQuantityRow({
     Key? key,
     required this.billController,
   }) : super(key: key);

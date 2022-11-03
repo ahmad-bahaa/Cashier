@@ -6,23 +6,26 @@ import 'package:equatable/equatable.dart';
 class Product extends Equatable {
   final int id;
   final String name;
-  final int buyPrice;
-  final int cellPrice;
+  final double buyPrice;
+  final double cellPrice;
+  final double lastPrice;
   final int quantity;
   Product({
     required this.id,
     required this.name,
     required this.buyPrice,
     required this.cellPrice,
+    required this.lastPrice,
     required this.quantity,
   });
 
   Product copyWith({
     int? id,
     String? name,
-    int? buyPrice,
-    int? cellPrice,
+    double? buyPrice,
+    double? cellPrice,
     int? quantity,
+    double? lastPrice,
   }) {
     return Product(
       id: id ?? this.id,
@@ -30,6 +33,7 @@ class Product extends Equatable {
       buyPrice: buyPrice ?? this.buyPrice,
       cellPrice: cellPrice ?? this.cellPrice,
       quantity: quantity ?? this.quantity,
+      lastPrice: lastPrice ?? this.lastPrice
     );
   }
 
@@ -40,6 +44,7 @@ class Product extends Equatable {
       'buyPrice': buyPrice,
       'cellPrice': cellPrice,
       'quantity': quantity,
+      'lastPrice': lastPrice,
     };
   }
 
@@ -47,9 +52,10 @@ class Product extends Equatable {
     return Product(
       id: map['id']?.toInt() ?? 0,
       name: map['name'] ?? '',
-      buyPrice: map['buyPrice']?.toInt() ?? 0,
-      cellPrice: map['cellPrice']?.toInt() ?? 0,
+      buyPrice: map['buyPrice'].toDouble() ?? 0.0,
+      cellPrice: map['cellPrice'].toDouble() ?? 0.0,
       quantity: map['quantity']?.toInt() ?? 0,
+      lastPrice: map['lastPrice'].toDouble() ?? 0.0,
     );
   }
 
@@ -60,7 +66,7 @@ class Product extends Equatable {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, buyPrice: $buyPrice, cellPrice: $cellPrice, quantity: $quantity)';
+    return 'Product(id: $id, name: $name, buyPrice: $buyPrice, cellPrice: $cellPrice, quantity: $quantity, lastPrice: $lastPrice)';
   }
 
   @override
@@ -71,6 +77,7 @@ class Product extends Equatable {
       buyPrice,
       cellPrice,
       quantity,
+      lastPrice
     ];
   }
 }

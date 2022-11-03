@@ -14,13 +14,19 @@ class BillController extends GetxController {
   var addProduct = <Product>[].obs;
   var product = {}.obs;
   var rows = <TableRow>[].obs;
-  RxInt totalBillPrice = 0.obs;
+  RxDouble totalBillPrice = 0.0.obs;
+  RxDouble totalBillEarnings = 0.0.obs;
 
   updatingBillTotal() {
-    totalBillPrice.value = 0;
+    double productPrice = 0.0;
+    double productEarning = 0.0;
+
     if (addProduct.isNotEmpty) {
       addProduct.forEach((element) {
-        totalBillPrice += element.buyPrice;
+        productPrice += element.cellPrice * element.quantity;
+        productEarning += element.quantity * element.buyPrice;
+        totalBillPrice.value =  productPrice;
+        totalBillEarnings.value = productPrice - productEarning;
       });
     }
   }
@@ -38,8 +44,7 @@ class BillController extends GetxController {
   void onInit() {
     incomingBills.bindStream(dataBaseServices.getAllBills('incomingBills'));
     ongoingBills.bindStream(dataBaseServices.getAllBills('ongoingBills'));
-    queryBills.bindStream(
-        dataBaseServices.getAllUserBills('ongoingBills',1 ));
+    queryBills.bindStream(dataBaseServices.getAllUserBills('ongoingBills', 1));
     super.onInit();
   }
 }

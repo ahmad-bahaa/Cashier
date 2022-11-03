@@ -6,6 +6,7 @@ import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -97,12 +98,14 @@ class CustomAlertDialog extends StatelessWidget {
                     _dataBaseServices.addProduct(Product(
                       id: productController.products.length + 1,
                       name: productController.newProduct['name'],
-                      buyPrice: int.parse(
-                          productController.newProduct['buyPrice'] ?? '0'),
-                      cellPrice: int.parse(
-                          productController.newProduct['cellPrice'] ?? '0'),
+                      buyPrice: double.parse(
+                          productController.newProduct['buyPrice'] ?? '0.0'),
+                      cellPrice: double.parse(
+                          productController.newProduct['cellPrice'] ?? '0.0'),
                       quantity: int.parse(
                           productController.newProduct['quantity'] ?? '0'),
+                      lastPrice:
+                          productController.newProduct['lastPrice'] ?? 0.0,
                     ));
                     productController.newProduct.clear();
                     Get.back();
@@ -147,18 +150,12 @@ class CustomAlertDialog extends StatelessWidget {
         {
           return _buildPersonAlertDialogForm(
             'تسجيل عميل جديد',
-            '',
-            '',
-            '',
           );
         }
       case 3:
         {
           return _buildProductAlertDialogForm(
             'تسجيل صنف جديد',
-            '',
-            '',
-            '',
           );
         }
       case 4:
@@ -206,8 +203,7 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
-  _buildPersonAlertDialogForm(
-      String title, String first, String second, String third) {
+  _buildPersonAlertDialogForm(String title) {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -265,7 +261,10 @@ class CustomAlertDialog extends StatelessWidget {
   }
 
   _buildProductAlertDialogForm(
-      String title, String first, String second, String third) {
+    String title,
+  ) {
+    nameTextEditingController?.value =
+    'ss' as TextEditingValue;
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -295,6 +294,7 @@ class CustomAlertDialog extends StatelessWidget {
             CustomTextField(
               controller: phoneTextEditingController,
               data: 'cellPrice',
+              value: '',
               hintText: 'سعر الشراء',
               textInputType: TextInputType.number,
               iconData: Icons.money,
@@ -304,8 +304,9 @@ class CustomAlertDialog extends StatelessWidget {
               },
             ),
             CustomTextField(
-              controller: phoneTextEditingController,
+              controller: addressTextEditingController,
               data: 'buyPrice',
+              value: '',
               hintText: 'سعر البيع',
               textInputType: TextInputType.number,
               iconData: Icons.money,
@@ -328,9 +329,16 @@ class CustomAlertDialog extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Obx(
-          () => Text(isCelling
-              ? 'سعر البيع : ${billController.product['cellPrice'].toString()}'
-              : 'سعر الشراء : ${billController.product['buyPrice'].toString()}'),
+          () => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('الكمية : ${billController.product['quantity'].toString()}'),
+              const Text(' - '),
+              Text(isCelling
+                  ? 'متوسط سعر الشراء : ${billController.product['buyPrice'].toString()}'
+                  : 'اخر سعر شراء : ${billController.product['lastPrice'].toString()}'),
+            ],
+          ),
         ),
         CustomTextFormField(
           controller: nameTextEditingController,
@@ -360,8 +368,8 @@ class CustomAlertDialog extends StatelessWidget {
           textMaxLength: 5,
           onChanged: (value) {
             updatingProductInfo('billQuantity', value);
-            int i = int.parse(billController.product['billQuantity']) *
-                int.parse(billController
+            double i = double.parse(billController.product['billQuantity']) *
+                double.parse(billController
                     .product[isCelling ? 'billCellPrice' : 'billBuyPrice']);
             updatingProductInfo('total', i.toString());
           },
@@ -402,26 +410,25 @@ class CustomAlertDialog extends StatelessWidget {
       if (int.parse(billController.product['billQuantity']) >
               int.parse(billController.product['quantity']) &&
           isCelling) {
-        Tasks().showErrorMessage('خطأ', 'غير متاح بالمخزن');
+        Tasks().showErrorMessage('', 'غير متاح بالمخزن');
       } else if (int.parse(billController.product['billQuantity']) >= 1) {
         if (isCelling &&
-            int.parse(billController
-                    .product[isCelling ? 'billCellPrice' : 'billBuyPrice']) <
-                int.parse(billController
-                    .product[isCelling ? 'cellPrice' : 'buyPrice'])) {
+            double.parse(billController.product['billCellPrice']) <
+                double.parse(billController.product['buyPrice'])) {
           Get.back();
           Tasks().showAction(context, 6);
-        }else if(int.parse(billController
-            .product[isCelling ? 'billCellPrice' : 'billBuyPrice']) < 1){
-          Tasks().showErrorMessage('خطأ', 'من فضلك ادخل سعر صحيح');
+        } else if (double.parse(billController
+                .product[isCelling ? 'billCellPrice' : 'billBuyPrice']) <
+            1) {
+          Tasks().showErrorMessage('', 'من فضلك ادخل سعر صحيح');
         } else {
           addingProductAfterValidation(isCelling);
         }
       } else {
-        Tasks().showErrorMessage('خطأ', 'من فضلك ادخل كمية صحيحة');
+        Tasks().showErrorMessage('', 'من فضلك ادخل كمية صحيحة');
       }
     } else {
-      Tasks().showErrorMessage('خطأ', 'من فضلك اختار صنف');
+      Tasks().showErrorMessage('', 'من فضلك اختار صنف');
     }
   }
 
@@ -431,19 +438,22 @@ class CustomAlertDialog extends StatelessWidget {
         id: billController.product['id'] ?? 0,
         name: billController.product['name'] ?? '',
         buyPrice: isCelling
-            ? int.parse(billController.product['cellPrice'])
-            : int.parse(billController.product['buyPrice']),
+            ? double.parse(billController.product['buyPrice'] ?? '0.0')
+            : double.parse(billController.product['buyPrice'] ?? '0.0'),
         cellPrice: isCelling
-            ? int.parse(billController.product['billCellPrice'] ?? '0')
-            : int.parse(billController.product['billBuyPrice'] ?? '0'),
+            ? double.parse(billController.product['billCellPrice'] ?? '0.0')
+            : double.parse(billController.product['billBuyPrice'] ?? '0.0'),
         quantity: int.parse(billController.product['billQuantity'] ?? '0'),
+        lastPrice: double.parse(billController.product['lastPrice'] ?? '0.0'),
       ),
     );
-    //Todo: put this somewhere else
-    _dataBaseServices.updateProduct(
+    // //Todo: put this somewhere else
+    _dataBaseServices.updateProductAveragePrice(
         billController.product['id'],
-        int.parse(billController.product['quantity']),
-        int.parse(billController.product['billQuantity']),
+        int.parse(billController.product['quantity'] ?? '0'),
+        double.parse(billController.product['buyPrice'] ?? '0'),
+        int.parse(billController.product['billQuantity'] ?? '0'),
+        double.parse(billController.product['billBuyPrice'] ?? '0'),
         isCelling);
     Get.back();
     billController.updatingBillTotal();

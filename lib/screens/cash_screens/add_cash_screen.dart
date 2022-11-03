@@ -39,11 +39,11 @@ class AddCashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     cash != null ? isEnabled = false : isEnabled = true;
-   if(cash != null){
-     typeAheadPersonController.text = cash!.name.toString();
-     textEditingController.text = cash!.money.toString();
-     notesTextEditingController.text = cash!.description.toString();
-   }
+    if (cash != null) {
+      typeAheadPersonController.text = cash!.name.toString();
+      textEditingController.text = cash!.money.toString();
+      notesTextEditingController.text = cash!.description.toString();
+    }
 
     if (isSending != null) {
       _isSending = isSending!;
@@ -52,155 +52,173 @@ class AddCashScreen extends StatelessWidget {
       _cash = true;
     }
     String formattedDate = DateFormat('yyyy-MM-dd ').format(dateTime);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('تسجيل نقدية جديدة'),
-        centerTitle: true,
-      ),
-      bottomNavigationBar: CustomBottomAppBar(
-        buttonText: isEnabled ? 'حفظ' : 'null',
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            if (billController.newBill.isNotEmpty) {
-              final q = personController.people.where((p0) {
-                return p0.id.isEqual(billController.newBill['personId']);
-              }).toList();
-              if (_isSending != null && _isSending) {
-                int id = cashController.allSending.length + 1;
-                _dataBaseServices.addCashBill(
-                  Cash(
-                    id: id,
-                    uid: billController.newBill['uid'] ?? 0,
-                    money: int.parse(cashController.newCash[money]),
-                    name: billController.newBill[name] ?? '',
-                    date:
-                        DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
-                    description: cashController.newCash[description] ?? '',
+    return WillPopScope(
+      onWillPop: () => _onWillPop(context),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _isSending ? 'دفع نقدية' : 'استلام نقدية',
+          ),
+          centerTitle: true,
+        ),
+        bottomNavigationBar: CustomBottomAppBar(
+          buttonText: isEnabled ? 'حفظ' : 'null',
+          onPressed: () async {
+            validateCash(context);
+          },
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                children: [
+                  Text(
+                    formattedDate,
                   ),
-                  'sending',
-                );
-                //TODO : what to do when sending money ?
-                // _dataBaseServices.updatePersonCash(q[0].id, q[0].paid,
-                //     int.parse(cashController.newCash[money]), 'paid');
-                _dataBaseServices.updateCash('money',
-                    int.parse(cashController.newCash[money]), _isSending);
-
-                cashController.newCash.clear();
-                billController.newBill.clear();
-                typeAheadPersonController.clear();
-                textEditingController.clear();
-                Tasks().showSuccessMessage(
-                    'عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
-              } else if (_isSending != null && !_isSending) {
-                int id = cashController.allReceiving.length + 1;
-                _dataBaseServices.addCashBill(
-                  Cash(
-                    id: id,
-                    uid: billController.newBill['uid'] ?? 0,
-                    money: int.parse(cashController.newCash[money]),
-                    name: billController.newBill[name] ?? '',
-                    date:
-                        DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
-                    description: cashController.newCash[description] ?? '',
-                  ),
-                  'receiving',
-                );
-
-                _dataBaseServices.updatePersonCash(q[0].id, q[0].paid,
-                    int.parse(cashController.newCash[money]), 'paid');
-                _dataBaseServices.updateCash('money',
-                    int.parse(cashController.newCash[money]), _isSending);
-                cashController.newCash.clear();
-                billController.newBill.clear();
-                typeAheadPersonController.clear();
-                textEditingController.clear();
-                Tasks().showSuccessMessage(
-                    'عملية ناجحة', 'تم إاضافة نقدية إلى قاعدة البيانات');
-              } else {
-                _showAction(
-                  context,
-                  5,
-                );
-              }
-            } else {
-              Tasks().showErrorMessage(
-                'Error',
-                'من فضلك اختار عميل',
-              );
-            }
-          }
-        },
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Column(
-              children: [
-                Text(
-                  formattedDate,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 5.0,
-                  ),
-                  child: CustomTypeAheadPerson(
-                    typeAheadController: typeAheadPersonController,
-                    billController: billController,
-                    isBill: true,
-                    isEnabled: isEnabled,
-                  ),
-                ),
-                CustomTextFormField(
-                  data: money,
-                  value: cash?.money.toString() ?? '',
-                  controller: textEditingController,
-                  isEnabled: isEnabled,
-                  hintText: 'قيمة النقدية',
-                  textInputType: TextInputType.number,
-                  iconData: Icons.money,
-                  validatorHint: 'يجب إدخال قيمة للنقدية',
-                  textMaxLength: 5,
-                  onChanged: (value) {
-                    storingValue(value, money);
-                  },
-                ),
-                CustomTextField(
-                  controller: notesTextEditingController,
-                  data: description,
-                  value: cash?.description ?? '',
-                  isEnabled: isEnabled,
-                  hintText: 'ملاحظات',
-                  textInputType: TextInputType.multiline,
-                  iconData: Icons.money,
-                  textMaxLength: 70,
-                  onChanged: (value) {
-                    storingValue(value, description);
-                  },
-                ),
-                const Text(
-                  'نوع النقدية',
-                  style: TextStyle(
-                    fontSize: 26,
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    _isSending ? 'دفع نقدية' : 'استلام نقدية',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 28,
-                      color: _isSending ? Colors.red : Colors.green,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5.0,
+                    ),
+                    child: CustomTypeAheadPerson(
+                      typeAheadController: typeAheadPersonController,
+                      billController: billController,
+                      isBill: true,
+                      isEnabled: isEnabled,
                     ),
                   ),
-                ),
-              ],
+                  CustomTextFormField(
+                    data: money,
+                    value: cash?.money.toString() ?? '',
+                    controller: textEditingController,
+                    isEnabled: isEnabled,
+                    hintText: 'قيمة النقدية',
+                    textInputType: TextInputType.number,
+                    iconData: Icons.money,
+                    validatorHint: 'يجب إدخال قيمة للنقدية',
+                    textMaxLength: 5,
+                    onChanged: (value) {
+                      storingValue(value, money);
+                    },
+                  ),
+                  CustomTextField(
+                    controller: notesTextEditingController,
+                    data: description,
+                    value: cash?.description ?? '',
+                    isEnabled: isEnabled,
+                    hintText: 'ملاحظات',
+                    textInputType: TextInputType.multiline,
+                    iconData: Icons.money,
+                    textMaxLength: 70,
+                    onChanged: (value) {
+                      storingValue(value, description);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  validateCash(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      if (billController.newBill.isNotEmpty) {
+        final q = personController.people.where((p0) {
+          return p0.id.isEqual(billController.newBill['personId']);
+        }).toList();
+        if (_isSending != null && _isSending) {
+          int id = cashController.allSending.length + 1;
+          _dataBaseServices.addCashBill(
+            Cash(
+              id: id,
+              uid: billController.newBill['uid'] ?? 0,
+              money: double.parse(cashController.newCash[money]),
+              name: billController.newBill[name] ?? '',
+              date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+              description: cashController.newCash[description] ?? '',
+            ),
+            'sending',
+          );
+          //TODO : what to do when sending money ?
+          // _dataBaseServices.updatePersonCash(q[0].id, q[0].paid,
+          //     int.parse(cashController.newCash[money]), 'paid');
+          _dataBaseServices.updateCash(
+              'money', double.parse(cashController.newCash[money]), _isSending);
+
+          cashController.newCash.clear();
+          billController.newBill.clear();
+          typeAheadPersonController.clear();
+          textEditingController.clear();
+          Tasks().showSuccessMessage('', 'تم إاضافة نقدية إلى قاعدة البيانات');
+        } else if (_isSending != null && !_isSending) {
+          int id = cashController.allReceiving.length + 1;
+          _dataBaseServices.addCashBill(
+            Cash(
+              id: id,
+              uid: billController.newBill['uid'] ?? 0,
+              money: double.parse(cashController.newCash[money]),
+              name: billController.newBill[name] ?? '',
+              date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+              description: cashController.newCash[description] ?? '',
+            ),
+            'receiving',
+          );
+
+          _dataBaseServices.updatePersonCash(q[0].id, q[0].paid.toDouble(),
+              double.parse(cashController.newCash[money]), 'paid');
+          _dataBaseServices.updateCash(
+              'money', double.parse(cashController.newCash[money]), _isSending);
+          cashController.newCash.clear();
+          billController.newBill.clear();
+          typeAheadPersonController.clear();
+          textEditingController.clear();
+          Tasks().showSuccessMessage('', 'تم إاضافة نقدية إلى قاعدة البيانات');
+        } else {
+          _showAction(
+            context,
+            5,
+          );
+        }
+      } else {
+        Tasks().showErrorMessage(
+          'Error',
+          'من فضلك اختار عميل',
+        );
+      }
+    }
+  }
+
+  Future<bool> _onWillPop(
+    BuildContext context,
+  ) async {
+    if (billController.newBill.isNotEmpty) {
+      return await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('يوجد نقدية'),
+          content: const Text('هل تريد الحفظ ؟'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('لا'),
+            ),
+            TextButton(
+              onPressed: () {
+                validateCash(context);
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('نعم'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return true;
+    }
   }
 
   addRadioButton(

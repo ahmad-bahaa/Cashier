@@ -1,5 +1,6 @@
 import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/screens/home_screen.dart';
+import 'package:cashier/services/tasks.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool signIn = true;
   bool isHidden = true;
-  late String email, password;
+  late String email, password, rePassword;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (_key.currentState!.validate()) {
                   signIn
                       ? authController.loginUser(email, password)
-                      : authController.createUser(email, password);
+                      : password == rePassword
+                          ? authController.createUser(email, password)
+                          : Tasks().showErrorMessage(
+                              '', 'برجاء التاكد من تطابق الرقم السري');
                 }
               },
               child: Text(
@@ -60,25 +64,33 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const SizedBox(height: 30,),
+            const SizedBox(
+              height: 30,
+            ),
             Image.asset(
               'assets/images/102.png',
               height: 200,
               width: 200,
             ),
+           Align(
+             alignment: Alignment.centerRight,
+             child:  Padding(
+               padding: const EdgeInsets.only(right: 30.0,bottom: 8.0,top: 8.0,),
+               child: Text(
+                 signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
+                 style: const TextStyle(fontSize: 26),
+               ),
+             ),
+           ),
             CustomContainer(
               color: Colors.white,
               widget: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(right: 5.0,left: 5.0,bottom: 5.0,top: 32.0),
                 child: Form(
                   key: _key,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
-                        style: const TextStyle(fontSize: 26),
-                      ),
                       CustomTextFormField(
                         controller: textEditingController,
                         data: 'data',
@@ -91,15 +103,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           email = value;
                         },
                       ),
-
                       const SizedBox(height: 20.0),
-
                       Directionality(
                         textDirection: TextDirection.rtl,
                         child: TextFormField(
                           obscureText: isHidden,
                           keyboardType: TextInputType.visiblePassword,
-
                           decoration: InputDecoration(
                             filled: true,
                             labelText: 'ادخل الرقم السري',
@@ -138,18 +147,54 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                       ),
-                      // CustomTextFormField(
-                      //   controller: textEditingController,
-                      //   data: 'data',
-                      //   hintText: 'باسورد',
-                      //   textInputType: TextInputType.visiblePassword,
-                      //   validatorHint: 'من فضلك قم بإدخال رقم سري',
-                      //   iconData: Icons.lock,
-                      //   textMaxLength: 20,
-                      //   onChanged: (value) {
-                      //     password = value;
-                      //   },
-                      // ),
+                      const SizedBox(height: 20.0),
+                      !signIn
+                          ? Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: TextFormField(
+                                obscureText: isHidden,
+                                keyboardType: TextInputType.visiblePassword,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  labelText: 'ادخل الرقم السري مره اخرى',
+                                  labelStyle: const TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).primaryColor,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  prefixIcon: IconTheme(
+                                    data: IconThemeData(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    child: const Icon(Icons.lock),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isHidden = !isHidden;
+                                      });
+                                    },
+                                    icon: Icon(isHidden
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
+                                  ),
+                                ),
+                                validator: (val) => val == null ||
+                                        val.length < 6
+                                    ? 'من فضلك قم بمطابقة الرقم السري'
+                                    : null,
+                                onChanged: (val) {
+                                  rePassword = val;
+                                },
+                              ),
+                            )
+                          : const SizedBox(),
+                      const SizedBox(height: 20.0),
                     ],
                   ),
                 ),
@@ -166,9 +211,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 });
               },
             ),
-            // SizedBox(
-            //   height: MediaQuery.of(context).size.height / 4,
-            // ),
           ],
         ),
       ),

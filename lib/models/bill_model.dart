@@ -9,6 +9,7 @@ class Bill extends Equatable {
   final int uid;
   final String name;
   final int price;
+
   final String date;
   final List<Product> products;
 
@@ -47,6 +48,7 @@ class Bill extends Equatable {
       'price': price,
       'date': date,
       'products': products.map((x) => x.toMap()).toList(),
+      // 'products': products.map((x) => List<Map<String,dynamic>>.of(x).toList(),
     };
   }
 
@@ -59,9 +61,11 @@ class Bill extends Equatable {
       date: snap['date'] ?? '',
       //TODO: fix the list of products
       products: const [],
-      //List<Product>.from(
-      //snap['products']?.map((x) => Product.fromSnapShot(x))
-      // ).toList(),
+      // products: List<Map<String,dynamic>>.from(snap['products'] ?? []),
+      // products: List<Product>.from(snap['products']).toList();
+      // products: List<Product>.from(
+      //     snap['products']?.map((x) => Product.fromSnapShot(x))).toList(),
+      // products: snap['products'] ?? const [],
     );
   }
 

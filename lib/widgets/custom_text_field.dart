@@ -13,7 +13,7 @@ class CustomTextField extends StatelessWidget {
     required this.textMaxLength,
     required this.onChanged,
     required this.controller,
-    this.value,
+    required this.value,
     this.isEnabled,
   }) : super(key: key);
   final String data;

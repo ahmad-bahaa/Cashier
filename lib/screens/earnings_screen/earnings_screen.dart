@@ -26,10 +26,11 @@ class EarningsScreen extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var output = snapshot.data!.data();
-                int celling = output?['celling'] ?? 0;
-                int buying = output?['buying'] ?? 0;
-                int spending = output?['spending'] ?? 0;
-                int earning = celling - buying - spending;
+                double celling = double.parse(output?['celling'].toString() ?? '0.0');
+                double buying = double.parse(output?['buying'].toString() ?? '0.0');
+                double spending = double.parse(output?['spending'].toString() ?? '0.0');
+                double earnings = double.parse(output?['earnings'].toString() ?? '0.0');
+                double finalEarnings = earnings - spending;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -67,7 +68,7 @@ class EarningsScreen extends StatelessWidget {
                     CustomContainer(widget:  Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [ MoneyFlow(
-                        cash: earning.toString(),
+                        cash: finalEarnings.toString(),
                         type: ' : الارباح',
                         color: Colors.blue,
                       ),],

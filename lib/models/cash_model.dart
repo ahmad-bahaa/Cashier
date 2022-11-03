@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 class Cash extends Equatable {
   final int id;
   final int uid;
-  final int money;
+  final double money;
   final String name;
   final String date;
   final String description;
@@ -21,7 +21,7 @@ class Cash extends Equatable {
   Cash copyWith({
     int? id,
     int? uid,
-    int? money,
+    double? money,
     String? name,
     String? date,
     String? description
@@ -51,7 +51,7 @@ class Cash extends Equatable {
     return Cash(
       id: map['id']?.toInt() ?? 0,
         uid: map['uid']?.toInt() ?? 0,
-      money: map['money']?.toInt() ?? 0,
+      money: map['money']?.toDouble() ?? 0,
       name: map['name'] ?? '',
       date: map['date']?? '',
       description: map['description']?? '',

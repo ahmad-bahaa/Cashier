@@ -119,11 +119,10 @@ class CustomTypeAheadProduct extends StatelessWidget {
     );
     updatingProduct('name', suggestion.name);
     updatingProduct('quantity', suggestion.quantity.toString());
-    updatingProduct(
-        isCelling ? 'cellPrice' : 'buyPrice',
-        isCelling
-            ? suggestion.cellPrice.toString()
-            : suggestion.buyPrice.toString());
+    updatingProduct('lastPrice', suggestion.lastPrice.toString());
+    updatingProduct('buyPrice', suggestion.buyPrice.toString());
+
+    updatingProduct('cellPrice', suggestion.cellPrice.toString());
     updatingProduct('billQuantity', '0');
     updatingProduct(
         isCelling ? 'billCellPrice' : 'billBuyPrice',

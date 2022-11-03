@@ -30,7 +30,7 @@ class RowBillCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SingleUnit(text: i.toString(), width: 20),
+                SingleUnit(text: i.toString(), width: 25),
                 SingleUnit(text: product.name.toString(), width: 120),
                 SingleUnit(text: product.quantity.toString(), width: 40),
                 SingleUnit(text: product.cellPrice.toString(), width: 50),
