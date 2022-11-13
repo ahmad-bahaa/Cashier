@@ -20,7 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool signIn = true;
   bool isHidden = true;
-  late String email, password, rePassword;
+  late String password, rePassword;
+  String email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -65,27 +66,36 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const SizedBox(
-              height: 30,
+              height: 100,
             ),
-            Image.asset(
-              'assets/images/102.png',
-              height: 200,
-              width: 200,
+            // Image.asset(
+            //   'assets/images/102.png',
+            //   height: 200,
+            //   width: 200,
+            // ),
+            const Text(
+              'كاشير فري',
+              style: TextStyle(fontSize: 36),
             ),
-           Align(
-             alignment: Alignment.centerRight,
-             child:  Padding(
-               padding: const EdgeInsets.only(right: 30.0,bottom: 8.0,top: 8.0,),
-               child: Text(
-                 signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
-                 style: const TextStyle(fontSize: 26),
-               ),
-             ),
-           ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 30.0,
+                  bottom: 8.0,
+                  top: 8.0,
+                ),
+                child: Text(
+                  signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
+                  style: const TextStyle(fontSize: 26),
+                ),
+              ),
+            ),
             CustomContainer(
               color: Colors.white,
               widget: Padding(
-                padding: const EdgeInsets.only(right: 5.0,left: 5.0,bottom: 5.0,top: 32.0),
+                padding: const EdgeInsets.only(
+                    right: 5.0, left: 5.0, bottom: 5.0, top: 32.0),
                 child: Form(
                   key: _key,
                   child: Column(
@@ -111,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
                             filled: true,
-                            labelText: 'ادخل الرقم السري',
+                            labelText: 'ادخل كلمة السر',
                             labelStyle: const TextStyle(
                               color: Colors.blue,
                             ),
@@ -140,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           validator: (val) => val == null || val.length < 6
-                              ? 'من فضلك قم بإدخال رقم سري مناسب'
+                              ? 'من فضلك قم بإدخال كلمة سر مناسبه'
                               : null,
                           onChanged: (val) {
                             password = val;
@@ -156,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.visiblePassword,
                                 decoration: InputDecoration(
                                   filled: true,
-                                  labelText: 'ادخل الرقم السري مره اخرى',
+                                  labelText: 'ادخل كلمة السر مره اخرى',
                                   labelStyle: const TextStyle(
                                     color: Colors.blue,
                                   ),
@@ -184,12 +194,32 @@ class _LoginScreenState extends State<LoginScreen> {
                                         : Icons.visibility_off),
                                   ),
                                 ),
-                                validator: (val) => val == null ||
-                                        val.length < 6
-                                    ? 'من فضلك قم بمطابقة الرقم السري'
-                                    : null,
+                                validator: (val) =>
+                                    val == null || val.length < 6
+                                        ? 'من فضلك قم بمطابقة الرقم السري'
+                                        : null,
                                 onChanged: (val) {
                                   rePassword = val;
+                                },
+                              ),
+                            )
+                          : const SizedBox(),
+                      signIn
+                          ? Align(
+                              alignment: Alignment.centerRight,
+                              child: InkWell(
+                                child: const Text(
+                                  'هل نسيت كلمة السر ؟',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.indigo),
+                                ),
+                                onTap: () {
+                                  if(email.isEmpty){
+                                    Tasks().showErrorMessage('', 'من فضلك ادخل بريد الكتروني صحيح');
+                                  }else {
+                                    Tasks().showHintMessage('', 'من فضلك تحقق من بريدك الالكتروني');
+                                    authController.forgotPassword(email);
+                                  }
                                 },
                               ),
                             )

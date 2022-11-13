@@ -85,6 +85,10 @@ class BillScreen extends StatelessWidget {
                   SingleUnit(text: 'م', width: 20),
                 ],
               ),
+              const Divider(
+                color: Colors.black,
+                thickness: 2,
+              ),
               const SizedBox(
                 height: 5,
               ),

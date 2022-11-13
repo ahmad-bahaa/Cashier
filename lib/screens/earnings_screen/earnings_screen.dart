@@ -19,24 +19,24 @@ class EarningsScreen extends StatelessWidget {
       body: SizedBox(
         // width: MediaQuery.of(context).size.width,
         child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            stream: _fireStore
-                .collection('users')
-                .doc(userUid)
-                .snapshots(),
+            stream: _fireStore.collection('users').doc(userUid).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var output = snapshot.data!.data();
-                double celling = double.parse(output?['celling'].toString() ?? '0.0');
-                double buying = double.parse(output?['buying'].toString() ?? '0.0');
-                double spending = double.parse(output?['spending'].toString() ?? '0.0');
-                double earnings = double.parse(output?['earnings'].toString() ?? '0.0');
+                double celling =
+                    double.parse(output?['celling'].toString() ?? '0.0');
+                double buying =
+                    double.parse(output?['buying'].toString() ?? '0.0');
+                double spending =
+                    double.parse(output?['spending'].toString() ?? '0.0');
+                double earnings =
+                    double.parse(output?['earnings'].toString() ?? '0.0');
                 double finalEarnings = earnings - spending;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-
                     MoneyFlow(
-                      cash: celling.toString(),
+                      cash: celling.toStringAsFixed(0),
                       type: ' : المبيعات',
                       color: Colors.green,
                     ),
@@ -46,7 +46,7 @@ class EarningsScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     MoneyFlow(
-                      cash: buying.toString(),
+                      cash: buying.toStringAsFixed(0),
                       type: ' : المشتريات',
                       color: Colors.green,
                     ),
@@ -56,7 +56,7 @@ class EarningsScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     MoneyFlow(
-                      cash: spending.toString(),
+                      cash: spending.toStringAsFixed(0),
                       type: ' : المصروفات',
                       color: Colors.green,
                     ),
@@ -65,16 +65,18 @@ class EarningsScreen extends StatelessWidget {
                       thickness: 3.0,
                       color: Colors.black,
                     ),
-                    CustomContainer(widget:  Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [ MoneyFlow(
-                        cash: finalEarnings.toString(),
-                        type: ' : الارباح',
-                        color: Colors.blue,
-                      ),],
-                    ), color: Colors.white)
-
-
+                    CustomContainer(
+                        widget: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            MoneyFlow(
+                              cash: finalEarnings.toStringAsFixed(0),
+                              type: ' : الارباح',
+                              color: Colors.blue,
+                            ),
+                          ],
+                        ),
+                        color: Colors.white)
                   ],
                 );
               } else {
@@ -85,4 +87,3 @@ class EarningsScreen extends StatelessWidget {
     );
   }
 }
-

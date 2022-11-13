@@ -69,6 +69,16 @@ class AuthController extends GetxController {
       }
     }
   }
+  Future<void> forgotPassword(String email) async{
+    try{
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e){
+      if (e.code == 'user-not-found') {
+        Tasks()
+            .showErrorMessage('خطأ', 'لا يوجد مستخدم بهذا البريد الالكتروني.');
+      } else print(e.code);
+    }
+    }
 
   Future<void> signOutUser() async {
     await FirebaseAuth.instance.signOut();

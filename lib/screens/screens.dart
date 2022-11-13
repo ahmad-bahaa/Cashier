@@ -16,4 +16,5 @@ export 'home_screen.dart';
 export 'splash_screen.dart';
 export 'user_auth_screens/login_screen.dart';
 export 'earnings_screen/earnings_screen.dart';
+export 'Drawer/privacy_screen.dart';
 

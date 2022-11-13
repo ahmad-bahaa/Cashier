@@ -19,6 +19,77 @@ class HomeScreen extends StatelessWidget {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Center(
+                child: Text(
+                  'كاشير فري',
+                  style: TextStyle(fontSize: 32),
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text(
+                'عن التطبيق',
+                style: TextStyle(fontSize: 24),
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'تفعيل التطبيق ',
+                style: TextStyle(fontSize: 24),
+              ),
+              onTap: () {
+                // Get.to(() => const PrivacyScreen());
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'سياسة الخصوصية',
+                style: TextStyle(fontSize: 24),
+              ),
+              onTap: () {
+                // Get.to(() => const PrivacyScreen());
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'المساعدة',
+                style: TextStyle(fontSize: 24),
+              ),
+              onTap: () {
+                // Get.to(() => const PrivacyScreen());
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'تسجيل خروج',
+                style: TextStyle(fontSize: 24),
+              ),
+              onTap: () {
+                authController.signOutUser();
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: const Text('الصفحة الرئيسية'),
         centerTitle: true,
