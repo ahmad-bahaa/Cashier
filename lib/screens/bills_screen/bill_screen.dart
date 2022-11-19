@@ -27,12 +27,13 @@ class BillScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String billType = isCelling ? 'ongoingBills' : 'incomingBills';
     int i = 0;
-    // final q = personController.people.firstWhere((element) => element.id.isEqual(bill.uid.toInt()));
-    // printInfo(info: q.id.toString());
-    // Person person = PersonController().people.firstWhere((p0) => p0.id == 4);
+     int uid = bill.uid - 1;
+    Person? person = uid == -1 ? null : personController.people[uid];
+    String phone = person?.phoneNumber ?? ' لا يوجد';
+    String address = person?.address ?? ' لا يوجد';
+
 
     String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
-    // Future<Person> person =  personController.people.firstWhere((element) => element.id = bill.uid);
     return Scaffold(
       appBar:
           CustomAppBar(title: isCelling ? 'فاتورة مبيعات ' : 'فاتورة مشتريات '),
@@ -54,8 +55,6 @@ class BillScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -70,24 +69,78 @@ class BillScreen extends StatelessWidget {
                 ],
               ),
 
-              Text(
-                ' العميل: ${bill.name}',
-                style: const TextStyle(fontSize: 18.0),
+              // const SizedBox(height: 5),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        person?.name ?? 'لا يوجد' ,
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const Text(
+                        ' - ',
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const Text(
+                        ' العميل ',
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 5),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                       phone,
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const Text(
+                        ' - ',
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const Text(
+                        ' رقم الهاتف ',
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        address,
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const Text(
+                        ' - ',
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const Text(
+                        ' العنوان ',
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                    ],
+                  ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(height: 5),
-              const Text(
-                'رقم الهاتف:  ',
-                style: const TextStyle(fontSize: 18.0),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                'العنوان: لايوجد ',
-                style: TextStyle(fontSize: 18.0),
-              ),
+
               const Divider(
                 color: Colors.black,
                 thickness: 1,
               ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const [

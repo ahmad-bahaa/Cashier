@@ -55,7 +55,7 @@ class Bill extends Equatable {
   factory Bill.fromSnapShot(DocumentSnapshot snap) {
     return Bill(
       id: snap['id']?.toInt() ?? 0,
-      uid: snap['id']?.toInt() ?? 0,
+      uid: snap['uid']?.toInt() ?? 0,
       name: snap['name'] ?? '',
       price: snap['price']?.toInt() ?? 0,
       date: snap['date'] ?? '',
