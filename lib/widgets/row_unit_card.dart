@@ -21,8 +21,8 @@ class RowUnitCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SingleUnit(text: quantity, width: 80),
-            SingleUnit(text: name, width: 150),
+            SingleUnit(text: quantity, width: 80,isBold: false,),
+            SingleUnit(text: name, width: 150,isBold: false,),
           ],
         ),
       ),

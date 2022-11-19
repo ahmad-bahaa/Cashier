@@ -10,7 +10,11 @@ class PrivacyScreen extends StatelessWidget {
         centerTitle: true,
         title: const Text('سياسة الخصوصية'),
       ),
-      body: const Text('سياسة الخصوصية'),
+      body: Center(
+        child: Image.asset(
+          'assets/images/privacy.jpg',
+        ),
+      ),
     );
   }
 }

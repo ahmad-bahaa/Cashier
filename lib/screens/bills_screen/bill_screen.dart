@@ -1,11 +1,14 @@
 import 'package:cashier/controllers/auth_controller.dart';
+import 'package:cashier/controllers/person_controller.dart';
 import 'package:cashier/models/bill_model.dart';
+import 'package:cashier/models/person_model.dart';
 import 'package:cashier/models/product_model.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/widgets/custom_app_bar.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class BillScreen extends StatelessWidget {
@@ -18,18 +21,21 @@ class BillScreen extends StatelessWidget {
   final Bill bill;
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   DataBaseServices dataBaseServices = DataBaseServices();
+  final PersonController personController = Get.put(PersonController());
 
   @override
   Widget build(BuildContext context) {
     String billType = isCelling ? 'ongoingBills' : 'incomingBills';
     int i = 0;
+    // final q = personController.people.firstWhere((element) => element.id.isEqual(bill.uid.toInt()));
+    // printInfo(info: q.id.toString());
+    // Person person = PersonController().people.firstWhere((p0) => p0.id == 4);
 
-    // List<Product> products = dataBaseServices.getAllBillProducts(
-    //     billType, bill.uid) as List<Product>;
     String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
+    // Future<Person> person =  personController.people.firstWhere((element) => element.id = bill.uid);
     return Scaffold(
       appBar:
-      CustomAppBar(title: isCelling ? 'فاتورة مبيعات ' : 'فاتورة مشتريات '),
+          CustomAppBar(title: isCelling ? 'فاتورة مبيعات ' : 'فاتورة مشتريات '),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -48,23 +54,30 @@ class BillScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                ' التاريخ: ${bill.date}',
-                style: const TextStyle(fontSize: 18.0),
+
+              // const SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    ' التاريخ:  ${bill.date}',
+                    style: const TextStyle(fontSize: 18.0),
+                  ),
+                  Text(
+                    ' م : ${bill.id} ',
+                    style: const TextStyle(fontSize: 18.0),
+                  ),
+                ],
               ),
-              const SizedBox(height: 5),
-              Text(
-                ' مسلسل الفاتورة : ${bill.id} ',
-                style: const TextStyle(fontSize: 18.0),
-              ),
+
               Text(
                 ' العميل: ${bill.name}',
                 style: const TextStyle(fontSize: 18.0),
               ),
               const SizedBox(height: 5),
               const Text(
-                'رقم الهاتف: لايوجد',
-                style: TextStyle(fontSize: 18.0),
+                'رقم الهاتف:  ',
+                style: const TextStyle(fontSize: 18.0),
               ),
               const SizedBox(height: 5),
               const Text(
@@ -78,11 +91,31 @@ class BillScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const [
-                  SingleUnit(text: 'الاجمالي', width: 55),
-                  SingleUnit(text: 'السعر', width: 50),
-                  SingleUnit(text: 'الكمية', width: 40),
-                  SingleUnit(text: 'اسم الصنف', width: 120),
-                  SingleUnit(text: 'م', width: 20),
+                  SingleUnit(
+                    text: 'الاجمالي',
+                    width: 55,
+                    isBold: true,
+                  ),
+                  SingleUnit(
+                    text: 'السعر',
+                    width: 50,
+                    isBold: false,
+                  ),
+                  SingleUnit(
+                    text: 'الكمية',
+                    width: 40,
+                    isBold: false,
+                  ),
+                  SingleUnit(
+                    text: 'اسم الصنف',
+                    width: 120,
+                    isBold: false,
+                  ),
+                  SingleUnit(
+                    text: 'م',
+                    width: 20,
+                    isBold: false,
+                  ),
                 ],
               ),
               const Divider(
@@ -110,37 +143,21 @@ class BillScreen extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Text("Loading");
                       }
-                     // snapshot.data!.docs.map((e) =>
-                     //      Product.fromSnapShot(e)).toList();
-                     //  ),
+                      // snapshot.data!.docs.map((e) =>
+                      //      Product.fromSnapShot(e)).toList();
+                      //  ),
                       return ListView(
-                      children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Product product = Product.fromSnapShot(document);
-                      i = i+1;
-                      return RowBillCard(product: product,isCelling: isCelling,i: i,);
-                      }).toList(),
+                        children: snapshot.data!.docs
+                            .map((DocumentSnapshot document) {
+                          Product product = Product.fromSnapShot(document);
+                          i = i + 1;
+                          return RowBillCard(
+                            product: product,
+                            isCelling: isCelling,
+                            i: i,
+                          );
+                        }).toList(),
                       );
-
-                      // return ListView.builder(
-                      // shrinkWrap: true,
-                      // itemCount: products.length,
-                      // itemBuilder: (context, index) {
-                      // return Card(
-                      // elevation: 0.0,
-                      // child: RowBillCard(
-                      // isCelling: isCelling,
-                      // product: Product(
-                      // name: 'صنف $index',
-                      // id: index,
-                      // lastPrice: 10,
-                      // quantity: 20,
-                      // buyPrice: 10,
-                      // cellPrice: 10,
-                      // ),
-                      // i: index + 1,
-                      // ),
-                      // );
-                      // });
                     }),
               ),
               const Divider(
@@ -149,7 +166,20 @@ class BillScreen extends StatelessWidget {
               ),
               Text(
                 ' اجمالي : ${bill.price}',
-                style: const TextStyle(fontSize: 18.0),
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 1,
+              ),
+              const Center(
+                child: Text(
+                  'كاشير للمحاسبة - 01556533914',
+                  style: TextStyle(fontSize: 18.0),
+                ),
               ),
             ],
           ),

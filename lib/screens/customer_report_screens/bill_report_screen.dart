@@ -1,6 +1,7 @@
 import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/controllers/bill_controller.dart';
 import 'package:cashier/models/bill_model.dart';
+import 'package:cashier/screens/screens.dart';
 import 'package:cashier/services/database_services.dart';
 import 'package:cashier/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,12 +12,14 @@ class BillReportScreen extends StatelessWidget {
   BillReportScreen({
     Key? key,
     required this.billType,
+    required this.isCelling,
   }) : super(key: key);
 
   final DataBaseServices dataBaseServices = DataBaseServices();
   final BillController billController = Get.put(BillController());
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final String billType;
+  final bool isCelling;
 
   List<Bill> bills = <Bill>[];
 
@@ -46,7 +49,12 @@ class BillReportScreen extends StatelessWidget {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Bill bill = Bill.fromSnapShot(document);
               // Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-              return InkWell(child: buildBillReportRow(bill));
+              return InkWell(
+                onTap: () =>
+                  Get.to(() => BillScreen(isCelling: isCelling, bill: bill)),
+
+                child: buildBillReportRow(bill),
+              );
             }).toList(),
           );
         });

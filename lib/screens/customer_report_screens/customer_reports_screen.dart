@@ -63,10 +63,12 @@ class _CustomerBillsScreenState extends State<CustomerBillsScreen>
           Expanded(
             child: TabBarView(
               controller: _controller,
-              children:  [
-                BillReportScreen(billType: 'ongoingBills'),
-                BillReportScreen(billType: 'incomingBills'),
-                UserCashReportScreen(billType: 'receiving',),
+              children: [
+                BillReportScreen(isCelling: true, billType: 'ongoingBills'),
+                BillReportScreen(isCelling: false, billType: 'incomingBills'),
+                UserCashReportScreen(
+                  billType: 'receiving',
+                ),
                 UserCashReportScreen(billType: 'sending'),
               ],
             ),

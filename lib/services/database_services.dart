@@ -39,20 +39,32 @@ class DataBaseServices {
             }).toList());
   }
 
-  Stream<List<Bill>> queryBills(String collection, String q) {
-    return _firebaseFirestore
+  //TODO not used
+  Future<Person> getPerson(int id) async {
+    return await _firebaseFirestore
         .collection('users')
         .doc(userUid)
-        .collection('ongoingBills')
-        .orderBy('id', descending: false)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Bill.fromSnapShot(e)).where((element) {
-              final item = element.name.toLowerCase();
-              final query = q.toLowerCase();
-              return item.contains('ahmad');
-            }).toList());
+        .collection('people')
+        .get()
+        .then((value) => value.docs
+            .map((e) => Person.fromSnapShot(e))
+            .where((element) => element.id == id) as Person);
   }
+
+// Stream<List<Bill>> queryBillss(String collection, String q) {
+//   return _firebaseFirestore
+//       .collection('users')
+//       .doc(userUid)
+//       .collection('ongoingBills')
+//       .orderBy('id', descending: false)
+//       .snapshots()
+//       .map((event) =>
+//           event.docs.map((e) => Bill.fromSnapShot(e)).where((element) {
+//             final item = element.name.toLowerCase();
+//             final query = q.toLowerCase();
+//             return item.contains('ahmad');
+//           }).toList());
+// }
 
   Future<List<Product>> queryAllProducts(String query) async {
     return _firebaseFirestore
@@ -266,7 +278,7 @@ class DataBaseServices {
     });
   }
 
-  //TODO: remove this
+//TODO: remove this
   Future<void> updatessProductQuantity(int id, int quantity, bool isCelling) {
     Product product;
     return _firebaseFirestore

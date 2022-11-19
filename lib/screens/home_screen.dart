@@ -35,34 +35,34 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
-              title: const Text(
-                'عن التطبيق',
-                style: TextStyle(fontSize: 24),
-              ),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'تفعيل التطبيق ',
-                style: TextStyle(fontSize: 24),
-              ),
-              onTap: () {
-                // Get.to(() => const PrivacyScreen());
-                // Update the state of the app.
-                // ...
-              },
-            ),
+            // ListTile(
+            //   title: const Text(
+            //     'عن التطبيق',
+            //     style: TextStyle(fontSize: 24),
+            //   ),
+            //   onTap: () {
+            //     // Update the state of the app.
+            //     // ...
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text(
+            //     'تفعيل التطبيق ',
+            //     style: TextStyle(fontSize: 24),
+            //   ),
+            //   onTap: () {
+            //     // Get.to(() => const PrivacyScreen());
+            //     // Update the state of the app.
+            //     // ...
+            //   },
+            // ),
             ListTile(
               title: const Text(
                 'سياسة الخصوصية',
                 style: TextStyle(fontSize: 24),
               ),
               onTap: () {
-                // Get.to(() => const PrivacyScreen());
+                Get.to(() => const PrivacyScreen());
                 // Update the state of the app.
                 // ...
               },
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 24),
               ),
               onTap: () {
-                // Get.to(() => const PrivacyScreen());
+                Get.to(() => const HelpScreen());
                 // Update the state of the app.
                 // ...
               },
