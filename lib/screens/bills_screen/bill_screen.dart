@@ -76,7 +76,7 @@ class BillScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        person?.name ?? 'لا يوجد' ,
+                        person?.name ?? 'بدون اسم' ,
                         style: const TextStyle(fontSize: 18.0),
                       ),
                       const Text(
