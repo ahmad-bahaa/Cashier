@@ -13,7 +13,7 @@ class Bill extends Equatable {
   final String date;
   final List<Product> products;
 
-  Bill({
+  const Bill({
     required this.id,
     required this.uid,
     required this.name,
@@ -59,7 +59,6 @@ class Bill extends Equatable {
       name: snap['name'] ?? '',
       price: snap['price']?.toInt() ?? 0,
       date: snap['date'] ?? '',
-      //TODO: fix the list of products
       products: const [],
       // products: List<Map<String,dynamic>>.from(snap['products'] ?? []),
       // products: List<Product>.from(snap['products']).toList();

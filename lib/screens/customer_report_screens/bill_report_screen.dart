@@ -51,7 +51,7 @@ class BillReportScreen extends StatelessWidget {
               // Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
               return InkWell(
                 onTap: () =>
-                  Get.to(() => BillScreen(isCelling: isCelling, bill: bill)),
+                  Get.to(() => BillScreen(isCelling: isCelling, bill: bill,)),
 
                 child: buildBillReportRow(bill),
               );
@@ -68,7 +68,6 @@ class BillReportScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                //TODO: this should be total Bill Cost
                 bill.price.toString(),
                 style: const TextStyle(fontSize: 24, color: Colors.green),
               ),

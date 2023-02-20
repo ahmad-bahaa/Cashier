@@ -10,7 +10,7 @@ class Product extends Equatable {
   final double cellPrice;
   final double lastPrice;
   final int quantity;
-  Product({
+  const Product({
     required this.id,
     required this.name,
     required this.buyPrice,
@@ -28,13 +28,12 @@ class Product extends Equatable {
     double? lastPrice,
   }) {
     return Product(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      buyPrice: buyPrice ?? this.buyPrice,
-      cellPrice: cellPrice ?? this.cellPrice,
-      quantity: quantity ?? this.quantity,
-      lastPrice: lastPrice ?? this.lastPrice
-    );
+        id: id ?? this.id,
+        name: name ?? this.name,
+        buyPrice: buyPrice ?? this.buyPrice,
+        cellPrice: cellPrice ?? this.cellPrice,
+        quantity: quantity ?? this.quantity,
+        lastPrice: lastPrice ?? this.lastPrice);
   }
 
   Map<String, dynamic> toMap() {
@@ -71,13 +70,6 @@ class Product extends Equatable {
 
   @override
   List<Object> get props {
-    return [
-      id,
-      name,
-      buyPrice,
-      cellPrice,
-      quantity,
-      lastPrice
-    ];
+    return [id, name, buyPrice, cellPrice, quantity, lastPrice];
   }
 }

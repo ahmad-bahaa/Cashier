@@ -373,6 +373,23 @@ class DataBaseServices {
     String collection,
     int id,
     String dataType,
+    double data,
+  ) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(collection)
+        .where('id', isEqualTo: id)
+        .get()
+        .then((querySnapshot) => querySnapshot.docs.first.reference.update({
+              dataType: data,
+            }));
+  }
+
+  Future<void> updateBillPrice(
+    String collection,
+    int id,
+    String dataType,
     int data,
   ) {
     return _firebaseFirestore
@@ -401,5 +418,26 @@ class DataBaseServices {
         .then((querySnapshot) => querySnapshot.docs.first.reference.update({
               type: cash + newCash,
             }));
+  }
+
+  Future<void> removeProductFromBill(String collection, int billId, String id) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('billsProducts')
+        .doc(collection)
+        .collection(billId.toString())
+        .doc(id)
+        .delete();
+  }
+
+  Future<void> removeBill(String billType, int billId) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection(billType)
+        .where('id', isEqualTo: billId)
+        .get()
+        .then((value) => value.docs.first.reference.delete());
   }
 }

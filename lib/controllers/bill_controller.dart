@@ -22,12 +22,12 @@ class BillController extends GetxController {
     double productEarning = 0.0;
 
     if (addProduct.isNotEmpty) {
-      addProduct.forEach((element) {
+      for (var element in addProduct) {
         productPrice += element.cellPrice * element.quantity;
         productEarning += element.quantity * element.buyPrice;
-        totalBillPrice.value =  productPrice;
+        totalBillPrice.value = productPrice;
         totalBillEarnings.value = productPrice - productEarning;
-      });
+      }
     }
   }
 

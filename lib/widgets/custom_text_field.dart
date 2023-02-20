@@ -10,7 +10,7 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     required this.textInputType,
     required this.iconData,
-    required this.textMaxLength,
+    // required this.textMaxLength,
     required this.onChanged,
     required this.controller,
     required this.value,
@@ -21,7 +21,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType textInputType;
   final IconData iconData;
   final Function(String)? onChanged;
-  final int textMaxLength;
+  // final int textMaxLength;
   final TextEditingController controller;
   String? value;
   bool? isEnabled;
@@ -61,7 +61,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           keyboardType: textInputType,
-          maxLength: textMaxLength,
+          // maxLength: textMaxLength,
           onChanged: onChanged,
         ),
       ),

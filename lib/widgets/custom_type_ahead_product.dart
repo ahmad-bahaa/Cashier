@@ -129,9 +129,18 @@ class CustomTypeAheadProduct extends StatelessWidget {
         isCelling
             ? suggestion.cellPrice.toString()
             : suggestion.buyPrice.toString());
-    Tasks().showAction(
-      context,
-      isCelling ? 4 : 5,
-    );
+    if (billController.product['existing'] == 'yes') {
+      Tasks().showAction(
+        context,
+        9,
+        isCelling,
+      );
+    } else {
+      Tasks().showAction(
+        context,
+        isCelling ? 4 : 5,
+        false,
+      );
+    }
   }
 }

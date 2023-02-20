@@ -42,8 +42,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   String productQuantity = 'quantity';
 
-  int buyPriceData = 0;
-  int cellPriceData = 0;
+  double buyPriceData = 0;
+  double cellPriceData = 0;
   String buttonText = 'تعديل';
 
   bool isEnabled = false;
@@ -66,10 +66,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
         onPressed: () {
           if (_formKey.currentState!.validate() && widget.product == null) {
             int id = productController.products.length + 1;
-            double cellPrice =
-            double.parse(productController.newProduct['cellPrice'] ?? '0.0');
+            double cellPrice = double.parse(
+                productController.newProduct['cellPrice'] ?? '0.0');
             double buyPrice =
-            double.parse(productController.newProduct['buyPrice'] ?? '0.0');
+                double.parse(productController.newProduct['buyPrice'] ?? '0.0');
             int quantity =
                 int.parse(productController.newProduct['quantity'] ?? '0');
             double lastPrice = productController.newProduct['lastPrice'] ?? 0.0;
@@ -88,7 +88,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
             Tasks().showSuccessMessage(
                 'عملية ناجحة', 'تم إاضافة صنف إلى قاعدة البيانات');
           } else if (widget.product != null && isEnabled) {
-            //TODO edit the product info
+
+            if (productName.isNotEmpty || productName != 'name') {
+              _dataBaseServices.updateProductName(
+                  'products', widget.product!.id, 'name', productName);
+            }
             if (buyPriceData != 0 || cellPriceData != 0) {
               if (buyPriceData != 0) {
                 _dataBaseServices.updateProductPrice(
@@ -113,6 +117,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             setState(() {
               isEnabled = false;
               buttonText = 'تعديل';
+              Get.back();
             });
           } else if (widget.product != null && !isEnabled) {
             setState(() {
@@ -133,14 +138,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   controller: textEditingController,
                   data: productName,
                   // value: product?.name ?? '',
-                  isEnabled: widget.product != null ? false : true,
+                  // isEnabled: widget.product != null ? false : true,
+                  isEnabled: isEnabled,
                   hintText: 'إسم الصنف ',
                   textInputType: TextInputType.name,
                   validatorHint: 'يجب إدخال إسم الصنف',
                   iconData: Icons.person,
                   textMaxLength: 20,
                   onChanged: (value) {
-                    storingData(value, productName);
+                    widget.product != null
+                        ? productName = value.toString()
+                        : storingData(value, productName);
                   },
                 ),
                 CustomTextField(
@@ -151,10 +159,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   hintText: 'سعر الشراء',
                   textInputType: TextInputType.number,
                   iconData: Icons.money,
-                  textMaxLength: 4,
+                  // textMaxLength: 10,
                   onChanged: (value) {
                     widget.product != null
-                        ? buyPriceData = int.parse(value)
+                        ? buyPriceData = double.parse(value)
                         : storingData(value, productBuyPrice);
                   },
                 ),
@@ -166,10 +174,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   hintText: 'سعر البيع',
                   textInputType: TextInputType.number,
                   iconData: Icons.money,
-                  textMaxLength: 4,
+                  // textMaxLength: 10,
                   onChanged: (value) {
                     widget.product != null
-                        ? cellPriceData = int.parse(value)
+                        ? cellPriceData = double.parse(value)
                         : storingData(value, productCellPrice);
                   },
                 ),

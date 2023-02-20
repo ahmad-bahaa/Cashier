@@ -141,7 +141,7 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                   hintText: 'رقم الهاتف',
                   textInputType: TextInputType.phone,
                   iconData: Icons.phone,
-                  textMaxLength: 11,
+                  // textMaxLength: 11,
                   onChanged: (value) {
                     widget.person != null
                         ? phoneData = value
@@ -156,7 +156,7 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                   hintText: 'العنوان',
                   textInputType: TextInputType.streetAddress,
                   iconData: Icons.location_city,
-                  textMaxLength: 50,
+                  // textMaxLength: 50,
                   onChanged: (value) {
                     widget.person != null
                         ? addressData = value

@@ -13,7 +13,7 @@ class BuildNewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Tasks().showAction(context, i),
+      onTap: () => Tasks().showAction(context, i,false),
       child: SizedBox(
         height: 100,
         child: Center(

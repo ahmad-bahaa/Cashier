@@ -24,7 +24,7 @@ class _StockScreenState extends State<StockScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomTabBar(
-        title: 'المخزن',
+        title: 'الجرد و النواقص',
         firstHeadLine: 'النواقص',
         secondHeadLine: 'جرد الأصناف',
         controller: controller,

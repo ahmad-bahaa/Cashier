@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'كاشير فري',
+                  'كاشير اب',
                   style: TextStyle(fontSize: 32),
                 ),
               ),
@@ -93,11 +93,11 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('الصفحة الرئيسية'),
         centerTitle: true,
-        actions: [
-          PopupMenuButton(
-            onSelected: (value) {
-              if (value == 0) {
-                authController.signOutUser();
+        /*actions: [
+         // PopupMenuButton(
+         //   onSelected: (value) {
+          //    if (value == 0) {
+          //      authController.signOutUser();
               }
             },
             itemBuilder: (context) => const [
@@ -107,7 +107,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-        ],
+        ], */
       ),
       body: Column(
         children: [
@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                         ));
                   },
                   child: const LabelCard(
-                      icon: Icons.bookmark_add, label: ' المبيعات'),
+                      icon: Icons.bookmark_add, label: ' قائمة المبيعات'),
                 ),
                 InkWell(
                   onTap: () {
@@ -139,7 +139,8 @@ class HomeScreen extends StatelessWidget {
                         ));
                   },
                   child: const LabelCard(
-                      icon: Icons.auto_awesome_motion, label: ' المشتريات'),
+                      icon: Icons.auto_awesome_motion,
+                      label: ' قائمة المشتريات'),
                 ),
                 InkWell(
                   onTap: () {
@@ -182,10 +183,10 @@ class HomeScreen extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Tasks().showAction(context, 7);
+                    Tasks().showAction(context, 7,false,);
                   },
                   child: const LabelCard(
-                      icon: Icons.reduce_capacity, label: 'حجم تعامل'),
+                      icon: Icons.reduce_capacity, label: ' حجم تعامل عميل'),
                 ),
                 InkWell(
                   onTap: () {

@@ -101,7 +101,7 @@ class AddBillScreen extends StatelessWidget {
             buttonText:
                 '${double.parse(billController.totalBillPrice.value.toStringAsFixed(2))}حفظ  - اجمالي ',
             onPressed: () {
-              validateBill(cashType, billType, false, false);
+              validateBill(cashType, billType, isCelling, isCelling);
             },
           ),
         ),
@@ -275,7 +275,6 @@ class AddBillScreen extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-                // //TODO: it doesn't work
                 // int i = 0;
                 // do {
                 //   removeProduct(0);
@@ -312,7 +311,7 @@ class AddBillScreen extends StatelessWidget {
 
   InkWell buildInkWell(BuildContext context, String text, int i) {
     return InkWell(
-      onTap: () => Tasks().showAction(context, i),
+      onTap: () => Tasks().showAction(context, i,false),
       child: SizedBox(
         height: 100,
         child: Center(
@@ -351,15 +350,13 @@ class AddBillScreen extends StatelessWidget {
 
   validateBill(
       String cashType, String billType, bool isPaying, bool paidCashType) {
-    //TODO: need Modification
     if (billController.addProduct.isNotEmpty &&
         billController.newBill.isNotEmpty) {
       final q = personController.people.where((p0) {
         return p0.id.isEqual(billController.newBill['personId']);
       }).toList();
-      dataBaseServices.updatePersonCash(q[0].id, q[0].owned.toDouble(),
-          billController.totalBillPrice.value.toDouble(), 'owned');
-      //TODO: needs modification
+      dataBaseServices.updatePersonCash(q[0].id, isPaying ? q[0].owned.toDouble() : q[0].paid.toDouble() ,
+          billController.totalBillPrice.value.toDouble(), isPaying ? 'owned' : 'paid');
       addBillToDatabase(cashType, billType);
       isPaying
           ? Get.to(() => AddCashScreen(
@@ -385,7 +382,7 @@ class AddBillScreen extends StatelessWidget {
           uid: billController.newBill['uid'] ?? 0,
           name: billController.newBill['name'] ?? 'بدون اسم',
           price: billController.totalBillPrice.value.toInt(),
-          date: DateFormat('yyyy-MM-dd - kk:mm').format(DateTime.now()),
+          date: DateFormat('dd/MM/yyyy - h:mm a').format(DateTime.now()),
           products: billController.addProduct,
         ),
         billType);

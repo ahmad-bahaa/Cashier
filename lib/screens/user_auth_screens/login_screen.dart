@@ -26,41 +26,41 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
-      bottomNavigationBar: Transform.translate(
-        offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
-        child: BottomAppBar(
-          color: Colors.blue,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              onPressed: () {
-                if (_key.currentState!.validate()) {
-                  signIn
-                      ? authController.loginUser(email, password)
-                      : password == rePassword
-                          ? authController.createUser(email, password)
-                          : Tasks().showErrorMessage(
-                              '', 'برجاء التاكد من تطابق الرقم السري');
-                }
-              },
-              child: Text(
-                'تسجيل',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(color: Colors.blue),
-              ),
-            ),
-          ),
-        ),
-      ),
+      backgroundColor: Colors.grey[300],
+      // bottomNavigationBar: Transform.translate(
+      //   offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
+      //   child: BottomAppBar(
+      //     color: Colors.blue,
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(15.0),
+      //       child: ElevatedButton(
+      //         style: ElevatedButton.styleFrom(
+      //           primary: Colors.white,
+      //           shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(20),
+      //           ),
+      //         ),
+      //         onPressed: () {
+      //           if (_key.currentState!.validate()) {
+      //             signIn
+      //                 ? authController.loginUser(email, password)
+      //                 : password == rePassword
+      //                     ? authController.createUser(email, password)
+      //                     : Tasks().showErrorMessage(
+      //                         '', 'برجاء التاكد من تطابق الرقم السري');
+      //           }
+      //         },
+      //         child: Text(
+      //           'تسجيل',
+      //           style: Theme.of(context)
+      //               .textTheme
+      //               .headline4!
+      //               .copyWith(color: Colors.blue),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -74,33 +74,30 @@ class _LoginScreenState extends State<LoginScreen> {
             //   width: 200,
             // ),
             const Text(
-              'كاشير فري',
+              'كاشير اب',
               style: TextStyle(fontSize: 36),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  right: 30.0,
-                  bottom: 8.0,
-                  top: 8.0,
-                ),
-                child: Text(
-                  signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
-                  style: const TextStyle(fontSize: 26),
-                ),
-              ),
-            ),
+
             CustomContainer(
               color: Colors.white,
               widget: Padding(
                 padding: const EdgeInsets.only(
-                    right: 5.0, left: 5.0, bottom: 5.0, top: 32.0),
+                    right: 8.0, left: 5.0, bottom: 8.0, top: 5.0),
                 child: Form(
                   key: _key,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 20),
+                          child: Text(
+                            signIn ? 'تسجل دخول' : 'انشئ حساب جديد',
+                            style: const TextStyle(fontSize: 26),
+                          ),
+                        ),
+                      ),
                       CustomTextFormField(
                         controller: textEditingController,
                         data: 'data',
@@ -214,32 +211,93 @@ class _LoginScreenState extends State<LoginScreen> {
                                       fontSize: 18, color: Colors.indigo),
                                 ),
                                 onTap: () {
-                                  if(email.isEmpty){
-                                    Tasks().showErrorMessage('', 'من فضلك ادخل بريد الكتروني صحيح');
-                                  }else {
-                                    Tasks().showHintMessage('', 'من فضلك تحقق من بريدك الالكتروني');
+                                  if (email.isEmpty) {
+                                    Tasks().showErrorMessage(
+                                        '', 'من فضلك ادخل بريد الكتروني صحيح');
+                                  } else {
+                                    Tasks().showHintMessage(
+                                        '', 'من فضلك تحقق من بريدك الالكتروني');
                                     authController.forgotPassword(email);
                                   }
                                 },
                               ),
                             )
                           : const SizedBox(),
-                      const SizedBox(height: 20.0),
+                      // const SizedBox(height: 5.0),
+                      // CustomRichText(
+                      //   discription: signIn
+                      //       ? ' لا تمتلك حساب.؟'
+                      //       : ' هل انت مستخدم حالي.؟',
+                      //   text: signIn ? " سجل الان " : ' سجل دخول',
+                      //   onTap: () {
+                      //
+                      //     setState(() {
+                      //       signIn = !signIn;
+                      //     });
+                      //   },
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                //TODO: this should be sign up screen
+                                setState(() {
+                                  signIn = !signIn;
+                                });
+                              },
+                              child: Text(
+                                signIn ? " سجل الان " : ' سجل دخول',
+                                style: const TextStyle(
+                                    color: Colors.blue, fontSize: 20),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              signIn ? ' لا تمتلك حساب؟' : ' هل انت مستخدم حالي؟',
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            CustomRichText(
-              discription:
-                  signIn ? ' لا تمتلك حساب.؟' : ' هل انت مستخدم حالي.؟',
-              text: signIn ? " سجل الان " : ' سجل دخول',
-              onTap: () {
-                //TODO: this should be sign up screen
-                setState(() {
-                  signIn = !signIn;
-                });
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(280, 55),
+                primary: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () {
+                if (_key.currentState!.validate()) {
+                  signIn
+                      ? authController.loginUser(email, password)
+                      : password == rePassword
+                          ? authController.createUser(email, password)
+                          : Tasks().showErrorMessage(
+                              '', 'برجاء التاكد من تطابق الرقم السري');
+                }
               },
+              child: Text(
+                'تسجيل',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(color: Colors.white),
+              ),
             ),
           ],
         ),

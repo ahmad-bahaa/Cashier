@@ -110,7 +110,7 @@ class AddCashScreen extends StatelessWidget {
                     hintText: 'ملاحظات',
                     textInputType: TextInputType.multiline,
                     iconData: Icons.money,
-                    textMaxLength: 70,
+                    // textMaxLength: 70,
                     onChanged: (value) {
                       storingValue(value, description);
                     },
@@ -143,9 +143,8 @@ class AddCashScreen extends StatelessWidget {
             ),
             'sending',
           );
-          //TODO : what to do when sending money ?
-          // _dataBaseServices.updatePersonCash(q[0].id, q[0].paid,
-          //     int.parse(cashController.newCash[money]), 'paid');
+          _dataBaseServices.updatePersonCash(q[0].id, q[0].owned.toDouble(),
+              double.parse(cashController.newCash[money]), 'owned');
           _dataBaseServices.updateCash(
               'money', double.parse(cashController.newCash[money]), _isSending);
 
@@ -260,6 +259,7 @@ class AddCashScreen extends StatelessWidget {
         return CustomAlertDialog(
           index: index,
           color: Colors.red,
+          isCelling: false,
         );
       },
     );

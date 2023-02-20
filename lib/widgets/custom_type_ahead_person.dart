@@ -103,6 +103,17 @@ class CustomTypeAheadPerson extends StatelessWidget {
                     (_) => suggestion.id,
                 ifAbsent: () => suggestion.id,
               );
+              billController.newBill.update(
+                'paid',
+                    (_) => suggestion.paid,
+                ifAbsent: () => suggestion.paid,
+              );
+              billController.newBill.update(
+                'owned',
+                    (_) => suggestion.owned,
+                ifAbsent: () => suggestion.owned,
+              );
+
               Get.to(() => const CustomerBillsScreen());
             }
           },

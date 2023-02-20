@@ -26,10 +26,10 @@ class HelpScreen extends StatelessWidget {
               ),
               InkWell(
                 child: const Text(
-                  '03/0553434201',
+                  '+201556533914',
                   style: TextStyle(fontSize: 24, color: Colors.blue),
                 ),
-                onTap: () => UrlLauncher.launch("tel://03553434201"),
+                onTap: () => UrlLauncher.launch("tel://+201556533914"),
               ),
               // const SingleUnit(text: '03/0553434201', width: 400, isBold: true),
               const SizedBox(

@@ -36,6 +36,7 @@ class BillsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
+                  int uid = bills.isNotEmpty ? bills[index].uid.toInt() : 0;
                   Get.to(() => BillScreen(isCelling: isCelling,bill:bills[index]));
                 },
                 child: buildBillReportRow(

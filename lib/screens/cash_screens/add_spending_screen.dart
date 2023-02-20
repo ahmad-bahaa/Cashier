@@ -79,7 +79,7 @@ class ADDSpendingScreen extends StatelessWidget {
                     hintText: 'اسم المصروف',
                     textInputType: TextInputType.multiline,
                     iconData: Icons.money,
-                    textMaxLength: 70,
+                    // textMaxLength: 70,
                     onChanged: (value) {
                       storingValue(value, name);
                     },
@@ -104,7 +104,7 @@ class ADDSpendingScreen extends StatelessWidget {
                   hintText: 'ملاحظات',
                   textInputType: TextInputType.multiline,
                   iconData: Icons.money,
-                  textMaxLength: 70,
+                  // textMaxLength: 70,
                   onChanged: (value) {
                     storingValue(value, description);
                   },

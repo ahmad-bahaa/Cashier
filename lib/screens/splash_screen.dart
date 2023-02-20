@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/screens/screens.dart';
 import 'package:cashier/services/tasks.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +8,18 @@ import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class SplashScreen extends StatelessWidget {
-  bool hasInternet = false;
+  // bool hasInternet = false;
+  final AuthController authController = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     Timer(
-      const Duration(seconds: 4),
+      const Duration(seconds: 3),
       () async {
-        hasInternet = await InternetConnectionChecker().hasConnection;
-        hasInternet ? Get.off(() => HomeScreen()) : Tasks().showErrorMessage('', ' لا يوجد انترنت');
+        // hasInternet = await InternetConnectionChecker().hasConnection;
+        // hasInternet ?
+        Get.off(() => HomeScreen());
+        // : Tasks().showErrorMessage('', ' لا يوجد انترنت');
       },
     );
     return Scaffold(

@@ -1,5 +1,6 @@
+import 'package:cashier/controllers/auth_controller.dart';
 import 'package:cashier/controllers/bill_controller.dart';
-import 'package:cashier/widgets/custom_type_ahead_person.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cashier/screens/screens.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,12 @@ class _CustomerBillsScreenState extends State<CustomerBillsScreen>
 
   @override
   Widget build(BuildContext context) {
+    int uid = billController.newBill['uid'];
+    int owned = billController.newBill['owned'];
+    int paid = billController.newBill['paid'];
+    int total = owned - paid;
+    String moneyType = total > 0 ? 'مدين' : 'دائن' ;
+    Color color = total > 0 ? Colors.green : Colors.red;
     return Scaffold(
       appBar: AppBar(
         title: const Text('حجم تعامل'),
@@ -73,6 +80,15 @@ class _CustomerBillsScreenState extends State<CustomerBillsScreen>
               ],
             ),
           ),
+
+         Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: [
+             Text( total.abs().toString(),style: const TextStyle(fontSize: 24),),
+             const SizedBox(width: 10,),
+             Text(moneyType ,style:  TextStyle(fontSize: 24,color: color),),
+           ],
+         )
         ],
       ),
     );

@@ -13,7 +13,7 @@ class EarningsScreen extends StatelessWidget {
     String userUid = AuthController().firebaseAuth.currentUser!.uid.toString();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('حركة الاموال'),
+        title: const Text('صافي الارباح'),
         centerTitle: true,
       ),
       body: SizedBox(

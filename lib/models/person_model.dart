@@ -12,7 +12,7 @@ class Person extends Equatable {
   final int paid;
   final int owned;
 
-  Person({
+  const Person({
     required this.id,
     required this.name,
     required this.phoneNumber,
